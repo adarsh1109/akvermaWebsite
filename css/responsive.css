@@ -3,7 +3,7 @@
 
 /*------------------------------------------------------------------- 991px x 768px ---------------------------------------------------------------------*/
 
-@media only screen and (min-width: 768px) and (max-width: 991px) {
+@media only screen and (min-width: 599px) and (max-width: 991px) {
     .header-search {
         padding: 15px 0px;
     }
@@ -280,14 +280,15 @@
     .login_bt li {
         float: none;
         text-align: center;
-    }
+
     .banner_taital {
-        font-size: 50px;
+        font-size: 36px;
     }
     .banner_text {
         width: 100%;
-        font-size: 40px;
+        font-size: 24px;
     }
+
     .header_section {
         background-size: cover;
     }
@@ -410,7 +411,7 @@
     }
     .banner_text {
         width: 100%;
-        font-size: 28px;
+        font-size: 24px;
     }
     .header_section {
         background-size: cover;
