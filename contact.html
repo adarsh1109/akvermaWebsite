@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 
+
 <head>
    <!-- basic -->
    <meta charset="utf-8">
@@ -143,6 +144,10 @@
                               <input type="email" class="mail_text" placeholder="Email" name="_replyto" required>
                               <textarea class="message-bt" placeholder="Message" rows="5" name="Message"></textarea>
                               <div class="send_bt active"><button type="submit">Send</button></div>
+                              <!-- Empty lines -->
+                              <div style="height: 100px;"></div>
+
+
                            </form>
                         </div>
                      </div>
@@ -156,36 +161,86 @@
       </form>
 
 
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+      <style>
+         .rounded-right {
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+         }
+
+         .contact-box {
+            border: 1px solid #b3aeae;
+            border-radius: 10px;
+            padding: 15px;
+            width: 300px;
+            /* Adjust the width as needed */
+            position: absolute;
+            top: 50%;
+            right: 0px;
+            /* Adjust the right position */
+            transform: translateY(-32%);
+            z-index: 1;
+            background-color: white;
+
+            /* Ensure it's above the map */
+         }
+
+         .map {
+            position: relative;
+            width: 96.5%;
+            height: 350px;
+            overflow: hidden;
+            border: 5px solid #ccc;
+            /* Adjust the border color and size as needed */
+
+            margin-bottom: 60px;
+            /* Adjust the space below the map */
+
+         }
+      </style>
 
 
-      <!-- map -->
-      <div class="map">
-         <iframe
-            src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1903.0596205111121!2d78.332088!3d17.454005999999996!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb930f5934aac1%3A0xff97e28309bca946!2sCentre%20for%20Health%20Psychology!5e0!3m2!1sen!2sus!4v1703688933152!5m2!1sen!2sus"
-            width="100%" height="300" style="border:5;" allowfullscreen="" loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade"></iframe>
-      </div>
 
-      <!-- contact section end -->
-      <!-- footer section start -->
-      <div class="footer_section layout_padding">
+      <div class="overlay_div rounded">
          <div class="container">
-            <div class="footer_section_2">
-               <div class="row">
-                  <div class="col-lg-3 col-sm-6">
-                     <h2 class="useful_text">Contact</h2>
-                     <p class="dummy_text">
-                        Centre for Health Psychology, <br>
-                        School of Medical Sciences, <br>
-                        University of Hyderabad, <br>
-                        Telangana, India
-                     </p>
-                     <div class="location_text"><a href="#">adarsh@akverma.net</a></div>
+            <div class="row">
+               <div class="col-md-12">
+                  <!-- Move "Contacts" heading inside the box -->
+                  <div class="contact-box">
+                     <h3>Contacts</h3>
+                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="currentColor" class="bi bi-envelope">
+                        <text x="1.501415" y="15.02" font-size="24" fill="currentColor"
+                           style="font-family: 'FontAwesome'"></text>
+                     </svg>
+                     <p class="mb-0">adarsh@akverma.net</p>
+                     <p class="mb-0">21cpph06@uohyd.ac.in</p>
+
+                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="currentColor" class="bi bi-geo-alt">
+                        <text x="3.501415" y="20.9" font-size="24" fill="currentColor"
+                           style="font-family: 'FontAwesome'"></text>
+                     </svg>
+                     <p class="mb-0">Centre for Health Psychology</p>
+                     <p class="mb-0">University of Hyderabad</p>
+                     <p class="mb-0">Hyderabad, 500046</p>
+                     <p class="mb-0">Telangana, India</p>
                   </div>
                </div>
             </div>
          </div>
+
+         <div class="map">
+            <!-- map iframe goes here -->
+            <iframe
+               src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1903.0596205111121!2d78.332088!3d17.454005999999996!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb930f5934aac1%3A0xff97e28309bca946!2sCentre%20for%20Health%20Psychology!5e0!3m2!1sen!2sus!4v1703688933152!5m2!1sen!2sus"
+               width="100%" height="100%" style="border: none;" allowfullscreen="" loading="lazy"
+               referrerpolicy="no-referrer-when-downgrade"></iframe>
+         </div>
+         <div style="height: 1px;"></div>
       </div>
+
+
       <!-- footer section end -->
 
 
@@ -203,6 +258,7 @@
             color: white;
             text-align: center;
             padding: 15px;
+            padding-top: 40;
             /* Add padding for spacing */
          }
 

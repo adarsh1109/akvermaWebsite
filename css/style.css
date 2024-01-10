@@ -714,7 +714,7 @@ button {
 .blog_section {
     width: 100%;
     float: left;
-    padding-bottom: 90px;
+    padding-bottom: 20px;
 }
 
 .blog_title {
@@ -1075,7 +1075,7 @@ textarea#comment::placeholder {
 
 .education-details {
     margin-left: 20px;
-    margin-bottom: 50px;
+    margin-bottom: 40px;
     /* Add some space between education details */
 }
 
