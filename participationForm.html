@@ -8,19 +8,22 @@
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
         body, html {
-            height: 100%;
             margin: 0;
+            padding: 0;
+            height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: 'Poppins', sans-serif;
             text-align: center;
-            padding: 20px;
             box-sizing: border-box;
         }
 
         .container {
             text-align: center;
+            padding: 20px;
+            width: 100%;
+            max-width: 500px; /* Limit the width for better presentation on mobile */
         }
 
         p {
@@ -33,11 +36,11 @@
             text-decoration: none;
             color: #ffffff;
             background-color: #1878b7;
-            padding: 10px 30px; /* Reduced padding for smaller button */
-            border-radius: 25px; /* Adjusted border-radius for proportion */
-            font-size: 18px; /* Reduced font size */
+            padding: 10px 30px;
+            border-radius: 25px;
+            font-size: 18px;
             font-weight: 600;
-            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2); /* Slightly smaller shadow */
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
             transition: all 0.3s ease;
         }
 
