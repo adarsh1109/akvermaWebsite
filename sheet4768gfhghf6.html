@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Sheet Data Viewer</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+    }
+    table {
+      margin: 20px auto;
+      border-collapse: collapse;
+      width: 80%;
+    }
+    table th, table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+    }
+    #data-table {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Google Sheets Data Viewer</h1>
+  <div id="loading">Loading data from Google Sheet...</div>
+  <table id="data-table">
+    <thead>
+      <tr id="table-header"></tr>
+    </thead>
+    <tbody id="table-body"></tbody>
+  </table>
+
+
+  
+
+
+  <script>
+    // Replace with your Google Sheet ID and API Key
+    const sheetId = "19H1JEF0RmSs1sRrboh-eKEVSHoHrk4VQRrYf3kxPT2c"; // The ID of your Google Sheet
+    const apiKey = "AIzaSyCUKTplqqvu-qw-SrF41_eMyXChAGFHEaQ";  // Your Google API Key
+
+    // Replace "Sheet1" with your specific sheet name
+    const sheetName = "Sheet1";
+    const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}?key=${apiKey}`;
+
+    // Function to fetch and display data
+    async function fetchSheetData() {
+      try {
+        const response = await axios.get(apiUrl);
+        const rows = response.data.values;
+
+        if (rows && rows.length > 0) {
+          populateTable(rows);
+        } else {
+          document.getElementById("loading").innerText = "No data found in the sheet.";
+        }
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+        document.getElementById("loading").innerText = "Failed to load data. Check console for details.";
+      }
+    }
+
+    // Populate table with sheet data
+    function populateTable(rows) {
+      const headerRow = rows[0];
+      const bodyRows = rows.slice(1);
+
+      const tableHeader = document.getElementById("table-header");
+      const tableBody = document.getElementById("table-body");
+
+      // Add header cells
+      headerRow.forEach((header) => {
+        const th = document.createElement("th");
+        th.innerText = header;
+        tableHeader.appendChild(th);
+      });
+
+      // Add body rows
+      bodyRows.forEach((row) => {
+        const tr = document.createElement("tr");
+        row.forEach((cell) => {
+          const td = document.createElement("td");
+          td.innerText = cell;
+          tr.appendChild(td);
+        });
+        tableBody.appendChild(tr);
+      });
+
+      document.getElementById("loading").style.display = "none";
+      document.getElementById("data-table").style.display = "table";
+    }
+
+    // Call the function on page load
+    fetchSheetData();
+  </script>
+</body>
+</html>
