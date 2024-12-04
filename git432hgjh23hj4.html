@@ -197,50 +197,62 @@
             <div class="row">
                <div class="col-md-12">
                   
-                  <h1 class="ongoing_study_PMRFtitle"><b>FMRI</b></h1>
+                  <h1 class="ongoing_study_PMRFtitle"><b>GIT</b></h1>
 
                   
         <div>
-         <h3><strong>Preparation</strong></h3>
+         <h3><strong>Source Control Sync Error</strong></h3>
       </div>
       
       <p>
          <ul>
             <pre class="r-code">
                
-               # for visualization
-               pip3 install matplotlib 
-               
-               # Python data visualization library based on matplotlib
-               pip3 install seaborn
-               
-               # iPython interpreter
-               pip install ipython
-               
-               # for downloading openeuro data
-               pip3 install openneuro-py
-               brew install datalad
-               
-               # for organizing neuroimaging data in proper structure
-               pip3 install pybids 
-               
-               #  for converting neuroimaging data from the DICOM format to the NIfTI format 
-               pip3 install dcm2niix
-               
-               # other optional packages
-               pip3 install nibabel nilearn
+               Step 1: Check out to a temporary branch
+               Make sure your main branch is in the desired state first, as it will become the starting point of 
+               your new history. Then run
+               <strong>git checkout --orphan temp_branch</strong>
+               This command creates a new branch named temp_branch and switches to it. The --orphan option creates 
+               a branch without a commit history.
 
+               Step 2: Add all files
+               <strong>git add -A</strong>
+               This will stage all changes in the working directory, including deleted files.
                
-               In terminal
-               cd ~/Downloads/
-               python3 fslinstaller.py
-               # change installation location if required
+               Step 3: Commit the changes
+               We can now commit the changes to the orphan branch using the following command:
+               <strong>git commit -m "Initial commit"</strong>
+               The result is a single commit that contains all project files.  
+
+               Step 4: Delete the main branch
+               Now that we have committed the changes to the new branch, we can delete the local main branch, 
+               which contains our full commit history.
+               <strong>git branch -D main</strong>
+
+               Step 5: Rename the temporary branch to main
+               Next, we need to rename the temporary branch to master:
+               <strong>git branch -m main</strong>
+
+               Step 6: Force update to our repository
+               Finally, we need to force update our repository using the following command:
+               <strong>git push --force origin main</strong>
+               The --force option allows us to overwrite the history of the remote main branch with our new 
+               local history. This option should generally be used with caution, because you risk losing work 
+               you or others committed in the past. However, for us this is the intended result
                
-               In bash, create and activate temp environment
-               cd /Users/adarshk.verma/Documents/Jupyter/nimg
-               pwd
-               python3 -m venv nimg_workshop_temp_env
-               source nimg_workshop_temp_env/bin/activate              
+               
+               Conclusion
+               Deleting the commit history of a project before publishing it on GitHub is a serious decision 
+               that should not be taken lightly. After all, you will lose all changes ever made to the project, 
+               which makes it impossible to revert to an earlier version of your codebase. It is important to 
+               consider the reasons why you want to delete the commit history and the potential impact it may 
+               have on other contributors to the project. However, if you do decide to delete the commit history, 
+               the steps outlined above can help you do it effectively and efficiently.
+               
+               
+               Sources
+               https://gist.github.com/heiswayi/350e2afda8cece810c0f6116dadbe651
+                                                           
 
 
                
@@ -252,88 +264,16 @@
       
       <h1 class="ongoing_study_PMRFtitle"></h1>
       <div>
-         <h3><strong>fMRIprep</strong></h3>
+         <h3><strong>Hosting Website</strong></h3>
       </div>
       
       <p>
          <ul>
             <pre class="r-code">
       
-Download docker: https://www.docker.com/
 
-python -m pip install fmriprep-docker
-fmriprep --version
+               Add Here
 
-Check if the FreeSurfer license file (license.txt) exists in the specified location:
-ls $HOME/BIDS_tutorial/derivatives/license.txt
-
-Create the necessary directories first, and then proceed with creating and editing the script. Here are the steps:
-
-Create the Required Directory Structure:
-mkdir -p $HOME/BIDS_tutorial/code
-
-Create the fmriprep.sh Script:
-touch $HOME/BIDS_tutorial/code/fmriprep.sh
-
-Open the Script for Editing:
-vim $HOME/BIDS_tutorial/code/fmriprep.sh
-
-Usage command: https://fmriprep.org/en/stable/usage.html
-
-Enter Insert Mode in Vim: Press i to switch to insert mode.
-
-#!/bin/bash
-
-# User inputs
-bids_root_dir=$HOME/BIDS_tutorial
-subj=01  # Subject number changed to 01
-nthreads=4
-mem=12  # Memory in GB
-container=docker  # Set to use Docker
-
-# Convert memory from GB to MB
-mem_mb=$((mem * 1000 - 5000))  # Adjust memory for buffer space
-
-# Set environment variables
-export TEMPLATEFLOW_HOME=$HOME/.cache/templateflow
-export FS_LICENSE=$HOME/BIDS_tutorial/derivatives/license.txt
-
-# Run fMRIPrep
-if [ "$container" == "docker" ]; then
-  fmriprep-docker $bids_root_dir $bids_root_dir/derivatives \
-    participant \
-    --participant-label $subj \
-    --skip-bids-validation \
-    --md-only-boilerplate \
-    --fs-license-file $FS_LICENSE \
-    --fs-no-reconall \
-    --output-spaces MNI152NLin2009cAsym:res-2 \
-    --nthreads $nthreads \
-    --stop-on-first-crash \
-    --mem_mb $mem_mb \
-    -w $HOME
-else
-  echo "Container type is not set to Docker."
-fi
-
-Save and Close the Script in Vim: Press Escape to exit insert mode.
-Type :wq and press Enter to save and quit.
-
-
-To ensure the script is set up correctly, run:
-cat $HOME/BIDS_tutorial/code/fmriprep.sh
-
-To execute it
-chmod +x $HOME/fmriprep/BIDS_tutorial/code/fmriprep.sh
-
-
-Run the script using:
-source $HOME/fmriprep/BIDS_output/code/fmriprep.sh
-OR
-bash $HOME/fmriprep/BIDS_output/code/fmriprep.sh
-
-
-(the last command should also install fmriprep if doesn’t exist)
 
 
             </pre>
@@ -345,65 +285,7 @@ bash $HOME/fmriprep/BIDS_output/code/fmriprep.sh
 
 
        
-      <h1 class="ongoing_study_PMRFtitle"></h1>
-      <div>
-         <h3><strong>DICOM data and Its Conversion</strong></h3>
-      </div>
       
-      <p>
-         <ul>
-            <pre class="r-code">
-In terminal (bash)
-
-cd /Users/adarshk.verma/Downloads/niiCheck
-pwd
-wget https://zenodo.org/record/3677090/files/0219191_mystudy-0219-1114.tar.gz
-
-## unzip and extract files from the tarball (tar archive)
-tar -xvzf 0219191_mystudy-0219-1114.tar.gz
-gzip -d 0219191_mystudy-0219-1114/dcm/*dcm.gz
-
-mkdir nii
-# !mkdir nii
-
-
-# brew install pigz
-# brew install tree
-# pip3 install git+https://github.com/benoitberanger/niix2bids
-
-## Convert DICOM files to NIfTI (anonymized; output followed by input directory)
-dcm2niix -z y -o nii 0219191_mystudy-0219-1114/dcm/
-
-# Anonymize data
-dcm2niix -z y -o /Users/adarshk.verma/Downloads/NIFTI -ba n /Users/adarshk.verma/Downloads/OpenScience/
-
-# do not anonymize data
-dcm2niix -z y -o /Users/adarshk.verma/Downloads/NIFTI /Users/adarshk.verma/Downloads/OpenScience/
-
-# putting into BIDS format with NIfTi file shortcuts
-niix2bids -i /Users/adarshk.verma/Downloads/NIFTI/ -o /Users/adarshk.verma/Downloads/BIDS_output/
-
-# putting/copying complete files into BIDS format
-niix2bids -i /Users/adarshk.verma/Downloads/NIFTI/ -o /Users/adarshk.verma/Downloads/BIDS_output/ --copyfile
-
-
-
-# Download data from open neuro (usually already in nii format)
-openneuro-py download --dataset=ds002293 \--target_dir=/Users/adarshk.verma/Downloads/alzheimers/bids
-
-# Download specific subject data
- openneuro-py download --dataset=ds005576 \
- --include=sub-02/
- --target_dir=/Users/adarshk.verma/Downloads/alzheimers/bids
-
-                
-                           
-            </pre>
-                     
-         </ul>
-      </p>
-      
-      <hr style="border-top: 1px solid #ccc; margin: 5px 0;">
       
       
          
