@@ -118,6 +118,7 @@
     background-color: #28a745;
     color: white;
 }
+
         button {
             width: 110px;
             height: 40px;
@@ -166,6 +167,11 @@
     font-size: 24px; /* Larger font for output */
     color: #333; /* Darker color for output */
 }
+/* Style for sub-subheadings (games) */
+.sidebar ul li ul li a {
+    font-size: 15px; /* Adjust the font size as needed */
+    color: #c0c4c1; /* Optional: Adjust the color for sub-subheadings */
+}
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -175,7 +181,11 @@
     <div class="sidebar">
         <h2>Menu</h2>
         <ul>
-            <li><a href="#calculator">Calculator</a></li>
+            <li>
+                <a><b>Statistical Tools</b> </a>
+                <!-- Add games as sub-subheadings -->
+                <ul>
+                    <li><a href="#calculator">Calculator</a></li>
             <li><a href="#partial-eta">Partial Eta Squared</a></li>
             <li><a href="#omega">Omega Squared</a></li>
             <li><a href="#cohens-d">Cohen's d</a></li>
@@ -184,6 +194,25 @@
             <li><a href="#correlations">Correlations</a></li>
             <li><a href="#regression">Regression</a></li>
             <li><a href="#frequency-plot">Frequency Plot</a></li>
+                </ul>
+            </li>
+
+            <li><a> ______________ </a></li>
+
+
+            <!-- Add "Fun Time!" as a subheading -->
+            <li>
+                <a href="#fun-time"><b>Fun Time!</b> </a>
+                <!-- Add games as sub-subheadings -->
+                <ul>
+                    <li><a href="accelerate.html">Accelerate</a></li>
+                    <li><a href="block-dude.html">Block Dude</a></li>
+                    <li><a href="pong.html">Pong</a></li>
+                    <li><a href="snake.html">Snake</a></li>
+                    <li><a href="sokoban.html">Sokoban</a></li>
+                    <li><a href="tetris.html">Tetris</a></li>
+                </ul>
+            </li>
         </ul>
     </div>
 
@@ -236,7 +265,7 @@
 
             <!-- Partial Eta Squared Calculator -->
             <div class="effect-size" id="partial-eta">
-                <h2>Partial Eta Squared</h2>
+                <h2>Partial Eta Squared (η²ₚ)</h2>
                 <div class="df-inputs">
                     <div class="input-title">df_effect</div>
                     <div class="input-title">df_error</div>
@@ -254,7 +283,7 @@
 
             <!-- Omega Squared Calculator -->
             <div class="effect-size" id="omega">
-                <h2>Omega Squared</h2>
+                <h2>Omega Squared (ω²)</h2>
                 <div class="df-inputs">
                     <div class="input-title">df_effect</div>
                     <div class="input-title">df_error</div>
@@ -275,8 +304,8 @@
             <div class="stat-test-section" id="cohens-d">
                 <h2>Cohen's d</h2>
                 <div class="input-title">Enter data (comma-separated):</div>
-                <input type="text" id="cohen-data1" placeholder="Group 1 (e.g., 45, 50, 55)">
-                <input type="text" id="cohen-data2" placeholder="Group 2 (e.g., 50, 52, 58)">
+                <input type="text" id="cohen-data1" placeholder="Data 1 (e.g., 45, 50, 55)">
+                <input type="text" id="cohen-data2" placeholder="Data 2 (e.g., 50, 52, 58)">
                 <br>
                 <button onclick="calculateCohensD('independent')">Independent</button>
                 <button onclick="calculateCohensD('paired')">Paired</button>
@@ -309,7 +338,7 @@
 
             <!-- Correlations -->
             <div class="stat-test-section" id="correlations">
-                <h2>Correlations</h2>
+                <h2>Correlations (r, ρ, τ)</h2>
                 <div class="input-title">Enter data (comma-separated):</div>
                 <input type="text" id="corr-data1" placeholder="Variable 1 (e.g., 1, 2, 3)">
                 <input type="text" id="corr-data2" placeholder="Variable 2 (e.g., 4, 5, 6)">
