@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clipboard Image Downloader</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+      background-color: #f9f9f9;
+    }
+    h1 {
+      color: #333;
+    }
+    p {
+      color: #666;
+    }
+    #imagePreview {
+      margin-top: 20px;
+      max-width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 10px;
+      background-color: #fff;
+    }
+    #downloadButton {
+      margin: 20px auto;
+      padding: 10px 20px;
+      background-color: #555;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      display: none; /* Hidden by default */
+    }
+    #downloadButton:hover {
+      background-color: #444;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Paste an Image (Ctrl+V)</h1>
+    <p>Press <b>Ctrl+V</b> to paste an image from your clipboard. The image will be displayed below, and you can download it.</p>
+
+    <div id="imagePreviewContainer">
+      <img id="imagePreview" src="" alt="Pasted Image Preview" />
+    </div>
+    <button id="downloadButton">Download Image</button>
+  </div>
+
+  <script>
+    document.addEventListener('paste', async (event) => {
+      const items = event.clipboardData?.items;
+      if (!items) return;
+
+      for (const item of items) {
+        if (item.type.startsWith('image/')) {
+          const blob = await item.getAsFile();
+          if (blob) {
+            const reader = new FileReader();
+            reader.onload = () => {
+              // Display the image
+              const imagePreview = document.getElementById('imagePreview');
+              imagePreview.src = reader.result;
+
+              // Show the download button
+              const downloadButton = document.getElementById('downloadButton');
+              downloadButton.style.display = 'block';
+
+              // Set up the download button
+              downloadButton.onclick = () => {
+                const a = document.createElement('a');
+                a.href = reader.result;
+                a.download = 'pasted_image.' + blob.type.split('/')[1];
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+              };
+            };
+            reader.readAsDataURL(blob);
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>

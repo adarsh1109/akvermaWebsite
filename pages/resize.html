@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image Resizer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    canvas {
+      border: 1px solid black;
+      max-width: 100%;
+      margin-top: 20px;
+    }
+    input[type="file"], input[type="number"], button {
+      margin: 10px 0;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Image Resizer</h1>
+    <input type="file" id="upload" accept="image/*" />
+    <canvas id="canvas"></canvas>
+    <br />
+    <label>Width: <input type="number" id="width" /></label>
+    <label>Height: <input type="number" id="height" /></label>
+    <button onclick="resizeImage()">Resize</button>
+    <br />
+    <button onclick="downloadImage()">Download Image</button>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let img = new Image();
+    let originalFileName = 'resized_image';
+
+    document.getElementById('upload').addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        originalFileName = file.name.split('.')[0];
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    img.onload = () => {
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0);
+    };
+
+    function resizeImage() {
+      const width = parseInt(document.getElementById('width').value) || img.width;
+      const height = parseInt(document.getElementById('height').value) || img.height;
+      canvas.width = width;
+      canvas.height = height;
+      ctx.drawImage(img, 0, 0, width, height);
+    }
+
+    function downloadImage() {
+      const width = canvas.width;
+      const height = canvas.height;
+      const a = document.createElement('a');
+      a.href = canvas.toDataURL('image/png');
+      a.download = `${originalFileName}_${width}x${height}.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  </script>
+</body>
+</html>

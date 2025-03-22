@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Resizer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        input[type="file"], input[type="number"], button {
+            margin: 10px 0;
+            display: block;
+        }
+        #preview {
+            max-width: 100%;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Image Compresser</h1>
+        <input type="file" id="imageInput" accept="image/*">
+        <input type="number" id="targetSize" placeholder="Enter target size in KB">
+        <button onclick="resizeImage()">Resize and Download</button>
+        <img id="preview" src="#" alt="Image Preview" style="display:none;">
+    </div>
+
+    <script>
+        let img = new Image();
+        let originalFile;
+
+        // Handle file input
+        document.getElementById('imageInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                originalFile = file;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    img.src = e.target.result;
+                    document.getElementById('preview').src = e.target.result;
+                    document.getElementById('preview').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Resize image function
+        function resizeImage() {
+            const targetSizeKB = parseFloat(document.getElementById('targetSize').value);
+            if (!targetSizeKB || isNaN(targetSizeKB) || !originalFile) {
+                alert("Please select an image and enter a valid target size in KB.");
+                return;
+            }
+
+            const targetSizeBytes = targetSizeKB * 1024; // Convert KB to bytes
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+
+            img.onload = function() {
+                let width = img.width;
+                let height = img.height;
+                let quality = 1.0; // Start with maximum quality
+
+                // Set canvas dimensions to the image dimensions
+                canvas.width = width;
+                canvas.height = height;
+                ctx.drawImage(img, 0, 0, width, height);
+
+                // Function to get the file size of the resized image
+                function getFileSize(dataUrl) {
+                    const base64Length = dataUrl.length - (dataUrl.indexOf(',') + 1);
+                    const padding = (dataUrl.charAt(dataUrl.length - 2) === '=') ? 2 : 1;
+                    return (base64Length * 0.75) - padding;
+                }
+
+                // Adjust quality to reach the target size
+                let resizedDataUrl = canvas.toDataURL('image/jpeg', quality);
+                let fileSize = getFileSize(resizedDataUrl);
+
+                // Safeguard to prevent infinite loops
+                let maxIterations = 100;
+                let iteration = 0;
+
+                while (Math.abs(fileSize - targetSizeBytes) > 1024 && quality > 0.1 && quality <= 1.0 && iteration < maxIterations) {
+                    if (fileSize > targetSizeBytes) {
+                        quality -= 0.05; // Reduce quality to decrease file size
+                    } else {
+                        quality += 0.05; // Increase quality to increase file size
+                    }
+                    resizedDataUrl = canvas.toDataURL('image/jpeg', quality);
+                    fileSize = getFileSize(resizedDataUrl);
+                    iteration++;
+                }
+
+                // If the target size is still not met, adjust dimensions
+                if (Math.abs(fileSize - targetSizeBytes) > 1024) {
+                    const scaleFactor = Math.sqrt(targetSizeBytes / fileSize);
+                    width *= scaleFactor;
+                    height *= scaleFactor;
+                    canvas.width = width;
+                    canvas.height = height;
+                    ctx.drawImage(img, 0, 0, width, height);
+                    resizedDataUrl = canvas.toDataURL('image/jpeg', quality);
+                    fileSize = getFileSize(resizedDataUrl);
+                }
+
+                // Download the resized image
+                const link = document.createElement('a');
+                link.href = resizedDataUrl;
+                link.download = `resized-image-${targetSizeKB}kb.jpg`;
+                link.click();
+            };
+
+            // Ensure the image is loaded before resizing
+            if (img.complete) {
+                img.onload(); // Manually trigger onload if the image is already loaded
+            }
+        }
+    </script>
+</body>
+</html>
