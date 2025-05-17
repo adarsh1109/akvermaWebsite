@@ -329,26 +329,28 @@ button {
 }
 
 .banner_title {
-    width: 1000%;
-    float: left;
-    font-size: 60px;
+    /* width: 1000%; */ /* Removed to prevent overflow and make responsive */
+    /* float: left; */ /* Not needed when using Flexbox or Grid */
+    font-size: clamp(2rem, 6vw, 60px); /* Responsive size: min 2rem, scales with screen, max 60px */
     color: #000;
     font-weight: bold;
-    margin: 0px;
-    padding-top: 100px;
-    padding-bottom: 60px;
+    margin: 0;
+    padding-top: 60px; /* Reduced to avoid too much top space */
+    padding-bottom: 30px;
     text-transform: capitalize;
     font-family: 'Philosopher', sans-serif;
 }
 
 .banner_text {
-    width: 900%;
-    font-size: 25px;
+    /* width: 900%; */ /* Removed to prevent overflow */
+    font-size: clamp(1rem, 2.5vw, 25px); /* Responsive font size for subtext */
     color: #2398bf;
-    padding-top: 0px;
+    /* padding-top: 0px; */ /* Default is fine, unnecessary */
+    margin-bottom: 5px; /* Small spacing between lines */
     text-transform: none;
     font-family: 'Philosopher', sans-serif;
 }
+
 
 .started_text {
     width: 140px;
@@ -1043,7 +1045,7 @@ textarea#comment::placeholder {
     font-size: 16px;
     color: #ffffff;
     text-align: center;
-    : 0px;
+   
 }
 
 .copyright_text a {
