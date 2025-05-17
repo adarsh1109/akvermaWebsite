@@ -143,8 +143,16 @@
                               <input type="text" class="mail_text" placeholder="Full Name" name="Full Name" required>
                               <input type="email" class="mail_text" placeholder="Email" name="_replyto" required>
                               <textarea class="message-bt" placeholder="Message" rows="5" name="Message"></textarea>
-                              <div class="send_bt active"><button type="submit">Send</button></div>
-                              <!-- Empty lines -->
+                              <div style="text-align: center; margin-top: 20px;">
+                                 <button type="submit" style="background-color: #6c757d; color: white; padding: 10px 24px; font-size: 16px; border: none; border-radius: 8px; cursor: pointer; transition: background-color 0.3s ease, transform 0.2s ease;" 
+                                   onmouseover="this.style.backgroundColor='#5a6268'; this.style.transform='scale(1.03)'" 
+                                   onmouseout="this.style.backgroundColor='#6c757d'; this.style.transform='scale(1)'" 
+                                   onmousedown="this.style.transform='scale(0.97)'" 
+                                   onmouseup="this.style.transform='scale(1.03)'">
+                                   Send
+                                 </button>
+                               </div>
+                               <!-- Empty lines -->
                               <div style="height: 100px;"></div>
 
 
@@ -207,7 +215,7 @@
                <div class="col-md-12">
                   <!-- Move "Contacts" heading inside the box -->
                   <div class="contact-box">
-                     <h3>Contacts</h3>
+                     <h3>Contact</h3>
                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                         fill="currentColor" class="bi bi-envelope">
                         <text x="1.501415" y="15.02" font-size="24" fill="currentColor"
@@ -221,7 +229,7 @@
                         <text x="3.501415" y="20.9" font-size="24" fill="currentColor"
                            style="font-family: 'FontAwesome'"></text>
                      </svg>
-                     <p class="mb-0">Centre for Health Psychology</p>
+                     <p class="mb-0">Centre for Psychology</p>
                      <p class="mb-0">University of Hyderabad</p>
                      <p class="mb-0">Hyderabad, 500046</p>
                      <p class="mb-0">Telangana, India</p>
@@ -230,13 +238,13 @@
             </div>
          </div>
 
-         <div class="map">
-            <!-- map iframe goes here -->
+         <div class="map" style="overflow: hidden; border-radius: 16px;">
             <iframe
-               src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1903.0596205111121!2d78.332088!3d17.454005999999996!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb930f5934aac1%3A0xff97e28309bca946!2sCentre%20for%20Health%20Psychology!5e0!3m2!1sen!2sus!4v1703688933152!5m2!1sen!2sus"
-               width="100%" height="100%" style="border: none;" allowfullscreen="" loading="lazy"
-               referrerpolicy="no-referrer-when-downgrade"></iframe>
-         </div>
+              src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1903.0596205111121!2d78.332088!3d17.454005999999996!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb930f5934aac1%3A0xff97e28309bca946!2sCentre%20for%20Health%20Psychology!5e0!3m2!1sen!2sus!4v1703688933152!5m2!1sen!2sus"
+              width="100%" height="100%" style="border: none; border-radius: 8px;" allowfullscreen="" loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"></iframe>
+          </div>
+          
          <div style="height: 1px;"></div>
       </div>
 
