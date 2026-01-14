@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+   <!-- basic -->
+   <meta charset="utf-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <!-- mobile metas -->
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+   <!-- site metas -->
+   <title>Adarsh K. Verma</title>
+   <meta name="keywords" content="">
+   <meta name="description" content="">
+   <meta name="author" content="">
+   <!-- bootstrap css -->
+   <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+   <!-- style css -->
+   <link rel="stylesheet" type="text/css" href="css/style.css">
+   <!-- Responsive-->
+   <link rel="stylesheet" href="css/responsive.css">
+   <!-- fevicon -->
+   <!-- <link rel="icon" href="images/fevicon.png" type="image/gif" /> -->
+   <!-- font css -->
+   <link
+      href="https://fonts.googleapis.com/css2?family=Philosopher:ital,wght@0,400;0,700;1,400;1,700&family=Poppins:wght@400;700&display=swap"
+      rel="stylesheet">
+   <!-- Scrollbar Custom CSS -->
+   <link rel="stylesheet" href="css/jquery.mCustomScrollbar.min.css">
+   <!-- Tweaks for older IEs-->
+   <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+</head>
+
+<body>
+   <div class="header_section">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+         <!-- <a class="navbar-brand" href="index.html"><img src="images/logo.png"></a> -->
+         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+         </button>
+         <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+               <li class="nav-item active">
+                  <a class="nav-link" href="index.html">Home</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="academics.html">Academics</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="trainingAndExperience.html">Training & Experience</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="publications.html">Research & Publications</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="awardsAndPositions.html">Awards & Positions</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="pmrfProgress.html">PMRF Progress</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="contact.html">Contact</a>
+               </li>
+            </ul>
+
+         </div>
+      </nav>
+
+
+
+      <!-- ICONS-->
+
+      <style>
+         /* Define your fixed icons */
+         .fixed-icons {
+            position: fixed;
+            top: 80%;
+            right: 20px;
+            transform: translateY(-50%);
+            z-index: 999;
+            /* Ensure icons appear above other elements */
+         }
+
+         /* Style your icons as needed */
+         .icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            cursor: pointer;
+         }
+      </style>
+      <!-- icons -->
+      <div class="like-icon fixed-icons">
+
+         <a href="https://orcid.org/0000-0003-0249-6989" target="_blank" class=" icon"
+            style="font-size:48px;text-decoration:none;">
+            <img src="images/icon1.png" alt="ORCID" style="color:#fff;">
+         </a>
+
+         <a href="https://www.researchgate.net/profile/Adarsh-Verma-7" class="bg-dark icon" target="_blank"
+            style="background-color:#000;font-size:48px;text-decoration:none;">
+            <img src="images/icon2.png" alt="ResearchGate" style="color:#fff;">
+         </a>
+
+         <a href="https://www.linkedin.com/in/adarsh-k-verma-a05315211/" target="_blank" class=" icon"
+            style="font-size:48px;text-decoration:none;">
+            <img src="images/icon3.png" alt="LinkedIN" style="color:#fff;">
+         </a>
+
+      </div>
+
+
+
+
+
+
+
+
+
+      <style>
+         .two-column-list {
+            display: flex;
+            flex-direction: column;
+            list-style-type: none;
+            padding: 0;
+            margin: auto;
+            /* Add this line to center the element */
+            max-width: 950px;
+            /* Adjust the max-width as needed */
+         }
+
+
+         .row {
+            display: flex;
+            flex-direction: row;
+            padding: 10px 0;
+            /* Increase vertical padding between rows */
+         }
+
+         .ongoing_study {
+            width: 100%;
+            font-size: 40px;
+            color: #2b2b2a;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+         }
+
+         .ongoing_study_PMRFtitle {
+            width: 100%;
+            font-size: 28px;
+            color: #2b2b2a;
+            text-align: center;
+            margin-bottom: 85px;
+            padding-top: 40px;
+         }
+
+         .entry1 {
+            flex: 1;
+            text-align: left;
+            font-size: 16px;
+            max-width: 1000px;
+            padding: 40 15px;
+            margin-left: 30px;
+            margin-left: -1em;
+            padding-top: 30px;
+            /* Set maximum width for the columns */
+         }
+
+         .entry2 {
+            flex: 1;
+            text-align: left;
+            font-size: 16px;
+            max-width: 1000px;
+            padding: 40 15px;
+            margin-left: 50px;
+            /* Set maximum width for the columns */
+         }
+
+
+
+         .blog_section {
+            text-align: center;
+            /* Center the content in the blog section */
+         }
+      </style>
+
+      <!-- Phase 1 start -->
+      <div class="blog_section layout_padding">
+         <div class="container">
+            <div class="row">
+               <div class="col-md-12">
+                  
+                  <h1 class="ongoing_study_PMRFtitle"><b>Stock Market Data</b></h1>
+
+                  
+        <div>
+         <h3><strong>NSE Companies</strong></h3>
+      </div>
+      
+      <p>
+         <ul>
+            <pre class="r-code">
+               
+import requests
+import pandas as pd
+import io
+import os
+from datetime import datetime
+
+stockFolder = '/Users/adarshk.verma/Downloads/stData/'
+
+
+# URL of the NSE list of companies
+nse_url = "https://nsearchives.nseindia.com/content/equities/EQUITY_L.csv"
+
+# Set headers to mimic a real browser
+headers = {
+    'User-Agent': 'Mozilla/5.0'
+}
+
+today_date = datetime.today().strftime('%Y-%m-%d')
+
+# Create a session
+s = requests.Session()
+s.headers.update(headers)
+
+# Send a GET request to download the CSV
+r = s.get(nse_url)
+s.close()
+
+# Load the CSV into a pandas dataframe
+allNSEstockMarketCompaniesIndia = pd.read_csv(io.BytesIO(r.content))
+
+today_date = datetime.today().strftime('%Y-%m-%d')
+save_path = os.path.join(stockFolder, f'allNSEstockMarketCompaniesIndia_{today_date}.csv')
+
+# Save the dataframe to a CSV file
+allNSEstockMarketCompaniesIndia.to_csv(save_path, index=False)
+
+print(f"All stock market (NSE) companies list saved to {save_path}")
+
+
+               
+            </pre>
+         </ul>
+      </p>
+      
+      <hr style="border-top: 1px solid #ccc; margin: 5px 0;">
+      
+      <h1 class="ongoing_study_PMRFtitle"></h1>
+      <div>
+         <h3><strong>All companies (NSE+BSE)</strong></h3>
+      </div>
+      
+      <p>
+         <ul>
+            <pre class="r-code">
+      
+               import os
+               from datetime import datetime
+               import pandas as pd
+               
+               stockFolder = '/Users/adarshk.verma/Downloads/stData/'
+               
+               
+               allStockMarketCompaniesIndia = pd.read_csv("https://api.kite.trade/instruments")
+               
+               # Define the file path for saving the CSV file in the stData folder
+               today_date = datetime.today().strftime('%Y-%m-%d')
+               save_path = os.path.join(stockFolder, f'allStockMarketCompaniesIndia_{today_date}.csv')
+               
+               allStockMarketCompaniesIndia.to_csv(save_path, index=False)
+               
+               print(f"All stock market (NSE+BSE) companies list saved to '{save_path}'")
+
+
+            </pre>
+         </ul>
+      </p>
+      
+      <hr style="border-top: 1px solid #ccc; margin: 5px 0;">
+      
+
+
+       
+      <h1 class="ongoing_study_PMRFtitle"></h1>
+      <div>
+         <h3><strong>NSE stock data</strong></h3>
+      </div>
+      
+      <p>
+         <ul>
+            <pre class="r-code">
+               # Specify the directory and stock name here
+               stock_name = "NIFTYBEES"  # Change this to the desired stock name
+               stockFolder = "/Users/adarshk.verma/Downloads/stData/"  # Change this to the desired directory
+               stockType = ".NS"       
+                           
+            </pre>
+       
+            <pre class="r-code">
+import yfinance as yf
+import pandas as pd
+import os
+from datetime import datetime
+
+
+today_date = datetime.today().strftime('%Y-%m-%d')
+
+# Get the stock data for the given ticker
+stock = yf.Ticker(stock_name+ stockType)
+
+# Get historical daily market data for the stock
+hist = stock.history(period="max")
+
+# Ensure data is not empty
+if not hist.empty:
+    # Calculate daily price change
+    hist['Daily Change'] = hist['Close'].diff()  # Difference between consecutive close prices
+
+    # Classify each day as an "up" or "down" day based on Daily Change
+    hist['Trend'] = hist['Daily Change'].apply(lambda x: 'Up' if x > 0 else 'Down' if x < 0 else 'No Change')
+
+    # Add columns to see high and low changes from the open price
+    hist['High Change'] = hist['High'] - hist['Open']
+    hist['Low Change'] = hist['Open'] - hist['Low']
+
+    # Display the DataFrame with Ups and Downs data
+    print(hist[['Open', 'High', 'Low', 'Close', 'Volume', 'Daily Change', 'Trend', 'High Change', 'Low Change']].head())
+
+    
+    # Save the DataFrame to a CSV file with the ticker symbol as part of the filename
+    save_path = f"{stockFolder}{stock_name}_data_{today_date}.csv"
+
+    hist.to_csv(save_path)
+    print(f"Data saved to '{save_path}'")
+else:
+    print(f"No historical data found for {stock_name}.")
+      
+                           
+            </pre>
+
+            <pre class="r-code">
+# import investpy
+# import pandas as pd
+# import os
+# from datetime import datetime
+
+# # Define stock name and country
+# stock_name = "ONGC"
+# country = "india"
+# today_date = datetime.today().strftime('%d/%m/%Y')  # Today's date in required format
+# start_date = "01/01/1950"  # Start date in required format
+
+# # Fetch data
+# try:
+#     stock_data = investpy.get_stock_historical_data(stock=stock_name,
+#                                                     country=country,
+#                                                     from_date=start_date,
+#                                                     to_date=today_date)
+    
+#     # Save as CSV
+#     stockFolder = "/Users/adarshk.verma/Downloads/stData/"  # Update to your folder path
+#     output_file = os.path.join(stockFolder, f"{stock_name}.csv")
+#     stock_data.to_csv(output_file)
+
+#     print(f"Data saved to {output_file}")
+
+# except Exception as e:
+#     print(f"Error fetching data: {e}")
+           
+            </pre>
+
+         </ul>
+      </p>
+      
+      <hr style="border-top: 1px solid #ccc; margin: 5px 0;">
+      
+      
+         
+      <hr style="border-top: 1px solid #ccc; margin: 5px 0;">
+      
+      <h1 class="ongoing_study_PMRFtitle"></h1>
+      <div>
+         <h3><strong>Plot (with best fit line)</strong></h3>
+      </div>
+      
+      <p>
+         <ul>
+            <pre class="r-code">
+      
+### Using mplfinance
+
+import pandas as pd
+import numpy as np
+import mplfinance as mpf
+from sklearn.linear_model import LinearRegression
+import os
+from datetime import datetime
+import matplotlib.pyplot as plt  # Importing matplotlib to display the figure
+
+today_date = datetime.today().strftime('%Y-%m-%d')
+
+plots_folder = os.path.join(stockFolder, 'plots')
+os.makedirs(plots_folder, exist_ok=True)
+
+
+latest_file = max([f for f in os.listdir(stockFolder) if f.startswith(f"{stock_name}_data_")], key=lambda f: datetime.strptime(f.split('_')[-1].split('.')[0], "%Y-%m-%d"))
+file_path = os.path.join(stockFolder, latest_file)
+
+# # Build the file path dynamically
+# file_path = f"{stockFolder}{stock_name}_ups_downs.csv"
+
+# Load the stock data
+df = pd.read_csv(file_path)
+
+# Ensure the 'Date' column is in datetime format
+df['Date'] = pd.to_datetime(df['Date'])
+
+# Set the 'Date' column as the index
+df.set_index('Date', inplace=True)
+
+# Ensure that the necessary columns are available: Open, High, Low, Close, Volume
+df = df[['Open', 'High', 'Low', 'Close', 'Volume']]
+
+# Prepare the data for Linear Regression (using 'Date' and 'Close' for prediction)
+# Convert Date to numerical values for regression
+df['Date_numeric'] = (df.index - df.index.min()) / np.timedelta64(1, 'D')
+
+# Linear regression model to predict the closing price
+X = df['Date_numeric'].values.reshape(-1, 1)  # Feature: Date_numeric
+y = df['Close'].values  # Target: Close price
+model = LinearRegression()
+model.fit(X, y)
+
+# Make predictions
+df['Predicted_Close'] = model.predict(X)
+
+# Plot the candlestick chart with predicted close prices
+apds = [mpf.make_addplot(df['Predicted_Close'], color='red', linestyle='--')]
+
+# Create the plot and save it directly as SVG
+save_path = os.path.join(plots_folder, f"{stock_name}_stockData_{today_date}.svg")
+
+# Save the plot
+mpf.plot(df, type='candle', volume=True, style='charles', 
+         title=f'{stock_name} Stock Price with Prediction', 
+         ylabel='Price', ylabel_lower='Volume', addplot=apds,
+         savefig=save_path)
+
+
+print(f"Figure saved to {save_path}")
+
+# Plot the candlestick chart with predicted line
+mpf.plot(df, type='candle', volume=True, style='charles', 
+         title=f'{stock_name} Stock Price Candlestick Chart', 
+         ylabel='Price', ylabel_lower='Volume', addplot=apds)
+
+            </pre>
+
+
+            <pre class="r-code">
+               ### Using plotly (for interactive plots)
+
+import pandas as pd
+import plotly.graph_objects as go
+import numpy as np
+import os
+from datetime import datetime
+from scipy.stats import linregress
+
+today_date = datetime.today().strftime('%Y-%m-%d')
+
+plots_folder = os.path.join(stockFolder, 'plots')
+os.makedirs(plots_folder, exist_ok=True)
+
+latest_file = max([f for f in os.listdir(stockFolder) if f.startswith(f"{stock_name}_data_")], key=lambda f: datetime.strptime(f.split('_')[-1].split('.')[0], "%Y-%m-%d"))
+file_path = os.path.join(stockFolder, latest_file)
+
+# # Build the file path dynamically
+# file_path = f"{stockFolder}{stock_name}_ups_downs.csv"
+
+# Read the saved CSV file
+df = pd.read_csv(file_path)
+
+# Ensure the 'Date' column is in datetime format
+df['Date'] = pd.to_datetime(df['Date'])
+
+# Convert 'Date' to numeric values for regression
+df['Date_numeric'] = (df['Date'] - df['Date'].min()) / np.timedelta64(1, 'D')
+
+# Linear regression (Simple linear regression)
+slope, intercept, r_value, p_value, std_err = linregress(df['Date_numeric'], df['Close'])
+regression_line = slope * df['Date_numeric'] + intercept
+
+# Polynomial regression (degree 3 for example)
+coeffs = np.polyfit(df['Date_numeric'], df['Close'], 3)
+poly = np.poly1d(coeffs)
+smoothed_y_poly = poly(df['Date_numeric'])
+
+# Create the figure using plotly.graph_objects
+fig = go.Figure()
+
+# Add candlesticks trace
+fig.add_trace(go.Candlestick(
+    x=df['Date'],
+    open=df['Open'],
+    high=df['High'],
+    low=df['Low'],
+    close=df['Close'],
+    name=f"{stock_name} Candlesticks"
+))
+
+# Add the linear regression line to the plot
+fig.add_trace(go.Scatter(
+    x=df['Date'],
+    y=regression_line,
+    mode='lines',
+    name='Linear Regression Line',
+    line=dict(color='orange', width=2, dash='dash')
+))
+
+# Add the polynomial smoothed line to the plot
+fig.add_trace(go.Scatter(
+    x=df['Date'],
+    y=smoothed_y_poly,
+    mode='lines',
+    name='Polynomial Smoothed Line',
+    line=dict(color='green', width=2, dash='dot')
+))
+
+# Update layout to make it interactive
+fig.update_layout(
+    title=f"{stock_name} Stock Price Candlestick Chart with Best Fit Line",
+    xaxis_title="Date",
+    yaxis_title="Price (INR)",
+    xaxis_rangeslider_visible=False,  # Remove range slider below the chart
+    template="plotly_dark",  # Optional: Change to a dark theme
+    xaxis_showgrid=True,
+    yaxis_showgrid=True,
+)
+
+
+save_path = os.path.join(plots_folder, f"{stock_name}_stockDataWithBestFit_{today_date}.svg")
+
+# Save the figure as a PNG file
+fig.write_image(save_path)
+
+print(f"Figure saved to {save_path}")
+
+# Show the interactive plot
+fig.show()
+
+
+            </pre>
+         </ul>
+      </p>
+      
+      <hr style="border-top: 1px solid #ccc; margin: 5px 0;">
+      
+    
+      <h1 class="ongoing_study_PMRFtitle"></h1>
+      <div>
+         <h3><strong>BSE stock data</strong></h3>
+      </div>
+      
+      <p>
+         <ul>
+            <pre class="r-code">
+      
+# # from IndianAPI
+# curl --request GET \
+#   --url 'https://stock.indianapi.in/historical_data?stock_name=INDSUCR&period=max&filter=default' \
+#   --header 'X-Api-Key: sk-live-83kmNCUFv4wWrEVpucFDUnDfxtg08ScCEli9rMpX'
+
+
+            </pre>
+
+            <pre class="r-code">
+      
+               import requests
+               import os
+               from datetime import datetime
+               
+               
+               today_date = datetime.today().strftime('%Y-%m-%d')
+               stock_name = "INDSUCR"  # Change this to the desired stock name
+               stockFolder = "/Users/adarshk.verma/Downloads/stData/"  # Change this to the desired directory
+               
+               url = "https://stock.indianapi.in/historical_data"
+               
+               querystring = {"stock_name":stock_name,"period":"max","filter":"default"}
+               
+               headers = {"X-Api-Key": "sk-live-83kmNCUFv4wWrEVpucFDUnDfxtg08ScCEli9rMpX"}
+               
+               response = requests.get(url, headers=headers, params=querystring)
+               
+               # print(response.json())
+               
+
+            </pre>
+
+            <pre class="r-code">
+      
+               # # Specify the output file for JSON
+               # output_json_file = os.path.join(stockFolder, f"data_{today_date}.json")
+               
+               # # Save the data as a JSON file
+               # with open(output_json_file, mode='w', encoding='utf-8') as json_file:
+               #     json.dump(data, json_file, ensure_ascii=False, indent=4)
+               
+               # print(f"Data successfully saved to {output_json_file}")              
+
+            </pre>
+
+            <pre class="r-code">
+      
+               data=response.json()
+
+               # Initialize an empty DataFrame for combining all metrics by date
+               combined_df = pd.DataFrame()
+               
+               # Process each dataset (metric)
+               for dataset in data['datasets']:
+                   metric_name = dataset['metric']
+                   values = dataset['values']
+                   
+                   # If values contain more than 2 items (like the 'delivery' field in 'Volume')
+                   if len(values[0]) > 2:
+                       # Separate the data into separate columns (Date, Value, Delivery)
+                       processed_values = []
+                       for entry in values:
+                           date = entry[0]
+                           value = entry[1]
+                           delivery = entry[2]['delivery']  # Extract 'delivery' from the nested dictionary
+                           processed_values.append([date, value, delivery])
+                       
+                       # Create a DataFrame for this metric with 'Date', 'Value', and 'Delivery' columns
+                       metric_df = pd.DataFrame(processed_values, columns=['Date', f'{metric_name}_Value', f'{metric_name}_Delivery'])
+                   else:
+                       # Create a DataFrame for a simple metric (no nested data)
+                       metric_df = pd.DataFrame(values, columns=['Date', f'{metric_name}_Value'])
+                   
+                   # Merge each metric's DataFrame on 'Date' to the combined DataFrame
+                   if combined_df.empty:
+                       combined_df = metric_df
+                   else:
+                       combined_df = pd.merge(combined_df, metric_df, on='Date', how='outer')
+               
+                       
+               # Display the final combined DataFrame
+               print(combined_df)
+               
+               save_path = f"{stockFolder}{stock_name}_data_{today_date}.csv"
+               combined_df.to_csv(save_path, index=False)
+            </pre>
+
+         </ul>
+      </p>
+      
+      <hr style="border-top: 1px solid #ccc; margin: 5px 0;">
+      
+
+
+      <h1 class="ongoing_study_PMRFtitle"></h1>
+      <div>
+         <h3><strong>Plot (with best fit line)</strong></h3>
+      </div>
+      
+      <p>
+         <ul>
+            <pre class="r-code">
+      
+               import matplotlib.pyplot as plt
+               import pandas as pd
+               import numpy as np
+               import os
+               from datetime import datetime
+               
+               # Assume the required variables are already set, e.g., combined_df, plots_folder, stock_name, today_date
+               
+               # Check if the 'Date' column is the index
+               if 'Date' in combined_df.index.names:
+                   # Reset the index to access 'Date' as a column if needed
+                   combined_df.reset_index(inplace=True)
+               
+               # Convert 'Date' to datetime format, set it as the index again, and sort by date
+               combined_df['Date'] = pd.to_datetime(combined_df['Date'])
+               combined_df.set_index('Date', inplace=True)
+               combined_df.sort_index(inplace=True)
+               
+               # Convert 'Price_Value' to numeric in case there are any non-numeric entries
+               combined_df['Price_Value'] = pd.to_numeric(combined_df['Price_Value'], errors='coerce')
+               
+               # Drop any rows with NaN in 'Price_Value' if necessary
+               combined_df.dropna(subset=['Price_Value'], inplace=True)
+               
+               # Plot 'Price_Value' over time with dates labeled at 3-month intervals
+               plt.figure(figsize=(10, 6))
+               plt.plot(combined_df.index, combined_df['Price_Value'], label='Price Value', color='black')
+               
+               # Set x-axis to display labels at 3-month intervals
+               plt.gca().xaxis.set_major_locator(plt.matplotlib.dates.MonthLocator(interval=3))
+               plt.gca().xaxis.set_major_formatter(plt.matplotlib.dates.DateFormatter('%Y-%m'))
+               
+               # Add X and Y axis lines
+               plt.axhline(0, color='black',linewidth=0.5)  # Y-axis line at y=0
+               plt.axvline(combined_df.index[0], color='black',linewidth=0.5)  # X-axis line at the first date
+               
+               # Linear Best Fit Line
+               x_vals = np.arange(len(combined_df))  # Generate x values
+               y_vals = combined_df['Price_Value'].values  # Get y values
+               
+               # Linear fit (1st degree polynomial)
+               linear_fit = np.polyfit(x_vals, y_vals, 1)
+               linear_line = np.poly1d(linear_fit)
+               plt.plot(combined_df.index, linear_line(x_vals), label='Linear Fit', color='red', linestyle='--')
+               
+               # Polynomial (2nd degree) Best Fit Line
+               polynomial_fit = np.polyfit(x_vals, y_vals, 2)
+               polynomial_line = np.poly1d(polynomial_fit)
+               plt.plot(combined_df.index, polynomial_line(x_vals), label='Polynomial Fit (2nd degree)', color='green', linestyle='-.')
+               
+               # Labeling
+               plt.title(f"{stock_name} Stock Price Chart with Best Fit Line")
+               plt.xlabel("Date")
+               plt.ylabel("Price Value")
+               plt.xticks(rotation=45)
+               
+               # Set y-axis to start from 20
+               # plt.ylim(bottom=20)
+               
+               # Display grid and legend
+               plt.grid()
+               plt.legend()
+               plt.tight_layout()
+               
+               # Save the plot
+               save_path = os.path.join(plots_folder, f"{stock_name}_stockDataWithBestFit_{today_date}.svg")
+               plt.savefig(save_path, format='svg')
+               
+               # Show plot
+               plt.show()
+               
+            </pre>
+         </ul>
+      </p>
+      
+      <hr style="border-top: 1px solid #ccc; margin: 5px 0;">
+      
+
+
+      <h1 class="ongoing_study_PMRFtitle"></h1>
+      <div>
+         <h3><strong>International Stocks</strong></h3>
+      </div>
+      
+      <p>
+         <ul>
+            <pre class="r-code">
+      
+               import pandas as pd
+               import pandas_datareader as pdr
+               ts = pdr.av.time_series.AVTimeSeriesReader('IBM', api_key='MCYCAXLLE2IRHHJR')
+               df = ts.read()
+               df.index = pd.to_datetime(df.index, format='%Y-%m-%d')
+               # plotting the opening and closing value 
+               df[['open','close']].plot()              
+               
+            </pre>
+         </ul>
+      </p>
+      
+      <hr style="border-top: 1px solid #ccc; margin: 5px 0;">
+      
+
+
+      <div>
+         <h1 class="ongoing_study_PMRFtitle"></h1>
+         <div class="blog_section layout_padding">
+            <div class="container">
+               <div class="row">
+                  <div class="col-md-12">
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      
+
+
+
+
+<!-- Custom CSS for styling -->
+<style>
+   .r-code {
+      background-color: #f4f4f4;
+      padding: 10px;
+      border-radius: 5px;
+      font-family: monospace;
+      font-size: 14px;
+      white-space: pre-wrap;
+      text-align: left; /* Align code to the left */
+   }
+
+   /* Styling for comments in R code */
+   .r-code span.comment {
+      color: green; /* Color for comments */
+   }
+
+   /* Match R comments and apply styles */
+   .r-code {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+   }
+
+   .r-code code {
+      display: inline;
+   }
+</style>
+
+
+
+      <!-- copyright section start -->
+      <style>
+         .footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background-color: #2e2e2e;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            /* Add padding for spacing */
+         }
+
+         .copyright_text {
+            margin: 0;
+            /* Remove default margin */
+         }
+      </style>
+
+      <div class="footer">
+         <div class="container">
+            <p class="copyright_text">Copyright © 2024. Adarsh K. Verma. All right reserved.</p>
+         </div>
+      </div>
+
+      <!-- copyright section end -->
+
+      <!-- copyright section end -->
+      <!-- Javascript files-->
+      <script src="js/jquery.min.js"></script>
+      <script src="js/popper.min.js"></script>
+      <script src="js/bootstrap.bundle.min.js"></script>
+      <script src="js/jquery-3.0.0.min.js"></script>
+      <script src="js/plugin.js"></script>
+      <!-- sidebar -->
+      <script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
+      <script src="js/custom.js"></script>
+      <!-- javascript -->
+</body>
+
+</html>

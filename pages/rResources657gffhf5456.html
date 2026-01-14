@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+   <!-- basic -->
+   <meta charset="utf-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <!-- mobile metas -->
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+   <!-- site metas -->
+   <title>Adarsh K. Verma</title>
+   <meta name="keywords" content="">
+   <meta name="description" content="">
+   <meta name="author" content="">
+   <!-- bootstrap css -->
+   <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+   <!-- style css -->
+   <link rel="stylesheet" type="text/css" href="css/style.css">
+   <!-- Responsive-->
+   <link rel="stylesheet" href="css/responsive.css">
+   <!-- fevicon -->
+   <!-- <link rel="icon" href="images/fevicon.png" type="image/gif" /> -->
+   <!-- font css -->
+   <link
+      href="https://fonts.googleapis.com/css2?family=Philosopher:ital,wght@0,400;0,700;1,400;1,700&family=Poppins:wght@400;700&display=swap"
+      rel="stylesheet">
+   <!-- Scrollbar Custom CSS -->
+   <link rel="stylesheet" href="css/jquery.mCustomScrollbar.min.css">
+   <!-- Tweaks for older IEs-->
+   <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+</head>
+
+<body>
+   <div class="header_section">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+         <!-- <a class="navbar-brand" href="index.html"><img src="images/logo.png"></a> -->
+         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+         </button>
+         <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+               <li class="nav-item active">
+                  <a class="nav-link" href="index.html">Home</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="academics.html">Academics</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="trainingAndExperience.html">Training & Experience</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="publications.html">Research & Publications</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="awardsAndPositions.html">Awards & Positions</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="pmrfProgress.html">PMRF Progress</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="contact.html">Contact</a>
+               </li>
+            </ul>
+
+         </div>
+      </nav>
+
+
+
+      <!-- ICONS-->
+
+      <style>
+         /* Define your fixed icons */
+         .fixed-icons {
+            position: fixed;
+            top: 80%;
+            right: 20px;
+            transform: translateY(-50%);
+            z-index: 999;
+            /* Ensure icons appear above other elements */
+         }
+
+         /* Style your icons as needed */
+         .icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            cursor: pointer;
+         }
+      </style>
+      <!-- icons -->
+      <div class="like-icon fixed-icons">
+
+         <a href="https://orcid.org/0000-0003-0249-6989" target="_blank" class=" icon"
+            style="font-size:48px;text-decoration:none;">
+            <img src="images/icon1.png" alt="ORCID" style="color:#fff;">
+         </a>
+
+         <a href="https://www.researchgate.net/profile/Adarsh-Verma-7" class="bg-dark icon" target="_blank"
+            style="background-color:#000;font-size:48px;text-decoration:none;">
+            <img src="images/icon2.png" alt="ResearchGate" style="color:#fff;">
+         </a>
+
+         <a href="https://www.linkedin.com/in/adarsh-k-verma-a05315211/" target="_blank" class=" icon"
+            style="font-size:48px;text-decoration:none;">
+            <img src="images/icon3.png" alt="LinkedIN" style="color:#fff;">
+         </a>
+
+      </div>
+
+
+
+
+
+
+
+
+
+      <style>
+         .two-column-list {
+            display: flex;
+            flex-direction: column;
+            list-style-type: none;
+            padding: 0;
+            margin: auto;
+            /* Add this line to center the element */
+            max-width: 950px;
+            /* Adjust the max-width as needed */
+         }
+
+
+         .row {
+            display: flex;
+            flex-direction: row;
+            padding: 10px 0;
+            /* Increase vertical padding between rows */
+         }
+
+         .ongoing_study {
+            width: 100%;
+            font-size: 40px;
+            color: #2b2b2a;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+         }
+
+         .ongoing_study_PMRFtitle {
+            width: 100%;
+            font-size: 28px;
+            color: #2b2b2a;
+            text-align: center;
+            margin-bottom: 85px;
+            padding-top: 40px;
+         }
+
+         .entry1 {
+            flex: 1;
+            text-align: left;
+            font-size: 16px;
+            max-width: 1000px;
+            padding: 40 15px;
+            margin-left: 30px;
+            margin-left: -1em;
+            padding-top: 30px;
+            /* Set maximum width for the columns */
+         }
+
+         .entry2 {
+            flex: 1;
+            text-align: left;
+            font-size: 16px;
+            max-width: 1000px;
+            padding: 40 15px;
+            margin-left: 50px;
+            /* Set maximum width for the columns */
+         }
+
+
+
+         .blog_section {
+            text-align: center;
+            /* Center the content in the blog section */
+         }
+      </style>
+
+      <!-- Phase 1 start -->
+      <div class="blog_section layout_padding">
+         <div class="container">
+            <div class="row">
+               <div class="col-md-12">
+                  
+                  <h1 class="ongoing_study_PMRFtitle"><b>R Resources</b></h1>
+
+                  <div class="text-center">
+                     <img src="./images/barplotWithSignificance.jpeg" width="75%" style="border: 1px solid #333;" alt="Bar plot with significance level">
+                     <div>
+                        <h3><strong>Bar plot with significance level</strong></h3>
+                     </div>
+                  </div>
+
+                  <p>
+                  <ul>
+                     <li class="entry1"><b>Required data format</b></li>
+                     <!-- Table with Data -->
+      <table border="1" cellpadding="3" cellspacing="0" style="font-size: 12px; width: 80%; margin: auto;">
+         <thead>
+            <tr>
+               <th>Selected Comparison</th>
+               <th>AlcAvoi_Mean</th>
+               <th>AlcAvoi_SE</th>
+               <th>AlcAppr_Mean</th>
+               <th>AlcAppr_SE</th>
+               <th>NonAlc_Mean</th>
+               <th>NonAlc_SE</th>
+               <th>AlcAvoi_vs_AlcAppr_p</th>
+               <th>NonAlc_vs_AlcAppr_p</th>
+               <th>NonAlc_vs_AlcAvoi_p</th>
+            </tr>
+         </thead>
+         <tbody>
+            <tr>
+               <td>C3 LRP mean_amplitude</td>
+               <td>-0.499</td>
+               <td>0.241</td>
+               <td>-0.528</td>
+               <td>0.217</td>
+               <td>-0.649</td>
+               <td>0.245</td>
+               <td>0.996</td>
+               <td>0.928</td>
+               <td>0.895</td>
+            </tr>
+            <tr>
+               <td>C3 N400 mean_amplitude</td>
+               <td>-1.42</td>
+               <td>0.403</td>
+               <td>-2.83</td>
+               <td>0.669</td>
+               <td>-1.94</td>
+               <td>0.374</td>
+               <td>0.135</td>
+               <td>0.427</td>
+               <td>0.748</td>
+            </tr>
+            <tr>
+               <td>F3 FN400 mean_amplitude</td>
+               <td>-2.53</td>
+               <td>0.512</td>
+               <td>-2.33</td>
+               <td>0.593</td>
+               <td>-2.93</td>
+               <td>0.591</td>
+               <td>0.966</td>
+               <td>0.732</td>
+               <td>0.873</td>
+            </tr>
+            <tr>
+               <td>F4 FN400 mean_amplitude</td>
+               <td>-2.98</td>
+               <td>0.428</td>
+               <td>-1.07</td>
+               <td>0.365</td>
+               <td>-3.34</td>
+               <td>0.581</td>
+               <td>0.0137</td>
+               <td>0.00283</td>
+               <td>0.848</td>
+            </tr>
+            <tr>
+               <td>Fz FN400 mean_amplitude</td>
+               <td>-3.04</td>
+               <td>0.718</td>
+               <td>-0.725</td>
+               <td>0.509</td>
+               <td>-4.28</td>
+               <td>0.686</td>
+               <td>0.0364</td>
+               <td>0.000637</td>
+               <td>0.369</td>
+            </tr>
+            <tr>
+               <td>Pz P3b mean_amplitude</td>
+               <td>1.54</td>
+               <td>0.530</td>
+               <td>-0.298</td>
+               <td>0.392</td>
+               <td>2.57</td>
+               <td>0.610</td>
+               <td>0.0404</td>
+               <td>0.000635</td>
+               <td>0.346</td>
+            </tr>
+         </tbody>
+      </table>
+      <ul>
+         <li class="entry1"><b>R Code</b></li>
+         
+         <!-- R Code block -->
+            <pre class="r-code">
+               library(ggsignif)
+               library(dplyr)
+               library(ggplot2)
+               library(lemon)
+               library(patchwork)
+
+               plot_list <- list()
+               count<-0
+               for (rowNum in 1:dim(reshaped_data)[1]){
+                 
+                 descrStr <- reshaped_data$selectedComparison[rowNum]
+                 split_str <- strsplit(descrStr, " ")[[1]]
+                 chan <- split_str[1]
+                 erp <- split_str[2]
+                 
+               Group <- c("AlcAvoi", "AlcAppr", "NonAlc")
+               DvValue <- c(reshaped_data$AlcAvoi_Mean[rowNum], reshaped_data$AlcAppr_Mean[rowNum], 
+                           reshaped_data$NonAlc_Mean[rowNum])
+               SE <- c(reshaped_data$AlcAvoi_SE[rowNum], reshaped_data$AlcAppr_SE[rowNum], 
+                           reshaped_data$NonAlc_SE[rowNum])
+               sigVal <- c(reshaped_data$AlcAvoi_vs_AlcAppr_p[rowNum], 
+                           reshaped_data$NonAlc_vs_AlcAppr_p[rowNum], 
+                           reshaped_data$NonAlc_vs_AlcAvoi_p[rowNum])
+               sigVal <- round(sigVal, 3)
+               sigLabel <- ifelse(sigVal <= 0.001, "***",
+                                     ifelse(sigVal < 0.01, "**",
+                                            ifelse(sigVal < 0.05, "*", "")))
+               data <- data.frame(Group, DvValue, SE, sigVal, sigLabel)
+               
+                 Q <- ggplot(data, aes(x = Group, y = DvValue, fill = Group)) +
+                   geom_bar(stat = "identity", width = 0.7, color = "black") +
+                   geom_errorbar(aes(ymin = DvValue - SE, ymax = DvValue + SE), width = 0.2, color = "black") +
+                   geom_signif(comparisons = list(c("AlcAvoi", "AlcAppr")), 
+                               annotations = paste(as.character(data$sigVal[1]), data$sigLabel[1]), 
+                               y_position = 4.5, tip_length = 0.03, textsize = 3) +
+                   geom_signif(comparisons = list(c("NonAlc", "AlcAppr")), 
+                               annotations = paste( as.character(data$sigVal[2]), data$sigLabel[2]), 
+                               y_position = 5.8, tip_length = 0.03, textsize = 3) +
+                   geom_signif(comparisons = list(c("NonAlc", "AlcAvoi")), 
+                               annotations = paste(as.character(data$sigVal[3]), data$sigLabel[3]), 
+                               y_position = 5.1, tip_length = 0.03, textsize = 3) +
+                   geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
+                   ggtitle(paste(chan, erp)) +
+                   labs(y = "Mean Amplitude (µV)", x = NULL) +
+                   scale_fill_manual(values = c("gray10", "gray50", "gray95")) +
+                   # scale_fill_manual(values = c("deepskyblue", "sienna1", "gold1")) +
+                   scale_y_continuous(breaks = seq(-6, 6, by = 3), limits = c(-6, 6.5)) +
+                   
+                   # Clean and professional theme with Times New Roman font
+                   theme_classic(base_size = 14) +
+                   theme(
+                     text = element_text(family = "Times New Roman"),  # Set font to Times New Roman
+                     plot.title = element_text(hjust = 0.5, size = 12, face = "bold"),
+                     axis.text.x = element_text(size = 12,angle = 45, hjust = 1),
+                     axis.text.y = element_text(size = 12),
+                     axis.title.y = element_text(size = 12),
+                     legend.position = "none"  # Remove legend if redundant
+                   ) +
+                   coord_capped_cart(left = "both", bottom = "both") 
+                 
+                 count=count+1
+                 plot_list[[count]] <- Q
+                 
+               }
+               
+               (plot_list[[4]] + plot_list[[5]] + plot_list[[6]])
+            </pre>
+      </ul>
+
+
+
+      
+      <hr style="border-top: 1px solid #ccc; margin: 5px 0;">
+      
+      <div>
+         <h1 class="ongoing_study_PMRFtitle"></h1>
+         <div>
+            <h3><strong>Custom R Themes</strong></h3>
+         </div>
+      </div>
+      
+      <p>
+         <ul>
+            
+            <!-- R Code block -->
+            <pre class="r-code">
+               plot.theme = function(){theme(axis.line = element_line(),
+                  # plot.title = element_text(size=14,hjust = 0.5),
+                  # axis.title.y = element_text(size=16,vjust=0.5,hjust=0.5, margin = margin(t = 0, r = 15, b = 0, l = 0)),
+                  # 
+                  # axis.title.x=element_text(size=16,vjust=0.5,hjust=0.5,margin = margin(t = 5, r = 0, b = 0, l = 0)),
+                  # axis.ticks.length=unit(.2, "cm"),
+                  # axis.text.x = element_text(size=14,color="#000000ff"),
+                  # axis.text.y = element_text(size=14,color="#000000ff"),
+                  panel.grid.major.x = element_blank(),
+                  panel.grid.minor.x = element_blank(),
+                  panel.grid.major.y = element_blank(),
+                  panel.grid.minor.y = element_blank(),
+                  panel.background = element_blank(),
+                  #strip.background=element_rect(fill="grey92"),
+                  #strip.text.x = element_text(size=14),
+                  #strip.switch.pad.grid = unit(0, "cm"),
+                  plot.margin=unit(c(0.3,0.3,0.3,0.3), "cm"))}
+               
+               plot.theme2 <- function() {theme(axis.line = element_line(),
+                     # plot.title = element_text(size=14,hjust = 0.5),
+                     # axis.title.y = element_text(size=16,vjust=0.5,hjust=0.5, margin = margin(t = 0, r = 15, b = 0, l = 0)),
+                     # 
+                     # axis.title.x=element_text(size=16,vjust=0.5,hjust=0.5,margin = margin(t = 5, r = 0, b = 0, l = 0)),
+                     # axis.ticks.length=unit(.2, "cm"),
+                     # axis.text.x = element_text(size=14,color="#000000ff"),
+                     # axis.text.y = element_text(size=14,color="#000000ff"),
+                     plot.title = element_text(
+                       # margin = margin(0, 0, 35, 0),
+                       size = 10,  # Set title font size
+                       family = "Times New Roman",  # Set title font family
+                       hjust = 0.5
+                     ),
+                     legend.position = c(.975, 1.1),  # adjust legend position
+                     legend.justification = c("right", "top"),
+                     legend.box.just = "right",
+                     legend.margin = margin(0, 0, 0, 0),
+                     legend.title = element_blank(),
+                     # legend.title = element_text(margin = margin(0, 0, 10, 0)),  # Adjust top margin of the legend title
+                     legend.key = element_rect(fill = NA, colour = NA, size = 0.25),
+                     axis.text = element_text(
+                       size = 10,  # Set axis tick text size
+                       family = "Times New Roman"  # Set axis tick font family
+                     ),
+                     axis.title = element_text(
+                       size = 10,  # Set axis title font size
+                       family = "Times New Roman"  # Set axis title font family
+                     ),
+                     axis.text.x = element_text(size = 10),  # Set x-axis label font size
+                     axis.text.y = element_text(size = 10),  # Set y-axis label font size
+                     axis.title.x = element_text(size = 10),  # Set x-axis title font size
+                     axis.title.y = element_text(size = 10),  # Set y-axis title font size
+                     
+                     panel.grid.major.x = element_blank(),
+                     panel.grid.minor.x = element_blank(),
+                     panel.grid.major.y = element_blank(),
+                     panel.grid.minor.y = element_blank(),
+                     panel.background = element_blank(),
+                     #strip.background=element_rect(fill="grey92"),
+                     #strip.text.x = element_text(size=14),
+                     #strip.switch.pad.grid = unit(0, "cm"),
+                     plot.margin=unit(c(0.3,0.3,0.3,0.3), "cm"))}
+               
+               
+               plot.theme3 <- function() {theme(axis.line = element_line(),
+                     # plot.title = element_text(size=14,hjust = 0.5),
+                     # axis.title.y = element_text(size=16,vjust=0.5,hjust=0.5, margin = margin(t = 0, r = 15, b = 0, l = 0)),
+                     # 
+                     # axis.title.x=element_text(size=16,vjust=0.5,hjust=0.5,margin = margin(t = 5, r = 0, b = 0, l = 0)),
+                     # axis.ticks.length=unit(.2, "cm"),
+                     # axis.text.x = element_text(size=14,color="#000000ff"),
+                     # axis.text.y = element_text(size=14,color="#000000ff"),
+                     plot.title = element_text(
+                       # margin = margin(0, 0, 35, 0),
+                       size = 10,  # Set title font size
+                       family = "Times New Roman",  # Set title font family
+                       hjust = 0.5
+                     ),
+                     legend.position = c(.975, 1.1),  # adjust legend position
+                     legend.justification = c("right", "top"),
+                     legend.box.just = "right",
+                     legend.margin = margin(0, 0, 0, 0),
+                     legend.title = element_blank(),
+                     # legend.title = element_text(margin = margin(0, 0, 10, 0)),  # Adjust top margin of the legend title
+                     legend.key = element_rect(fill = NA, colour = NA, size = 0.25),
+                     axis.text = element_text(
+                       size = 16,  # Set axis tick text size
+                       family = "Times New Roman"  # Set axis tick font family
+                     ),
+                     axis.title = element_text(
+                       size = 16,  # Set axis title font size
+                       family = "Times New Roman"  # Set axis title font family
+                     ),
+                     axis.text.x = element_text(size = 20),  # Set x-axis label font size
+                     axis.text.y = element_text(size = 20),  # Set y-axis label font size
+                     axis.title.x = element_text(size = 20),  # Set x-axis title font size
+                     axis.title.y = element_text(size = 20),  # Set y-axis title font size
+                     
+                     panel.grid.major.x = element_blank(),
+                     panel.grid.minor.x = element_blank(),
+                     panel.grid.major.y = element_blank(),
+                     panel.grid.minor.y = element_blank(),
+                     panel.background = element_blank(),
+                     #strip.background=element_rect(fill="grey92"),
+                     #strip.text.x = element_text(size=14),
+                     #strip.switch.pad.grid = unit(0, "cm"),
+                     plot.margin=unit(c(1.3,0.3,0.3,0.3), "cm"))}
+               
+            </pre>
+         </ul>
+      </p>
+      
+      <hr style="border-top: 1px solid #ccc; margin: 5px 0;">
+      
+      <h1 class="ongoing_study_PMRFtitle"></h1>
+      <div>
+         <h3><strong>Effect Sizes</strong></h3>
+      </div>
+      
+      <p>
+         <ul>
+            <li class="entry1"><b>Eta Squared and Omega Squared</b></li>
+            <!-- R Code block -->
+            <pre class="r-code">
+               etaRes <- eta_squared(plannedContrastModelAmp,partial = FALSE,alternative = "two.sided")
+               eta_values <- as.data.frame(etaRes)
+               eta_interpretation <- interpret_eta_squared(eta_values$Eta2[1], rules = "field2013")
+               eta_combined <- cbind(eta_values, eta_interpretation = eta_interpretation)
+               
+               omegaRes <- omega_squared(plannedContrastModelAmp,partial = FALSE,alternative = "two.sided")
+               omega_values <- as.data.frame(omegaRes)
+               omega_interpretation <- interpret_omega_squared(omega_values$Omega2[1], rules = "field2013")
+               omega_combined <- cbind(omega_values, omega_interpretation = omega_interpretation)
+               
+            </pre>
+         </ul>
+      </p>
+
+      <p>
+         <ul>
+            <li class="entry1"><b>Cohen's d</b></li>
+            <!-- R Code block -->
+            <pre class="r-code">
+      compute_cohens_d_AlcStimGrpDif <- function(group1_data, group2_data, groups) {
+         cohens_d_result <- cohen.d(group1_data, group2_data)
+      
+         # Compute stats for both groups
+         group1_n <- sum(!is.na(group1_data))
+         group1_mean <- mean(group1_data, na.rm = TRUE)
+         group1_sd <- sd(group1_data, na.rm = TRUE)
+         group1_se <- group1_sd / sqrt(group1_n)
+      
+         group2_n <- sum(!is.na(group2_data))
+         group2_mean <- mean(group2_data, na.rm = TRUE)
+         group2_sd <- sd(group2_data, na.rm = TRUE)
+         group2_se <- group2_sd / sqrt(group2_n)
+      
+         return(data.frame(
+            stim = "Alcohol",
+            grp1 = groups[1],
+            grp2 = groups[2],
+            n1 = group1_n,
+            Mean1 = group1_mean,
+            SD1 = group1_sd,
+            SE1 = group1_se,
+            n2 = group2_n,
+            Mean2 = group2_mean,
+            SD2 = group2_sd,
+            SE2 = group2_se,
+            Cohen_D = cohens_d_result$estimate,
+            Lower_CI = cohens_d_result$conf.int[1],
+            Upper_CI = cohens_d_result$conf.int[2],
+            Interpretation = cohens_d_result$magnitude
+         ))
+      }
+            </pre>
+         </ul>
+      </p>
+      
+      <hr style="border-top: 1px solid #ccc; margin: 5px 0;">
+      
+      <h1 class="ongoing_study_PMRFtitle"></h1>
+      <div>
+         <h3><strong>R Colors</strong></h3>
+      </div>
+      
+      <p>
+         <ul>
+            <embed src="./otherFiles/colorPaletteCheatsheet.pdf" width="100%" height="600px" type="application/pdf">
+         </ul>
+      </p>
+      
+      <hr style="border-top: 1px solid #ccc; margin: 5px 0;">
+      
+      <div>
+         <h1 class="ongoing_study_PMRFtitle"></h1>
+         <div class="blog_section layout_padding">
+            <div class="container">
+               <div class="row">
+                  <div class="col-md-12">
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      
+
+
+
+
+<!-- Custom CSS for styling -->
+<style>
+   .r-code {
+      background-color: #f4f4f4;
+      padding: 10px;
+      border-radius: 5px;
+      font-family: monospace;
+      font-size: 14px;
+      white-space: pre-wrap;
+      text-align: left; /* Align code to the left */
+   }
+
+   /* Styling for comments in R code */
+   .r-code span.comment {
+      color: green; /* Color for comments */
+   }
+
+   /* Match R comments and apply styles */
+   .r-code {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+   }
+
+   .r-code code {
+      display: inline;
+   }
+</style>
+
+
+
+      <!-- copyright section start -->
+      <style>
+         .footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background-color: #2e2e2e;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            /* Add padding for spacing */
+         }
+
+         .copyright_text {
+            margin: 0;
+            /* Remove default margin */
+         }
+      </style>
+
+      <div class="footer">
+         <div class="container">
+            <p class="copyright_text">Copyright © 2024. Adarsh K. Verma. All right reserved.</p>
+         </div>
+      </div>
+
+      <!-- copyright section end -->
+
+      <!-- copyright section end -->
+      <!-- Javascript files-->
+      <script src="js/jquery.min.js"></script>
+      <script src="js/popper.min.js"></script>
+      <script src="js/bootstrap.bundle.min.js"></script>
+      <script src="js/jquery-3.0.0.min.js"></script>
+      <script src="js/plugin.js"></script>
+      <!-- sidebar -->
+      <script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
+      <script src="js/custom.js"></script>
+      <!-- javascript -->
+</body>
+
+</html>

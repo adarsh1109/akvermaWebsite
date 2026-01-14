@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>statsTools</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            background-color: #f4f4f4;
+        }
+        .sidebar {
+    width: 200px;
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    height: 100vh; /* Full height of the viewport */
+    position: fixed; /* Fix the sidebar in place */
+    overflow-y: auto; /* Allow scrolling within the sidebar if needed */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.main-content {
+    margin-left: 240px; /* Add margin to prevent overlap with the sidebar */
+    padding: 20px;
+    overflow-y: auto; /* Allow scrolling in the main content */
+}
+        .sidebar h2 {
+            margin-top: 0;
+            font-size: 20px;
+            text-align: center;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            margin: 15px 0;
+        }
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        .sidebar ul li a:hover {
+            text-decoration: underline;
+        }
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .calculator, .effect-size, .correction-section, .stat-test-section, .plot-section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            margin: 20px 0;
+            width: 500px;
+            text-align: center;
+        }
+        h2 {
+            color: #333;
+        }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 10px 0px;
+            font-size: 16px;
+            text-align: right;
+            margin-bottom: 10px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+            opacity: 0.8;
+        }
+        .df-inputs {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 10px;
+            opacity: 1;
+        }
+        .df-inputs input {
+            width: 47%;
+        }
+        .input-title {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 5px;
+            text-align: left;
+        }
+        .calculator-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+}
+
+.number-btn {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.function-btn {
+    background-color: #d3d3d3;
+    color: #333;
+}
+
+.equal-btn {
+    background-color: #28a745;
+    color: white;
+}
+
+        button {
+            width: 110px;
+            height: 40px;
+            font-size: 16px;
+            margin: 5px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #28a745;
+            color: white;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+        canvas {
+            max-width: 100%;
+            margin-top: 20px;
+        }
+        .calculator-display {
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* Space between input and output boxes */
+    margin-bottom: 20px;
+    border: 2px solid #ccc; /* Border around the merged box */
+    border-radius: 5px;
+    padding: 10px; /* Padding inside the merged box */
+}
+
+.calculator-display input {
+    width: 100%;
+    padding: 10px;
+    font-size: 20px;
+    text-align: right;
+    border: none; /* Remove individual borders */
+    outline: none;
+    background: transparent; /* Transparent background */
+    opacity: 0.8;
+}
+
+#input-expression {
+    font-size: 22px; /* Smaller font for input */
+    color: #555; /* Light gray for input */
+}
+
+#display {
+    font-size: 24px; /* Larger font for output */
+    color: #333; /* Darker color for output */
+}
+/* Style for sub-subheadings (games) */
+.sidebar ul li ul li a {
+    font-size: 15px; /* Adjust the font size as needed */
+    color: #c0c4c1; /* Optional: Adjust the color for sub-subheadings */
+}
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+       
+    <!-- Sidebar for Navigation -->
+    <div class="sidebar">
+        <h2>Menu</h2>
+        <ul>
+            <li>
+                <a><b>Statistical Tools</b> </a>
+                <!-- Add games as sub-subheadings -->
+                <ul>
+                    <li><a href="#calculator">Calculator</a></li>
+            <li><a href="#partial-eta">Partial Eta Squared</a></li>
+            <li><a href="#omega">Omega Squared</a></li>
+            <li><a href="#cohens-d">Cohen's d</a></li>
+            <li><a href="#bh-correction">BH Correction</a></li>
+            <li><a href="#bonferroni">Bonferroni Correction</a></li>
+            <li><a href="#correlations">Correlations</a></li>
+            <li><a href="#regression">Regression</a></li>
+            <li><a href="#frequency-plot">Frequency Plot</a></li>
+                </ul>
+            </li>
+
+            <li><a> ______________ </a></li>
+
+
+            <!-- Add "Fun Time!" as a subheading -->
+            <li>
+                <a href="#fun-time"><b>Fun Time!</b> </a>
+                <!-- Add games as sub-subheadings -->
+                <ul>
+                    <li><a href="accelerate.html">Accelerate</a></li>
+                    <li><a href="block-dude.html">Block Dude</a></li>
+                    <li><a href="pong.html">Pong</a></li>
+                    <li><a href="snake.html">Snake</a></li>
+                    <li><a href="sokoban.html">Sokoban</a></li>
+                    <li><a href="tetris.html">Tetris</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <h1>Statistical Tools</h1>
+
+        <div class="container">
+
+            <!-- Basic Calculator -->
+            <div class="calculator" id="calculator">
+                <h2>Calculator</h2>
+                <div class="calculator-display">
+                    <input type="text" id="input-expression" readonly placeholder="Input Expression">
+                    <input type="text" id="display" readonly placeholder="Result">
+                </div>
+                <div class="calculator-buttons">
+                    <button class="function-btn" onclick="clearDisplay()">C</button>
+                    <button class="function-btn" onclick="appendValue('%')">%</button>
+                    <button class="function-btn" onclick="appendValue('^')">^</button>
+                    <button class="function-btn" onclick="backspace()">←</button>
+
+
+                    
+                
+                    <button class="number-btn" onclick="appendValue('7')">7</button>
+                    <button class="number-btn" onclick="appendValue('8')">8</button>
+                    <button class="number-btn" onclick="appendValue('9')">9</button>
+                    <button class="function-btn" onclick="appendValue('+')">+</button>
+                
+                    <button class="number-btn" onclick="appendValue('4')">4</button>
+                    <button class="number-btn" onclick="appendValue('5')">5</button>
+                    <button class="number-btn" onclick="appendValue('6')">6</button>
+                    <button class="function-btn" onclick="appendValue('-')">-</button>
+                
+                    <button class="number-btn" onclick="appendValue('1')">1</button>
+                    <button class="number-btn" onclick="appendValue('2')">2</button>
+                    <button class="number-btn" onclick="appendValue('3')">3</button>
+                    <button class="function-btn" onclick="appendValue('*')">*</button>
+                
+                    <button class="number-btn" onclick="appendValue('0')">0</button>
+                    <button class="number-btn" onclick="appendValue('.')">.</button>
+                    <button class="equal-btn" onclick="calculate()">=</button>
+                    <button class="function-btn" onclick="appendValue('/')">/</button>
+                
+                    <button class="function-btn" onclick="square()">x²</button>
+                    <button class="function-btn" onclick="sqrt()">√</button>
+                </div>
+            </div>
+
+            <!-- Partial Eta Squared Calculator -->
+            <div class="effect-size" id="partial-eta">
+                <h2>Partial Eta Squared (η²ₚ)</h2>
+                <div class="df-inputs">
+                    <div class="input-title">df_effect</div>
+                    <div class="input-title">df_error</div>
+                </div>
+                <div class="df-inputs">
+                    <input type="number" id="df_eta" placeholder="Enter df_effect">
+                    <input type="number" id="df_error_eta" placeholder="Enter df_error">
+                </div>
+                <div class="input-title">F-value</div>
+                <input type="number" id="F_eta" placeholder="Enter F-value">
+                <br>
+                <button onclick="calculatePartialEta()">Calculate</button>
+                <p id="eta_result"></p>
+            </div>
+
+            <!-- Omega Squared Calculator -->
+            <div class="effect-size" id="omega">
+                <h2>Omega Squared (ω²)</h2>
+                <div class="df-inputs">
+                    <div class="input-title">df_effect</div>
+                    <div class="input-title">df_error</div>
+                </div>
+                <div class="df-inputs">
+                    <input type="number" id="df_omega" placeholder="Enter df_effect">
+                    <input type="number" id="df_error_omega" placeholder="Enter df_error">
+                </div>
+                <div class="input-title">F-value</div>
+                <input type="number" id="F_omega" placeholder="Enter F-value">
+                <br>
+                <button onclick="calculateOmega()">Calculate</button>
+                <p id="omega_result"></p>
+            </div>
+
+
+            <!-- Cohen's d Calculation -->
+            <div class="stat-test-section" id="cohens-d">
+                <h2>Cohen's d</h2>
+                <div class="input-title">Enter data (comma-separated):</div>
+                <input type="text" id="cohen-data1" placeholder="Data 1 (e.g., 45, 50, 55)">
+                <input type="text" id="cohen-data2" placeholder="Data 2 (e.g., 50, 52, 58)">
+                <br>
+                <button onclick="calculateCohensD('independent')">Independent</button>
+                <button onclick="calculateCohensD('paired')">Paired</button>
+                <p id="cohen_result"></p>
+            </div>
+
+
+
+            <!-- Benjamini-Hochberg (BH) Correction -->
+            <div class="correction-section" id="bh-correction">
+                <h2>Benjamini-Hochberg (BH) Correction</h2>
+                <div class="input-title">Enter p-values (comma-separated):</div>
+                <input type="text" id="bh-p-values" placeholder="e.g., 0.01, 0.04, 0.03, 0.05">
+                <br>
+                <button onclick="calculateBH()">Calculate</button>
+                <p id="bh_result"></p>
+            </div>
+
+            <!-- Bonferroni Correction -->
+            <div class="correction-section" id="bonferroni">
+                <h2>Bonferroni Correction</h2>
+                <div class="input-title">Enter p-values (comma-separated):</div>
+                <input type="text" id="bonferroni-p-values" placeholder="e.g., 0.01, 0.04, 0.03, 0.05">
+                <br>
+                <button onclick="calculateBonferroni()">Calculate</button>
+                <p id="bonferroni_result"></p>
+            </div>
+
+            
+
+            <!-- Correlations -->
+            <div class="stat-test-section" id="correlations">
+                <h2>Correlations (r, ρ, τ)</h2>
+                <div class="input-title">Enter data (comma-separated):</div>
+                <input type="text" id="corr-data1" placeholder="Variable 1 (e.g., 1, 2, 3)">
+                <input type="text" id="corr-data2" placeholder="Variable 2 (e.g., 4, 5, 6)">
+                <br>
+                <button onclick="calculateCorrelation('pearson')">Pearson</button>
+                <button onclick="calculateCorrelation('spearman')">Spearman</button>
+                <button onclick="calculateCorrelation('kendall')">Kendall</button>
+                <p id="correlation_result"></p>
+            </div>
+
+            <!-- Regression -->
+            <div class="stat-test-section" id="regression">
+                <h2>Regression</h2>
+                <div class="input-title">Enter data (comma-separated):</div>
+                <input type="text" id="regression-x" placeholder="X values (e.g., 1, 2, 3)">
+                <input type="text" id="regression-y" placeholder="Y values (e.g., 4, 5, 6)">
+                <br>
+                <button onclick="calculateRegression('simple')">Simple Regression</button>
+                <p id="regression_result"></p>
+            </div>
+
+            <!-- Frequency Plot -->
+            <div class="plot-section" id="frequency-plot">
+                <h2>Frequency Plot</h2>
+                <div class="input-title">Enter data (comma-separated):</div>
+                <input type="text" id="frequency-data" placeholder="e.g., 1, 2, 3, 4, 5">
+                <br>
+                <button onclick="plotFrequency()">Plot</button>
+                <canvas id="frequencyCanvas"></canvas>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+    // Keyboard Support for Calculator
+                document.addEventListener("keydown", function(event) {
+            const key = event.key;
+            if (!isNaN(key) || ["+", "-", "*", "/", ".", "Enter", "Backspace", "^"].includes(key)) {
+                if (key === "Enter") {
+                    calculate();
+                } else if (key === "Backspace") {
+                    backspace();
+                } else {
+                    appendValue(key);
+                }
+            }
+        });
+
+        function appendValue(value) {
+            document.getElementById("input-expression").value += value;
+        }
+
+        function clearDisplay() {
+            document.getElementById("input-expression").value = "";
+            document.getElementById("display").value = "";
+        }
+
+        function backspace() {
+            let current = document.getElementById("input-expression").value;
+            document.getElementById("input-expression").value = current.slice(0, -1);
+        }
+
+        function sqrt() {
+            let current = document.getElementById("input-expression").value;
+            document.getElementById("input-expression").value = `sqrt(${current})`;
+        }
+
+        function square() {
+            let current = document.getElementById("input-expression").value;
+            document.getElementById("input-expression").value = `(${current})^2`;
+        }
+
+        function calculate() {
+            let expression = document.getElementById("input-expression").value;
+            expression = expression.replace('%', '/100').replace('^', '**');
+            try {
+                document.getElementById("display").value = eval(expression);
+            } catch (e) {
+                document.getElementById("display").value = "Error";
+            }
+        }
+
+        // Partial Eta Squared Calculation
+        function calculatePartialEta() {
+            let df_effect = parseFloat(document.getElementById("df_eta").value);
+            let F = parseFloat(document.getElementById("F_eta").value);
+            let df_error = parseFloat(document.getElementById("df_error_eta").value);
+            if (!isNaN(df_effect) && !isNaN(F) && !isNaN(df_error)) {
+                let eta_p2 = (F * df_effect) / ((F * df_effect) + df_error);
+                document.getElementById("eta_result").innerHTML = `Partial Eta Squared: ${eta_p2.toFixed(4)}`;
+            } else {
+                document.getElementById("eta_result").innerHTML = "Enter valid values.";
+            }
+        }
+
+        // Omega Squared Calculation
+        function calculateOmega() {
+            let df_effect = parseFloat(document.getElementById("df_omega").value);
+            let F = parseFloat(document.getElementById("F_omega").value);
+            let df_error = parseFloat(document.getElementById("df_error_omega").value);
+            if (!isNaN(df_effect) && !isNaN(F) && !isNaN(df_error)) {
+                let omega_sq = ((F - 1) * df_effect) / (((F - 1) * df_effect) + df_error + 1);
+                document.getElementById("omega_result").innerHTML = `Omega Squared: ${omega_sq.toFixed(4)}`;
+            } else {
+                document.getElementById("omega_result").innerHTML = "Enter valid values.";
+            }
+        }
+
+        // Benjamini-Hochberg (BH) Correction
+        function calculateBH() {
+            let pValues = document.getElementById("bh-p-values").value;
+            if (!pValues) {
+                document.getElementById("bh_result").innerHTML = "Enter valid p-values.";
+                return;
+            }
+
+            let pArray = pValues.split(",").map(Number);
+            if (pArray.some(isNaN)) {
+                document.getElementById("bh_result").innerHTML = "Invalid p-values.";
+                return;
+            }
+
+            let adjustedPValues = bhCorrection(pArray);
+            document.getElementById("bh_result").innerHTML = `Adjusted p-values: ${adjustedPValues.join(", ")}`;
+        }
+
+                // Bonferroni Correction
+                function calculateBonferroni() {
+            let pValues = document.getElementById("bonferroni-p-values").value;
+            if (!pValues) {
+                document.getElementById("bonferroni_result").innerHTML = "Enter valid p-values.";
+                return;
+            }
+
+            let pArray = pValues.split(",").map(Number);
+            if (pArray.some(isNaN)) {
+                document.getElementById("bonferroni_result").innerHTML = "Invalid p-values.";
+                return;
+            }
+
+            let adjustedPValues = bonferroniCorrection(pArray);
+            document.getElementById("bonferroni_result").innerHTML = `Adjusted p-values: ${adjustedPValues.join(", ")}`;
+        }
+
+        // Function to calculate Cohen's d
+        function calculateCohensD(type) {
+            let data1 = document.getElementById("cohen-data1").value;
+            let data2 = document.getElementById("cohen-data2").value;
+
+            if (!data1 || !data2) {
+                document.getElementById("cohen_result").innerHTML = "Enter valid data.";
+                return;
+            }
+
+            let array1 = data1.split(",").map(Number);
+            let array2 = data2.split(",").map(Number);
+
+            if (array1.some(isNaN) || array2.some(isNaN)) {
+                document.getElementById("cohen_result").innerHTML = "Invalid data.";
+                return;
+            }
+
+            let mean1 = array1.reduce((a, b) => a + b, 0) / array1.length;
+            let mean2 = array2.reduce((a, b) => a + b, 0) / array2.length;
+            
+            let result;
+            if (type === "independent") {
+                let sd1 = Math.sqrt(array1.map(x => (x - mean1) ** 2).reduce((a, b) => a + b, 0) / (array1.length - 1));
+                let sd2 = Math.sqrt(array2.map(x => (x - mean2) ** 2).reduce((a, b) => a + b, 0) / (array2.length - 1));
+                let pooledSD = Math.sqrt(((array1.length - 1) * sd1 ** 2 + (array2.length - 1) * sd2 ** 2) / (array1.length + array2.length - 2));
+                result = (mean1 - mean2) / pooledSD;
+            } else if (type === "paired") {
+                if (array1.length !== array2.length) {
+                    document.getElementById("cohen_result").innerHTML = "Paired samples must have the same length.";
+                    return;
+                }
+
+                // Compute differences (FIXED SIGN)
+                let differences = array1.map((val, i) => val - array2[i]); // Now matches R
+
+                // Mean of differences
+                let meanDiff = differences.reduce((a, b) => a + b, 0) / differences.length;
+
+                // Standard deviation of differences
+                let sdDiff = Math.sqrt(differences.map(x => (x - meanDiff) ** 2).reduce((a, b) => a + b, 0) / (differences.length - 1));
+
+                // Compute correlation between before and after
+                function pearsonCorrelation(x, y) {
+                    let n = x.length;
+                    let meanX = x.reduce((sum, val) => sum + val, 0) / n;
+                    let meanY = y.reduce((sum, val) => sum + val, 0) / n;
+                    
+                    let numerator = x.map((xi, i) => (xi - meanX) * (y[i] - meanY)).reduce((sum, val) => sum + val, 0);
+                    let denominatorX = Math.sqrt(x.map(xi => Math.pow(xi - meanX, 2)).reduce((sum, val) => sum + val, 0));
+                    let denominatorY = Math.sqrt(y.map(yi => Math.pow(yi - meanY, 2)).reduce((sum, val) => sum + val, 0));
+
+                    return numerator / (denominatorX * denominatorY);
+                }
+
+                let r = pearsonCorrelation(array1, array2) || 0; // Avoid NaN issues
+
+                // Adjusted standard deviation
+                let stdev = sdDiff / Math.sqrt(2 - 2 * r);
+
+                // Cohen’s d for paired samples
+                result = meanDiff / stdev;
+            } else {
+                result = "Invalid type.";
+            }
+
+            document.getElementById("cohen_result").innerHTML = `Cohen's d (${type}): ${result.toFixed(4)}`;
+        }
+
+        // Correlations
+        function calculateCorrelation(type) {
+            let data1 = document.getElementById("corr-data1").value;
+            let data2 = document.getElementById("corr-data2").value;
+
+            if (!data1 || !data2) {
+                document.getElementById("correlation_result").innerHTML = "Enter valid data.";
+                return;
+            }
+
+            let array1 = data1.split(",").map(Number);
+            let array2 = data2.split(",").map(Number);
+
+            if (array1.some(isNaN) || array2.some(isNaN)) {
+                document.getElementById("correlation_result").innerHTML = "Invalid data.";
+                return;
+            }
+
+            let result;
+            switch (type) {
+                case "pearson":
+                    result = pearsonCorrelation(array1, array2);
+                    break;
+                case "spearman":
+                    result = spearmanCorrelation(array1, array2);
+                    break;
+                case "kendall":
+                    result = kendallCorrelation(array1, array2);
+                    break;
+                default:
+                    result = "Invalid correlation type.";
+            }
+            document.getElementById("correlation_result").innerHTML = `${type.charAt(0).toUpperCase() + type.slice(1)} Correlation: ${result.toFixed(4)}`;
+        }
+
+        // Regression
+        function calculateRegression(type) {
+            let xData = document.getElementById("regression-x").value;
+            let yData = document.getElementById("regression-y").value;
+
+            if (!xData || !yData) {
+                document.getElementById("regression_result").innerHTML = "Enter valid data.";
+                return;
+            }
+
+            let xArray = xData.split(",").map(Number);
+            let yArray = yData.split(",").map(Number);
+
+            if (xArray.some(isNaN) || yArray.some(isNaN)) {
+                document.getElementById("regression_result").innerHTML = "Invalid data.";
+                return;
+            }
+
+            let result;
+            switch (type) {
+                case "simple":
+                    result = simpleLinearRegression(xArray, yArray);
+                    break;
+                default:
+                    result = "Invalid regression type.";
+            }
+            document.getElementById("regression_result").innerHTML = `Regression Result: ${JSON.stringify(result)}`;
+        }
+
+        // Frequency Plot
+        function plotFrequency() {
+            let data = document.getElementById("frequency-data").value;
+
+            if (!data) {
+                alert("Enter valid data.");
+                return;
+            }
+
+            let dataArray = data.split(",").map(Number);
+
+            if (dataArray.some(isNaN)) {
+                alert("Invalid data.");
+                return;
+            }
+
+            let frequencyMap = {};
+            dataArray.forEach(val => {
+                frequencyMap[val] = (frequencyMap[val] || 0) + 1;
+            });
+
+            let labels = Object.keys(frequencyMap);
+            let frequencies = Object.values(frequencyMap);
+
+            let ctx = document.getElementById("frequencyCanvas").getContext("2d");
+            let chart = new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: "Frequency",
+                        data: frequencies,
+                        backgroundColor: "rgba(75, 192, 192, 0.2)",
+                        borderColor: "rgba(75, 192, 192, 1)",
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Helper Functions
+        function bhCorrection(pValues) {
+            let n = pValues.length;
+            let rankedPValues = pValues.map((p, i) => ({ p, index: i }));
+            rankedPValues.sort((a, b) => a.p - b.p);
+
+            let adjustedPValues = rankedPValues.map((obj, i) => ({
+                index: obj.index,
+                p: Math.min(obj.p * (n / (i + 1)), 1)
+            }));
+
+            adjustedPValues.sort((a, b) => a.index - b.index);
+            return adjustedPValues.map(obj => obj.p.toFixed(4));
+        }
+
+        function bonferroniCorrection(pValues) {
+            let n = pValues.length;
+            return pValues.map(p => Math.min(p * n, 1).toFixed(4));
+        }
+
+        function tukeyCorrection(pValues) {
+            let n = pValues.length;
+            return pValues.map(p => Math.min(p * n, 1).toFixed(4));
+        }
+
+        function pairedTTest(data1, data2) {
+            let differences = data1.map((val, i) => val - data2[i]);
+            let mean = differences.reduce((a, b) => a + b, 0) / differences.length;
+            let stdDev = Math.sqrt(differences.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / differences.length);
+            return (mean / (stdDev / Math.sqrt(differences.length))).toFixed(4);
+        }
+
+        function independentTTest(data1, data2) {
+            let mean1 = data1.reduce((a, b) => a + b, 0) / data1.length;
+            let mean2 = data2.reduce((a, b) => a + b, 0) / data2.length;
+            let var1 = data1.reduce((a, b) => a + Math.pow(b - mean1, 2), 0) / data1.length;
+            let var2 = data2.reduce((a, b) => a + Math.pow(b - mean2, 2), 0) / data2.length;
+            let pooledVar = ((data1.length - 1) * var1 + (data2.length - 1) * var2) / (data1.length + data2.length - 2);
+            return ((mean1 - mean2) / Math.sqrt(pooledVar * (1 / data1.length + 1 / data2.length))).toFixed(4);
+        }
+
+        function calculateCohenEffectSize(data1, data2) {
+            let mean1 = data1.reduce((a, b) => a + b, 0) / data1.length;
+            let mean2 = data2.reduce((a, b) => a + b, 0) / data2.length;
+            let var1 = data1.reduce((a, b) => a + Math.pow(b - mean1, 2), 0) / data1.length;
+            let var2 = data2.reduce((a, b) => a + Math.pow(b - mean2, 2), 0) / data2.length;
+            let pooledStdDev = Math.sqrt((var1 + var2) / 2);
+            return (mean1 - mean2) / pooledStdDev;
+        }
+
+        function mannWhitneyU(data1, data2) {
+            // Combine and rank the data
+            let combined = [...data1, ...data2];
+            let ranked = getRanks(combined);
+
+            // Calculate sum of ranks for each group
+            let sumRanks1 = data1.reduce((sum, val) => sum + ranked[combined.indexOf(val)], 0);
+            let sumRanks2 = data2.reduce((sum, val) => sum + ranked[combined.indexOf(val)], 0);
+
+            // Calculate U statistic
+            let n1 = data1.length;
+            let n2 = data2.length;
+            let U1 = sumRanks1 - (n1 * (n1 + 1)) / 2;
+            let U2 = sumRanks2 - (n2 * (n2 + 1)) / 2;
+
+            return Math.min(U1, U2).toFixed(4);
+        }
+
+        function wilcoxonSignedRank(data1, data2) {
+            // Calculate differences
+            let differences = data1.map((val, i) => val - data2[i]);
+
+            // Remove zero differences
+            differences = differences.filter(d => d !== 0);
+
+            // Rank absolute differences
+            let ranked = getRanks(differences.map(Math.abs));
+
+            // Calculate sum of ranks for positive and negative differences
+            let sumPositive = differences.reduce((sum, val, i) => val > 0 ? sum + ranked[i] : sum, 0);
+            let sumNegative = differences.reduce((sum, val, i) => val < 0 ? sum + ranked[i] : sum, 0);
+
+            return Math.min(sumPositive, sumNegative).toFixed(4);
+        }
+
+        function getRanks(data) {
+            let sorted = [...data].sort((a, b) => a - b);
+            return data.map(val => sorted.indexOf(val) + 1);
+        }
+
+        function pearsonCorrelation(data1, data2) {
+            let mean1 = data1.reduce((a, b) => a + b, 0) / data1.length;
+            let mean2 = data2.reduce((a, b) => a + b, 0) / data2.length;
+            let covariance = data1.reduce((a, b, i) => a + (b - mean1) * (data2[i] - mean2), 0) / data1.length;
+            let stdDev1 = Math.sqrt(data1.reduce((a, b) => a + Math.pow(b - mean1, 2), 0) / data1.length);
+            let stdDev2 = Math.sqrt(data2.reduce((a, b) => a + Math.pow(b - mean2, 2), 0) / data2.length);
+            return covariance / (stdDev1 * stdDev2);
+        }
+
+        function spearmanCorrelation(data1, data2) {
+            let rank1 = getRanks(data1);
+            let rank2 = getRanks(data2);
+            return pearsonCorrelation(rank1, rank2);
+        }
+
+        function kendallCorrelation(data1, data2) {
+            let concordant = 0;
+            let discordant = 0;
+            for (let i = 0; i < data1.length; i++) {
+                for (let j = i + 1; j < data1.length; j++) {
+                    if ((data1[i] - data1[j]) * (data2[i] - data2[j]) > 0) {
+                        concordant++;
+                    } else {
+                        discordant++;
+                    }
+                }
+            }
+            return (concordant - discordant) / (concordant + discordant);
+        }
+
+        function simpleLinearRegression(x, y) {
+            let meanX = x.reduce((a, b) => a + b, 0) / x.length;
+            let meanY = y.reduce((a, b) => a + b, 0) / y.length;
+            let numerator = x.reduce((a, b, i) => a + (b - meanX) * (y[i] - meanY), 0);
+            let denominator = x.reduce((a, b) => a + Math.pow(b - meanX, 2), 0);
+            let slope = numerator / denominator;
+            let intercept = meanY - slope * meanX;
+            return { slope, intercept };
+        }
+    </script>
+</body>
+</html>

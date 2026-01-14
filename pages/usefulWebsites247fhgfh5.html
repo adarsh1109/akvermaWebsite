@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+   <title>auth</title>
+   <!-- Add Firebase SDK -->
+   <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-app.js"></script>
+   <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-auth.js"></script>
+ 
+   <script>
+     // Initialize Firebase with your project's config
+     var firebaseConfig = {
+     apiKey: "AIzaSyAPe-czkOjODyjB2a_J1UMifDmniyTTAiY",
+     authDomain: "website04-5af7a.firebaseapp.com",
+     projectId: "website04-5af7a",
+     storageBucket: "website04-5af7a.firebasestorage.app",
+     messagingSenderId: "270508338582",
+     appId: "1:270508338582:web:2d334160d8320f773981b7"
+     };
+     firebase.initializeApp(firebaseConfig);
+ 
+     // Function to check if a user is logged in or not
+     function checkAuthState() {
+       firebase.auth().onAuthStateChanged(function(user) {
+         if (!user) {
+           // User is not signed in, redirect to the login page
+           window.location.href = "login.html";
+         }
+       });
+     }
+   </script>
+ </head>
+ <body onload="checkAuthState()">
+   
+
+
+   <!-- basic -->
+   <meta charset="utf-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <!-- mobile metas -->
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+   <!-- site metas -->
+   <title>Adarsh K. Verma</title>
+   <meta name="keywords" content="">
+   <meta name="description" content="">
+   <meta name="author" content="">
+   <!-- bootstrap css -->
+   <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+   <!-- style css -->
+   <link rel="stylesheet" type="text/css" href="css/style.css">
+   <!-- Responsive-->
+   <link rel="stylesheet" href="css/responsive.css">
+   <!-- fevicon -->
+   <!-- <link rel="icon" href="images/fevicon.png" type="image/gif" /> -->
+   <!-- font css -->
+   <link
+      href="https://fonts.googleapis.com/css2?family=Philosopher:ital,wght@0,400;0,700;1,400;1,700&family=Poppins:wght@400;700&display=swap"
+      rel="stylesheet">
+   <!-- Scrollbar Custom CSS -->
+   <link rel="stylesheet" href="css/jquery.mCustomScrollbar.min.css">
+   <!-- Tweaks for older IEs-->
+   <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+</head>
+
+<body>
+   <div class="header_section">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+         <!-- <a class="navbar-brand" href="index.html"><img src="images/logo.png"></a> -->
+         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+         </button>
+         <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+               <li class="nav-item active">
+                  <a class="nav-link" href="index.html">Home</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="academics.html">Academics</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="trainingAndExperience.html">Training & Experience</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="publications.html">Research & Publications</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="awardsAndPositions.html">Awards & Positions</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="pmrfProgress.html">PMRF Progress</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="contact.html">Contact</a>
+               </li>
+            </ul>
+
+         </div>
+      </nav>
+
+
+
+      <!-- ICONS-->
+
+      <style>
+         /* Define your fixed icons */
+         .fixed-icons {
+            position: fixed;
+            top: 80%;
+            right: 20px;
+            transform: translateY(-50%);
+            z-index: 999;
+            /* Ensure icons appear above other elements */
+         }
+
+         /* Style your icons as needed */
+         .icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            cursor: pointer;
+         }
+      </style>
+      <!-- icons -->
+      <div class="like-icon fixed-icons">
+
+         <a href="https://orcid.org/0000-0003-0249-6989" target="_blank" class=" icon"
+            style="font-size:48px;text-decoration:none;">
+            <img src="images/icon1.png" alt="ORCID" style="color:#fff;">
+         </a>
+
+         <a href="https://www.researchgate.net/profile/Adarsh-Verma-7" class="bg-dark icon" target="_blank"
+            style="background-color:#000;font-size:48px;text-decoration:none;">
+            <img src="images/icon2.png" alt="ResearchGate" style="color:#fff;">
+         </a>
+
+         <a href="https://www.linkedin.com/in/adarsh-k-verma-a05315211/" target="_blank" class=" icon"
+            style="font-size:48px;text-decoration:none;">
+            <img src="images/icon3.png" alt="LinkedIN" style="color:#fff;">
+         </a>
+
+      </div>
+
+
+
+
+
+
+
+
+
+      <style>
+         .two-column-list {
+            display: flex;
+            flex-direction: column;
+            list-style-type: none;
+            padding: 0;
+            margin: auto;
+            /* Add this line to center the element */
+            max-width: 950px;
+            /* Adjust the max-width as needed */
+         }
+
+
+         .row {
+            display: flex;
+            flex-direction: row;
+            padding: 10px 0;
+            /* Increase vertical padding between rows */
+         }
+
+         .ongoing_study {
+            width: 100%;
+            font-size: 40px;
+            color: #2b2b2a;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+         }
+
+         .ongoing_study_PMRFtitle {
+            width: 100%;
+            font-size: 28px;
+            color: #2b2b2a;
+            text-align: center;
+            margin-bottom: 85px;
+            padding-top: 40px;
+         }
+
+         .entry1 {
+            flex: 1;
+            text-align: left;
+            font-size: 16px;
+            max-width: 1000px;
+            padding: 40 15px;
+            margin-left: 30px;
+            margin-left: -1em;
+            padding-top: 30px;
+            /* Set maximum width for the columns */
+         }
+
+         .entry2 {
+            flex: 1;
+            text-align: left;
+            font-size: 16px;
+            max-width: 1000px;
+            padding: 40 15px;
+            margin-left: 50px;
+            /* Set maximum width for the columns */
+         }
+
+
+
+         .blog_section {
+            text-align: center;
+            /* Center the content in the blog section */
+         }
+      </style>
+
+      <!-- Phase 1 start -->
+      <div class="blog_section layout_padding">
+         <div class="container">
+            <div class="row">
+               <div class="col-md-12">
+                  
+                  <h1 class="ongoing_study_PMRFtitle"><b>Websites</b></h1>
+
+                  
+        <div>
+         <h3><strong>Useful Websites</strong></h3>
+      </div>
+      
+      <p>
+         <ul>
+            <pre class="r-code">
+               
+TMS
+https://www.nimh.nih.gov/news/media/2020/bruce-luber-tms-parameters-and-protocols
+
+
+EEG
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10245912/#:~:text=The%20high%2Dpass%20filters%20shown,changes%20as%20the%20frequency%20changes.
+https://github.com/mikexcohen/AnalyzingNeuralTimeSeries/blob/main/chapter13.m
+https://github.com/supratimray/TLSAEEGProjectPrograms/tree/master/commonAnalysisCodes/spectralAnalysisCodes
+https://sccn.ucsd.edu/githubwiki/files/eeglab2017_tokyo_jri_evaluateics.pdf
+https://www.bbci.de/supplementary/conditionalERD/somatosensory.html
+
+Medium 
+https://readmedium.com/awesome-strategies-to-visualize-change-with-time-f8a7fa8362f2
+https://readmedium.com/the-ultimate-guide-to-finding-outliers-in-your-time-series-data-part-1-1bf81e09ade4
+Read articles: https://archive.ph/  OR archive.today 
+https://excalidraw.com/
+
+Computational modelling
+http://sml2029.com
+https://h2o.ai/platform/ai-cloud/make/ 
+http://www.psy.vanderbilt.edu/faculty/palmeri/p318-modeling/syllabus.htm
+https://www.javatpoint.com/classification-algorithm-in-machine-learning
+https://royalsocietypublishing.org/doi/10.1098/rsos.172096
+https://simondlevy.academic.wlu.edu/courses/csci-102-introduction-to-computational-modeling/
+https://git.fmrib.ox.ac.uk/open-science/education/computational-models-course
+
+Metanalysis
+https://www.cadima.info/index.php/area/adminLiteratureSearch/13601 
+https://www.coursera.org/learn/systematic-review (coursera)
+https://wmich.edu/sites/default/files/attachments/u58/2015/MARS.pdf
+https://meta-analysis.actilab.onl/cohen-kappa-free-calculator/#risultati
+https://gdt.gradepro.org/app/handbook/handbook.html#h.hnedbo8gqjqk
+https://systematicreviewtools.com/lander
+https://oli.cmu.edu/jcourse/workbook/activity/page?context=7675c3960a0001dc01b8e3e24029424b (course)
+https://tvpollet.github.io/Meta-analysis_course ®
+https://www.rama.mahidol.ac.th/ceb/sites/default/files/public/pdf/Conference/RIAC2016/Critical%20appraisal%20Systematic%20reveiw%202-9-16[1].pdf
+https://systematicreviewsjournal.biomedcentral.com/articles/10.1186/2046-4053-3-82
+https://www.campbellcollaboration.org/research-resources/training-courses.html (videos)
+https://www.youtube.com/playlist?list=PLvUIl9ouflELzCeu68Cs1sy1KzmcKp9L4
+https://www.youtube.com/watch?v=Fggs7zOhw6c&list=PLvUIl9ouflEJsEKUcFVm_X-5hm0HmDmXC&index=1
+https://paperpile.com/t/pmid-to-ris-converter/
+https://www.psychometrica.de/effect_size.html
+
+Conference
+https://ibro.org/ibro-travel-grants/
+
+Research/Thesis
+https://journals.sagepub.com/doi/10.1177/0963721411418466
+
+R
+https://github.com/raacampbell/shadedErrorBar
+
+Website 
+https://codepen.io/VincentGarreau/pen/bGxvQd (background)
+https://codepen.io/collection/DPOage
+https://github.com/VincentGarreau/particles.js/?tab=readme-ov-file
+https://grapesjs.com
+https://gohugo.io
+               
+            </pre>
+         </ul>
+      </p>
+      
+      <hr style="border-top: 1px solid #ccc; margin: 5px 0;">
+      
+         
+      
+
+      <div>
+         <h1 class="ongoing_study_PMRFtitle"></h1>
+         <div class="blog_section layout_padding">
+            <div class="container">
+               <div class="row">
+                  <div class="col-md-12">
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      
+
+
+
+
+<!-- Custom CSS for styling -->
+<style>
+   .r-code {
+      background-color: #f4f4f4;
+      padding: 10px;
+      border-radius: 5px;
+      font-family: monospace;
+      font-size: 14px;
+      white-space: pre-wrap;
+      text-align: left; /* Align code to the left */
+   }
+
+   /* Styling for comments in R code */
+   .r-code span.comment {
+      color: green; /* Color for comments */
+   }
+
+   /* Match R comments and apply styles */
+   .r-code {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+   }
+
+   .r-code code {
+      display: inline;
+   }
+</style>
+
+
+
+      <!-- copyright section start -->
+      <style>
+         .footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background-color: #2e2e2e;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            /* Add padding for spacing */
+         }
+
+         .copyright_text {
+            margin: 0;
+            /* Remove default margin */
+         }
+      </style>
+
+      <div class="footer">
+         <div class="container">
+            <p class="copyright_text">Copyright © 2024. Adarsh K. Verma. All right reserved.</p>
+         </div>
+      </div>
+
+      <!-- copyright section end -->
+
+      <!-- copyright section end -->
+      <!-- Javascript files-->
+      <script src="js/jquery.min.js"></script>
+      <script src="js/popper.min.js"></script>
+      <script src="js/bootstrap.bundle.min.js"></script>
+      <script src="js/jquery-3.0.0.min.js"></script>
+      <script src="js/plugin.js"></script>
+      <!-- sidebar -->
+      <script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
+      <script src="js/custom.js"></script>
+      <!-- javascript -->
+</body>
+
+</html>
