@@ -242,7 +242,7 @@ button {
 .header-home {
     height: 70vh;
 }
-
+ 
 .header-home::before {
     content: "";
     position: absolute;
