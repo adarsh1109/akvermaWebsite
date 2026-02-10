@@ -229,15 +229,21 @@ button {
 
 /* header section start */
 
+/* Base header (all pages) */
 .header_section {
     position: relative;
     width: 100%;
     float: right;
-    height: 70vh;
+    height: auto;
     overflow: hidden;
 }
 
-.header_section::before {
+/* Homepage only – SAME formatting & opacity */
+.header-home {
+    height: 70vh;
+}
+
+.header-home::before {
     content: "";
     position: absolute;
     inset: 0;
@@ -246,9 +252,10 @@ button {
     background-repeat: no-repeat;
     background-position: center;
     background-attachment: fixed;
-    opacity: 0.15;   /* 10% opacity */
+    opacity: 0.15;
     z-index: -1;
 }
+
 
 
 .header_bg {
