@@ -31,12 +31,20 @@
    <!-- Tweaks for older IEs-->
    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
    <link rel="stylesheet" href="style.css">
+
+<link rel="icon" href="images/websiteLogo.png">
+
+
+
 </head>
 
 <body>
    <div class="header_section">
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
-         <!-- <a class="navbar-brand" href="index.html"><img src="images/logo.png"></a> -->
+         <a class="navbar-brand" href="index.html">
+   <img src="images/websiteLogo.svg" alt="Website Logo" class="site-logo">
+</a>
+
          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -99,6 +107,14 @@
             margin-bottom: 8px;
             cursor: pointer;
          }
+         .site-logo {
+   height: 68px;   /* try 32–44px */
+   width: auto;
+}
+.navbar-brand {
+   display: flex;
+   align-items: center;
+}
       </style>
       <!-- icons -->
       <div class="like-icon fixed-icons">

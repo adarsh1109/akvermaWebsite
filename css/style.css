@@ -230,15 +230,26 @@ button {
 /* header section start */
 
 .header_section {
+    position: relative;
     width: 100%;
     float: right;
-    background-image: url(../images/bg6.png);
     height: 70vh;
-    background-size: 75%;
+    overflow: hidden;
+}
+
+.header_section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url(../images/bg6.png);
+    background-size: 70%;
     background-repeat: no-repeat;
     background-position: center;
     background-attachment: fixed;
+    opacity: 0.15;   /* 10% opacity */
+    z-index: -1;
 }
+
 
 .header_bg {
     background: #ffffff;
