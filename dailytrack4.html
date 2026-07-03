@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ledger · Habit Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        :root {
+            --paper: #F4F3EE;
+            --paper-line: #DCE0D5;
+            --card: #FFFFFF;
+            --ink: #202A26;
+            --ink-soft: #5B655E;
+            --gold: #D9A441;
+            --gold-deep: #B9860F;
+            --teal: #3F6B63;
+            --teal-deep: #2C4E48;
+            --plum: #7A5980;
+            --brick: #B14B4B;
+            --shadow: 0 1px 2px rgba(32,42,38,0.06), 0 4px 14px rgba(32,42,38,0.05);
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            background:
+                linear-gradient(var(--paper-line) 1px, transparent 1px) 0 0 / 100% 28px,
+                linear-gradient(90deg, var(--paper-line) 1px, transparent 1px) 0 0 / 28px 100%,
+                var(--paper);
+            background-attachment: local;
+            color: var(--ink);
+            font-family: 'IBM Plex Sans', sans-serif;
+            min-height: 100vh;
+            padding: 20px 16px 40px;
+        }
+        .wrap { 
+            max-width: 1400px; 
+            margin: 0 auto; 
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 24px;
+        }
+        @media (max-width: 1000px) {
+            .wrap { grid-template-columns: 1fr; }
+        }
+        /* Left Panel */
+        .left-panel {
+            position: sticky;
+            top: 20px;
+            align-self: start;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .clock-card {
+            background: var(--card);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 20px 16px 16px;
+            text-align: center;
+        }
+        .clock-card h3 {
+            font-family: 'IBM Plex Mono';
+            font-size: 11px;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--gold-deep);
+            margin: 0 0 12px 0;
+        }
+        .analog-clock {
+            width: 160px;
+            height: 160px;
+            margin: 0 auto;
+            position: relative;
+            border-radius: 50%;
+            background: var(--paper);
+            border: 3px solid var(--ink);
+        }
+        .analog-clock .center {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: var(--gold-deep);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+        .analog-clock .hand {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom center;
+            border-radius: 2px;
+        }
+        .analog-clock .hour-hand {
+            width: 4px;
+            height: 45px;
+            background: var(--ink);
+            margin-left: -2px;
+            z-index: 5;
+        }
+        .analog-clock .minute-hand {
+            width: 3px;
+            height: 60px;
+            background: var(--ink);
+            margin-left: -1.5px;
+            z-index: 6;
+        }
+        .analog-clock .second-hand {
+            width: 1.5px;
+            height: 65px;
+            background: var(--brick);
+            margin-left: -0.75px;
+            z-index: 7;
+        }
+        .digital-time {
+            font-family: 'IBM Plex Mono';
+            font-size: 20px;
+            font-weight: 600;
+            margin-top: 10px;
+            color: var(--ink);
+            letter-spacing: .04em;
+        }
+        .digital-date {
+            font-size: 12px;
+            color: var(--ink-soft);
+            margin-top: 2px;
+        }
+
+        .tool-card {
+            background: var(--card);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        .tool-header {
+            padding: 12px 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+            transition: background 0.2s;
+        }
+        .tool-header:hover {
+            background: rgba(0,0,0,0.02);
+        }
+        .tool-header h4 {
+            font-family: 'IBM Plex Mono';
+            font-size: 11px;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--gold-deep);
+            margin: 0;
+        }
+        .tool-header .toggle-icon {
+            font-size: 14px;
+            color: var(--ink-soft);
+            transition: transform 0.3s;
+        }
+        .tool-header .toggle-icon.open {
+            transform: rotate(180deg);
+        }
+        .tool-body {
+            padding: 0 16px 16px;
+            display: none;
+        }
+        .tool-body.open {
+            display: block;
+        }
+        .tool-body .display {
+            font-family: 'IBM Plex Mono';
+            font-size: 28px;
+            font-weight: 600;
+            text-align: center;
+            padding: 6px 0;
+            letter-spacing: .04em;
+        }
+        .tool-body .controls {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+        .tool-body .controls .btn.small {
+            padding: 4px 12px;
+            font-size: 11px;
+        }
+        .tool-body input[type="number"] {
+            width: 60px;
+            padding: 4px 6px;
+            font-family: 'IBM Plex Mono';
+            font-size: 14px;
+            text-align: center;
+            border-radius: 4px;
+            border: 1.5px solid #C7CDBF;
+            background: #fff;
+        }
+        .tool-body .row {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .timezone-list {
+            font-size: 12px;
+            line-height: 1.8;
+        }
+        .timezone-list .tz-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 2px 0;
+            border-bottom: 1px solid #ECEEE7;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .timezone-list .tz-item:last-child { border-bottom: none; }
+        .timezone-list .tz-item:hover { background: rgba(0,0,0,0.02); }
+        .timezone-list .tz-name { color: var(--ink-soft); }
+        .timezone-list .tz-time { font-family: 'IBM Plex Mono'; font-weight: 500; }
+        .timezone-list .tz-default { color: var(--gold-deep); font-size: 10px; margin-left: 6px; }
+        .alarm-set { background: var(--gold); color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+        .btn.success { border-color: var(--teal); color: var(--teal); }
+        .btn.success:hover { background: var(--teal); color: white; }
+
+        /* Main Content */
+        .main-content {
+            min-width: 0;
+        }
+        header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 22px; flex-wrap: wrap; gap: 12px; }
+        .brand { display: flex; align-items: baseline; gap: 10px; }
+        .brand .mark { font-family: 'IBM Plex Mono'; font-weight: 700; font-size: 13px; letter-spacing: .14em; color: var(--gold-deep); border: 1.5px solid var(--gold-deep); padding: 2px 6px; border-radius: 3px; transform: rotate(-3deg); display: inline-block; }
+        h1 { font-family: 'IBM Plex Mono'; font-size: 26px; margin: 0; letter-spacing: -.02em; }
+        .sub { font-size: 12.5px; color: var(--ink-soft); margin-top: 2px; }
+        .headerActions { display: flex; gap: 8px; flex-wrap: wrap; }
+        button { font-family: inherit; cursor: pointer; }
+        .btn { border: 1.5px solid var(--ink); background: var(--card); color: var(--ink); padding: 9px 14px; border-radius: 6px; font-size: 13px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; transition: transform .12s ease, box-shadow .12s ease; }
+        .btn:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
+        .btn.primary { background: var(--ink); color: var(--paper); }
+        .btn.gold { border-color: var(--gold-deep); color: var(--gold-deep); }
+        .btn.small { padding: 5px 9px; font-size: 12px; border-radius: 5px; }
+        .btn.ghost { border-color: transparent; background: transparent; color: var(--ink-soft); }
+        .btn.ghost:hover { background: rgba(0,0,0,.04); }
+        .btn.danger { border-color: var(--brick); color: var(--brick); }
+        .btn.danger:hover { background: var(--brick); color: white; }
+        .link-btn { background: none; border: none; color: var(--ink-soft); font-size: 13px; padding: 6px 2px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+        .link-btn:hover { color: var(--ink); }
+        .tabs { display: flex; gap: 4px; margin-bottom: 20px; border-bottom: 2px solid var(--ink); flex-wrap: wrap; }
+        .tab { font-family: 'IBM Plex Mono'; font-size: 12.5px; font-weight: 600; letter-spacing: .05em; padding: 9px 16px; background: none; border: none; color: var(--ink-soft); border-bottom: 3px solid transparent; margin-bottom: -2px; cursor: pointer; }
+        .tab.active { color: var(--ink); border-bottom-color: var(--gold); }
+        .empty { background: var(--card); border: 1.5px dashed #C7CDBF; border-radius: 10px; padding: 48px 24px; text-align: center; color: var(--ink-soft); }
+        .empty .stamp { font-family: 'IBM Plex Mono'; font-size: 13px; color: var(--gold-deep); letter-spacing: .08em; margin-bottom: 8px; }
+        .sheet-card { background: var(--card); border-radius: 12px; box-shadow: var(--shadow); padding: 18px 20px 14px; margin-bottom: 22px; overflow-x: auto; }
+        .sheet-nav { display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 14px; }
+        .sheet-nav .m-label { font-family: 'IBM Plex Mono'; font-size: 14px; font-weight: 600; min-width: 150px; text-align: center; }
+        .sheet-wrap { overflow-x: auto; padding-bottom: 6px; }
+        table.sheet { border-collapse: separate; border-spacing: 3px; width: 100%; min-width: 600px; }
+        .sheet th { font-family: 'IBM Plex Mono'; font-weight: 500; color: var(--ink-soft); text-align: center; padding: 0; vertical-align: bottom; }
+        .sheet th.habits-h { text-align: left; font-family: 'IBM Plex Sans'; font-size: 12px; color: var(--gold-deep); text-transform: uppercase; letter-spacing: .06em; padding-bottom: 6px; min-width: 130px; position: sticky; left: 0; background: var(--card); z-index: 3; }
+        .day-h { width: 32px; padding-bottom: 4px; }
+        .day-h .dow { font-size: 9px; opacity: .65; display: block; }
+        .day-h .num { font-size: 11.5px; color: var(--ink); font-weight: 600; display: block; }
+        .day-h.today .dow, .day-h.today .num { color: var(--paper); }
+        .today-col { background: var(--ink); }
+        th.side-h { font-size: 10.5px; text-transform: uppercase; letter-spacing: .05em; padding: 0 6px 6px; min-width: 46px; }
+        .sheet td { padding: 0; }
+        td.habit-name { text-align: left; font-size: 13.5px; font-weight: 500; white-space: nowrap; padding: 6px 16px 6px 2px; position: sticky; left: 0; background: var(--card); z-index: 2; }
+        td.habit-name .del { opacity: 0; font-size: 11px; color: var(--brick); margin-left: 8px; transition: opacity .15s; background: none; border: none; cursor: pointer; }
+        tr:hover td.habit-name .del { opacity: 1; }
+        td.day-cell { width: 32px; height: 32px; text-align: center; cursor: pointer; position: relative; }
+        .cellbox { width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; background: transparent; border: 1.5px solid #E4E7DD; transition: transform .1s ease; }
+        td.day-cell:hover .cellbox { transform: scale(1.08); }
+        td.day-cell.future { opacity: .3; cursor: default; }
+        td.day-cell.future .cellbox:hover { transform: none; }
+        .cellbox svg { width: 14px; height: 14px; opacity: 0; transform: scale(.5); transition: all .16s cubic-bezier(.34,1.56,.64,1); }
+        td.day-cell.checked .cellbox svg { opacity: 1; transform: scale(1); }
+        td.day-cell.checked .cellbox { border-color: transparent; }
+        td.day-cell.today .cellbox { box-shadow: inset 0 0 0 1.5px var(--ink); }
+        td.achieved-cell { text-align: center; padding: 0 4px; }
+        .achieved-badge { display: inline-block; min-width: 30px; padding: 4px 6px; border-radius: 5px; font-family: 'IBM Plex Mono'; font-size: 12px; font-weight: 600; color: var(--ink-soft); background: transparent; }
+        .sheet-newrow { padding-top: 8px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+        .notes-card { background: var(--card); border-radius: 12px; box-shadow: var(--shadow); padding: 18px 20px; margin-bottom: 22px; }
+        .notes-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+        .notes-head h4 { font-family: 'IBM Plex Mono'; font-size: 13px; color: var(--gold-deep); text-transform: uppercase; letter-spacing: .06em; margin: 0; }
+        .note { border-top: 1px solid #ECEEE7; padding: 12px 2px; }
+        .note .meta { font-family: 'IBM Plex Mono'; font-size: 11px; color: var(--ink-soft); margin-bottom: 4px; display: flex; gap: 12px; align-items: center; }
+        .note .meta .timestamp { color: var(--gold-deep); }
+        .note .text { font-size: 13.5px; line-height: 1.5; }
+        .note .del { float: right; font-size: 11px; color: var(--brick); opacity: .6; background: none; border: none; cursor: pointer; }
+        .note .del:hover { opacity: 1; }
+        .new-note { border-top: 1px solid #ECEEE7; padding: 12px 2px; }
+        .new-note textarea { width: 100%; min-height: 60px; font-family: inherit; font-size: 13.5px; padding: 8px; border-radius: 6px; border: 1.5px solid #C7CDBF; resize: vertical; }
+        .new-note-actions { display: flex; gap: 8px; margin-top: 8px; justify-content: flex-end; }
+        .section-label { font-family: 'IBM Plex Mono'; font-size: 12.5px; color: var(--gold-deep); text-transform: uppercase; letter-spacing: .06em; margin: 0 0 12px; }
+        .card { background: var(--card); border-radius: 10px; box-shadow: var(--shadow); margin-bottom: 16px; overflow: hidden; border-left: 5px solid var(--accent, var(--gold)); }
+        .card-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 10px; gap: 10px; flex-wrap: wrap; }
+        .card-title { display: flex; align-items: baseline; gap: 9px; flex-wrap: wrap; }
+        .card-title h3 { margin: 0; font-size: 16.5px; font-weight: 600; }
+        .badge { font-family: 'IBM Plex Mono'; font-size: 10.5px; letter-spacing: .07em; text-transform: uppercase; color: var(--accent, var(--gold-deep)); border: 1px solid var(--accent, var(--gold-deep)); padding: 2px 6px; border-radius: 4px; }
+        .stat { font-family: 'IBM Plex Mono'; font-size: 12px; color: var(--ink-soft); }
+        .stat b { color: var(--ink); }
+        .card-controls { display: flex; align-items: center; gap: 8px; }
+        .nav-label { font-family: 'IBM Plex Mono'; font-size: 12.5px; min-width: 104px; text-align: center; }
+        .grid-body { padding: 6px 16px 16px; }
+        .checklist-item { display: flex; align-items: center; gap: 10px; padding: 8px 2px; border-bottom: 1px solid #ECEEE7; }
+        .checklist-item:last-child { border-bottom: none; }
+        .box { width: 19px; height: 19px; flex: 0 0 19px; border-radius: 4px; border: 1.5px solid #B9BFAF; background: var(--paper); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .box.checked { background: var(--accent, var(--plum)); border-color: var(--accent-deep, var(--plum)); }
+        .box svg { width: 12px; height: 12px; opacity: 0; transform: scale(.5); transition: all .15s ease; }
+        .box.checked svg { opacity: 1; transform: scale(1); }
+        .item-label { flex: 1; font-size: 13.5px; }
+        .item-label.done { text-decoration: line-through; color: var(--ink-soft); }
+        .add-item-row { display: flex; gap: 8px; margin-top: 8px; }
+        .add-item-row input { flex: 1; }
+        .card-foot { display: flex; justify-content: flex-end; padding: 0 16px 14px; gap: 8px; }
+        input, select, textarea { font-family: inherit; font-size: 13px; padding: 8px 10px; border-radius: 6px; border: 1.5px solid #C7CDBF; background: #fff; color: var(--ink); }
+        input:focus, select:focus, textarea:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
+        .overlay { position: fixed; inset: 0; background: rgba(32,42,38,.45); display: none; align-items: center; justify-content: center; z-index: 50; padding: 16px; }
+        .overlay.show { display: flex; }
+        .modal { background: var(--card); border-radius: 10px; padding: 22px; width: 100%; max-width: 380px; box-shadow: 0 10px 40px rgba(0,0,0,.25); }
+        .modal h2 { font-family: 'IBM Plex Mono'; font-size: 16px; margin: 0 0 14px; }
+        .field { margin-bottom: 14px; display: flex; flex-direction: column; gap: 6px; }
+        .field label { font-size: 12px; color: var(--ink-soft); font-weight: 500; }
+        .field input, .field select { width: 100%; }
+        .cadence-opts { display: flex; gap: 8px; }
+        .cad-btn { flex: 1; padding: 9px 4px; border-radius: 6px; border: 1.5px solid #C7CDBF; background: #fff; font-size: 12px; text-align: center; cursor: pointer; }
+        .cad-btn.sel { border-color: var(--ink); background: var(--ink); color: var(--paper); }
+        .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(10px); background: var(--ink); color: var(--paper); padding: 10px 18px; border-radius: 7px; font-size: 13px; opacity: 0; transition: all .25s ease; pointer-events: none; z-index: 80; font-family: 'IBM Plex Mono'; }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .insight-picker { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+        .pill { font-family: 'IBM Plex Mono'; font-size: 12px; padding: 7px 12px; border-radius: 999px; border: 1.5px solid #C7CDBF; background: #fff; color: var(--ink-soft); cursor: pointer; }
+        .pill.sel { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+        .panel { background: var(--card); border-radius: 10px; box-shadow: var(--shadow); padding: 20px; margin-bottom: 16px; }
+        .panel h4 { font-family: 'IBM Plex Mono'; font-size: 12.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); margin: 0 0 14px; }
+        .kpis { display: flex; gap: 26px; margin-bottom: 18px; flex-wrap: wrap; }
+        .kpi .num { font-family: 'IBM Plex Mono'; font-size: 26px; font-weight: 600; }
+        .kpi .lbl { font-size: 11.5px; color: var(--ink-soft); }
+        .heatmap { display: flex; gap: 3px; overflow-x: auto; padding-bottom: 6px; }
+        .heat-col { display: flex; flex-direction: column; gap: 3px; }
+        .heat-cell { width: 13px; height: 13px; border-radius: 3px; background: #E7E9E0; }
+        .heat-legend { display: flex; align-items: center; gap: 6px; margin-top: 10px; font-size: 11px; color: var(--ink-soft); }
+        .bars { display: flex; align-items: flex-end; gap: 8px; height: 120px; margin-top: 6px; }
+        .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 6px; height: 100%; }
+        .bar { width: 100%; border-radius: 4px 4px 0 0; background: var(--accent, var(--teal)); min-height: 2px; transition: height .3s ease; }
+        .bar-lbl { font-size: 9px; color: var(--ink-soft); }
+        .clear-btn { color: var(--brick); border-color: var(--brick); }
+        .clear-btn:hover { background: var(--brick); color: white; }
+        .hourly-table { width: 100%; border-collapse: separate; border-spacing: 3px; min-width: 700px; }
+        .hourly-table th { font-family: 'IBM Plex Mono'; font-size: 10px; color: var(--ink-soft); text-align: center; padding: 4px 2px; font-weight: 500; }
+        .hourly-table th.hour-label { font-weight: 600; color: var(--gold-deep); }
+        .hourly-table td { text-align: center; padding: 0; }
+        .hourly-table td.habit-name { text-align: left; font-size: 13px; font-weight: 500; white-space: nowrap; padding: 4px 12px 4px 2px; position: sticky; left: 0; background: var(--card); z-index: 2; }
+        .hourly-table td.habit-name .del { opacity: 0; font-size: 11px; color: var(--brick); margin-left: 8px; transition: opacity .15s; background: none; border: none; cursor: pointer; }
+        .hourly-table tr:hover td.habit-name .del { opacity: 1; }
+        .hour-cell { width: 32px; height: 32px; text-align: center; cursor: pointer; position: relative; }
+        .hour-cell .cellbox { width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; background: transparent; border: 1.5px solid #E4E7DD; transition: transform .1s ease; }
+        .hour-cell:hover .cellbox { transform: scale(1.08); }
+        .hour-cell.future { opacity: .3; cursor: default; }
+        .hour-cell.future .cellbox:hover { transform: none; }
+        .hour-cell.checked .cellbox { background: var(--teal); border-color: var(--teal-deep); }
+        .hour-cell.checked .cellbox svg { opacity: 1; transform: scale(1); }
+        .hour-cell .cellbox svg { width: 14px; height: 14px; opacity: 0; transform: scale(.5); transition: all .16s cubic-bezier(.34,1.56,.64,1); }
+        .hourly-table .day-total { font-family: 'IBM Plex Mono'; font-size: 10.5px; color: var(--gold-deep); padding: 0 4px; min-width: 32px; text-align: center; }
+        .hourly-nav { display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 14px; }
+        .hourly-nav .date-label { font-family: 'IBM Plex Mono'; font-size: 14px; font-weight: 600; min-width: 150px; text-align: center; }
+        @media (max-width:640px) { .hour-cell { width: 26px; height: 26px; } .hour-cell .cellbox { width: 26px; height: 26px; } .hourly-table th { font-size: 8px; } }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <!-- LEFT PANEL -->
+    <div class="left-panel">
+        <!-- Analog Clock -->
+        <div class="clock-card">
+            <h3 id="clockTitle">Local Time · <span id="defaultTzLabel">IST</span></h3>
+            <div class="analog-clock" id="analogClock">
+                <div class="center"></div>
+                <div class="hand hour-hand" id="hourHand"></div>
+                <div class="hand minute-hand" id="minuteHand"></div>
+                <div class="hand second-hand" id="secondHand"></div>
+            </div>
+            <div class="digital-time" id="digitalTime">--:--:--</div>
+            <div class="digital-date" id="digitalDate">---</div>
+            <div style="margin-top:8px;display:flex;gap:4px;justify-content:center;flex-wrap:wrap;">
+                <select id="defaultTimezoneSelect" style="font-size:11px;padding:4px 6px;border-radius:4px;border:1.5px solid #C7CDBF;background:#fff;width:100%;">
+                    <option value="Asia/Kolkata">IST (India)</option>
+                    <option value="Europe/Amsterdam">Amsterdam</option>
+                    <option value="Europe/London">London</option>
+                    <option value="America/New_York">New York</option>
+                    <option value="Asia/Tokyo">Tokyo</option>
+                    <option value="Australia/Sydney">Sydney</option>
+                    <option value="Asia/Dubai">Dubai</option>
+                    <option value="America/Los_Angeles">Los Angeles</option>
+                    <option value="Europe/Paris">Paris</option>
+                    <option value="Asia/Singapore">Singapore</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Timer -->
+        <div class="tool-card">
+            <div class="tool-header" data-target="timerBody">
+                <h4>⏱ Timer</h4>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="tool-body" id="timerBody">
+                <div class="display" id="timerDisplay">00:00</div>
+                <div class="row">
+                    <input type="number" id="timerMinutes" value="5" min="0" max="999" style="width:50px;"> min
+                    <input type="number" id="timerSeconds" value="0" min="0" max="59" style="width:50px;"> sec
+                </div>
+                <div class="controls">
+                    <button class="btn small primary" id="timerStartBtn">Start</button>
+                    <button class="btn small" id="timerPauseBtn">Pause</button>
+                    <button class="btn small ghost" id="timerResetBtn">Reset</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stopwatch -->
+        <div class="tool-card">
+            <div class="tool-header" data-target="stopwatchBody">
+                <h4>⏱ Stopwatch</h4>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="tool-body" id="stopwatchBody">
+                <div class="display" id="stopwatchDisplay">00:00.0</div>
+                <div class="controls">
+                    <button class="btn small primary" id="stopwatchStartBtn">Start</button>
+                    <button class="btn small" id="stopwatchPauseBtn">Pause</button>
+                    <button class="btn small ghost" id="stopwatchResetBtn">Reset</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alarm -->
+        <div class="tool-card">
+            <div class="tool-header" data-target="alarmBody">
+                <h4>🔔 Alarm</h4>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="tool-body" id="alarmBody">
+                <div class="row" style="margin-bottom:6px;">
+                    <input type="number" id="alarmHour" value="7" min="0" max="23" style="width:50px;"> h
+                    <input type="number" id="alarmMinute" value="0" min="0" max="59" style="width:50px;"> m
+                    <button class="btn small primary" id="alarmSetBtn">Set</button>
+                </div>
+                <div id="alarmStatus" style="text-align:center;font-size:12px;color:var(--ink-soft);">Alarm not set</div>
+            </div>
+        </div>
+
+        <!-- Timezones -->
+        <div class="tool-card">
+            <div class="tool-header" data-target="timezoneBody">
+                <h4>🌍 Timezones</h4>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="tool-body" id="timezoneBody">
+                <div class="timezone-list" id="timezoneList">
+                    <div class="tz-item" data-tz="Asia/Kolkata"><span class="tz-name">New Delhi <span class="tz-default">★ default</span></span><span class="tz-time" id="tz-del">--:--</span></div>
+                    <div class="tz-item" data-tz="Europe/Amsterdam"><span class="tz-name">Amsterdam</span><span class="tz-time" id="tz-ams">--:--</span></div>
+                    <div class="tz-item" data-tz="Europe/London"><span class="tz-name">London</span><span class="tz-time" id="tz-lon">--:--</span></div>
+                    <div class="tz-item" data-tz="America/New_York"><span class="tz-name">New York</span><span class="tz-time" id="tz-ny">--:--</span></div>
+                    <div class="tz-item" data-tz="Asia/Tokyo"><span class="tz-name">Tokyo</span><span class="tz-time" id="tz-tok">--:--</span></div>
+                    <div class="tz-item" data-tz="Australia/Sydney"><span class="tz-name">Sydney</span><span class="tz-time" id="tz-syd">--:--</span></div>
+                    <div class="tz-item" data-tz="Asia/Dubai"><span class="tz-name">Dubai</span><span class="tz-time" id="tz-dxb">--:--</span></div>
+                    <div class="tz-item" data-tz="America/Los_Angeles"><span class="tz-name">Los Angeles</span><span class="tz-time" id="tz-la">--:--</span></div>
+                    <div class="tz-item" data-tz="Europe/Paris"><span class="tz-name">Paris</span><span class="tz-time" id="tz-par">--:--</span></div>
+                    <div class="tz-item" data-tz="Asia/Singapore"><span class="tz-name">Singapore</span><span class="tz-time" id="tz-sin">--:--</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <header>
+            <div class="brand"><span class="mark">LEDGER</span><div><h1>Habit &amp; Work Tracker</h1><div class="sub">Check daily, by the hour, or make your own list — your marks, kept.</div></div></div>
+            <div class="headerActions">
+<button class="btn danger" id="clearAllBtn">✕ Clear all data</button>
+<button class="btn gold" id="exportBtn">⤓ Export Excel</button>
+<button class="btn success" id="fetchBtn">☁ Fetch</button>
+<button class="btn success" id="syncBtn">☁ Sync</button>
+<button class="btn primary" id="addBtn">+ New tracker</button>
+            </div>
+        </header>
+        <div class="tabs"><button class="tab active" data-tab="track">Track</button><button class="tab" data-tab="insights">Insights</button></div>
+        <div id="trackView"></div>
+        <div id="insightsView" style="display:none;"></div>
+    </div>
+</div>
+<div class="overlay" id="overlay">
+    <div class="modal">
+        <h2>New tracker</h2>
+        <div class="field"><label>Name</label><input id="nameInput" type="text" placeholder="e.g. Read 20 min, Deep work" maxlength="60"></div>
+        <div class="field"><label>Cadence</label><div class="cadence-opts">
+            <button class="cad-btn sel" data-cad="daily">Daily</button>
+            <button class="cad-btn" data-cad="hourly">Hourly</button>
+            <button class="cad-btn" data-cad="checklist">Manual list</button>
+        </div></div>
+        <div class="modal-actions"><button class="btn ghost" id="cancelBtn">Cancel</button><button class="btn primary" id="createBtn">Create</button></div>
+    </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+    // --- Collapsible sections ---
+    document.querySelectorAll('.tool-header').forEach(header => {
+        header.addEventListener('click', function() {
+            const targetId = this.dataset.target;
+            const body = document.getElementById(targetId);
+            if (body) {
+                body.classList.toggle('open');
+                const icon = this.querySelector('.toggle-icon');
+                if (icon) icon.classList.toggle('open');
+            }
+        });
+        // Open first section by default
+        // const firstBody = document.getElementById(header.dataset.target);
+        // if (firstBody && header.closest('.tool-card') === document.querySelector('.tool-card')) {
+        //     // Only open timer by default
+        //     if (header.querySelector('h4').textContent.includes('Timer')) {
+        //         firstBody.classList.add('open');
+        //         header.querySelector('.toggle-icon').classList.add('open');
+        //     }
+        // }
+    });
+    // Open timer by default
+    // document.querySelector('#timerBody')?.classList.add('open');
+    // document.querySelector('.tool-header[data-target="timerBody"] .toggle-icon')?.classList.add('open');
+
+    // --- Sound system ---
+    function playSound() {
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.frequency.value = 800;
+            gain.gain.value = 0.3;
+            osc.start();
+            setTimeout(() => { osc.stop(); }, 500);
+            setTimeout(() => {
+                const osc2 = ctx.createOscillator();
+                const gain2 = ctx.createGain();
+                osc2.connect(gain2);
+                gain2.connect(ctx.destination);
+                osc2.frequency.value = 1000;
+                gain2.gain.value = 0.3;
+                osc2.start();
+                setTimeout(() => { osc2.stop(); }, 500);
+            }, 600);
+            setTimeout(() => {
+                const osc3 = ctx.createOscillator();
+                const gain3 = ctx.createGain();
+                osc3.connect(gain3);
+                gain3.connect(ctx.destination);
+                osc3.frequency.value = 1200;
+                gain3.gain.value = 0.3;
+                osc3.start();
+                setTimeout(() => { osc3.stop(); }, 500);
+            }, 1200);
+        } catch(e) { /* fallback - use console beep */ }
+    }
+
+    // --- Clock & Timezone ---
+    let defaultTimezone = 'Asia/Kolkata';
+    const clockEl = document.getElementById('analogClock');
+    const hourHand = document.getElementById('hourHand');
+    const minuteHand = document.getElementById('minuteHand');
+    const secondHand = document.getElementById('secondHand');
+    const digitalTime = document.getElementById('digitalTime');
+    const digitalDate = document.getElementById('digitalDate');
+    const defaultTzLabel = document.getElementById('defaultTzLabel');
+
+    function getTimeInTimezone(tz) {
+        return new Date().toLocaleString('en-US', { timeZone: tz });
+    }
+
+    function updateClock() {
+        const now = new Date();
+        const tzNow = new Date(getTimeInTimezone(defaultTimezone));
+        const h = tzNow.getHours() % 12;
+        const m = tzNow.getMinutes();
+        const s = tzNow.getSeconds();
+        const ms = tzNow.getMilliseconds();
+
+        const secDeg = (s + ms/1000) * 6;
+        const minDeg = (m + s/60) * 6;
+        const hourDeg = (h + m/60) * 30;
+
+        secondHand.style.transform = `rotate(${secDeg}deg)`;
+        minuteHand.style.transform = `rotate(${minDeg}deg)`;
+        hourHand.style.transform = `rotate(${hourDeg}deg)`;
+
+        digitalTime.textContent = tzNow.toLocaleTimeString('en-US', { hour12: false });
+        digitalDate.textContent = tzNow.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+
+        // Update timezones
+        updateTimezones(now);
+    }
+
+    function updateTimezones(now) {
+        const tzs = {
+            'tz-del': 'Asia/Kolkata',
+            'tz-ams': 'Europe/Amsterdam',
+            'tz-lon': 'Europe/London',
+            'tz-ny': 'America/New_York',
+            'tz-tok': 'Asia/Tokyo',
+            'tz-syd': 'Australia/Sydney',
+            'tz-dxb': 'Asia/Dubai',
+            'tz-la': 'America/Los_Angeles',
+            'tz-par': 'Europe/Paris',
+            'tz-sin': 'Asia/Singapore'
+        };
+        for (const [id, tz] of Object.entries(tzs)) {
+            const el = document.getElementById(id);
+            if (el) {
+                const time = now.toLocaleTimeString('en-US', { timeZone: tz, hour12: false, hour: '2-digit', minute: '2-digit' });
+                el.textContent = time;
+            }
+        }
+        // Update default label
+        const tzNames = {
+            'Asia/Kolkata': 'IST',
+            'Europe/Amsterdam': 'Amsterdam',
+            'Europe/London': 'London',
+            'America/New_York': 'New York',
+            'Asia/Tokyo': 'Tokyo',
+            'Australia/Sydney': 'Sydney',
+            'Asia/Dubai': 'Dubai',
+            'America/Los_Angeles': 'Los Angeles',
+            'Europe/Paris': 'Paris',
+            'Asia/Singapore': 'Singapore'
+        };
+        defaultTzLabel.textContent = tzNames[defaultTimezone] || defaultTimezone.split('/').pop();
+        document.getElementById('clockTitle').innerHTML = `Local Time · <span id="defaultTzLabel">${tzNames[defaultTimezone] || defaultTimezone.split('/').pop()}</span>`;
+    }
+
+    setInterval(updateClock, 100);
+    updateClock();
+
+    // Default timezone selector
+    document.getElementById('defaultTimezoneSelect').addEventListener('change', function() {
+        defaultTimezone = this.value;
+        updateClock();
+        // Update default star in timezone list
+        document.querySelectorAll('.tz-item').forEach(item => {
+            const star = item.querySelector('.tz-default');
+            if (star) star.remove();
+            if (item.dataset.tz === defaultTimezone) {
+                const nameSpan = item.querySelector('.tz-name');
+                if (nameSpan) {
+                    const starSpan = document.createElement('span');
+                    starSpan.className = 'tz-default';
+                    starSpan.textContent = ' ★ default';
+                    nameSpan.appendChild(starSpan);
+                }
+            }
+        });
+        showToast(`Default timezone changed to ${this.options[this.selectedIndex].text}`);
+    });
+
+    // Click on timezone item to set as default
+    document.querySelectorAll('.tz-item').forEach(item => {
+        item.addEventListener('click', function() {
+            const tz = this.dataset.tz;
+            if (tz) {
+                document.getElementById('defaultTimezoneSelect').value = tz;
+                document.getElementById('defaultTimezoneSelect').dispatchEvent(new Event('change'));
+            }
+        });
+    });
+
+    // --- Timer ---
+    let timerInterval = null;
+    let timerSeconds = 0;
+    let timerRunning = false;
+    const timerDisplay = document.getElementById('timerDisplay');
+    const timerMinutesInput = document.getElementById('timerMinutes');
+    const timerSecondsInput = document.getElementById('timerSeconds');
+
+    function updateTimerDisplay(secs) {
+        const m = Math.floor(secs / 60);
+        const s = secs % 60;
+        timerDisplay.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }
+
+    function timerTick() {
+        if (timerSeconds <= 0) {
+            clearInterval(timerInterval);
+            timerRunning = false;
+            document.getElementById('timerStartBtn').textContent = 'Start';
+            playSound();
+            showToast('⏰ Timer finished!');
+            return;
+        }
+        timerSeconds--;
+        updateTimerDisplay(timerSeconds);
+    }
+
+    document.getElementById('timerStartBtn').addEventListener('click', function() {
+        if (timerRunning) return;
+        const mins = parseInt(timerMinutesInput.value) || 0;
+        const secs = parseInt(timerSecondsInput.value) || 0;
+        const total = mins * 60 + secs;
+        if (total <= 0) { showToast('Set a valid time'); return; }
+        timerSeconds = total;
+        updateTimerDisplay(timerSeconds);
+        timerRunning = true;
+        this.textContent = 'Running...';
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(timerTick, 1000);
+    });
+
+    document.getElementById('timerPauseBtn').addEventListener('click', function() {
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            timerRunning = false;
+            document.getElementById('timerStartBtn').textContent = 'Resume';
+        }
+    });
+
+    document.getElementById('timerResetBtn').addEventListener('click', function() {
+        if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+        timerRunning = false;
+        timerSeconds = 0;
+        updateTimerDisplay(0);
+        document.getElementById('timerStartBtn').textContent = 'Start';
+        timerMinutesInput.value = 5;
+        timerSecondsInput.value = 0;
+    });
+
+    // --- Stopwatch ---
+    let swInterval = null;
+    let swSeconds = 0;
+    let swRunning = false;
+    const stopwatchDisplay = document.getElementById('stopwatchDisplay');
+
+    function updateStopwatch() {
+        const m = Math.floor(swSeconds / 60);
+        const s = Math.floor(swSeconds % 60);
+        const tenths = Math.floor((swSeconds % 1) * 10);
+        stopwatchDisplay.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${tenths}`;
+    }
+
+    document.getElementById('stopwatchStartBtn').addEventListener('click', function() {
+        if (swRunning) return;
+        swRunning = true;
+        this.textContent = 'Running...';
+        const startTime = Date.now() - swSeconds * 1000;
+        if (swInterval) clearInterval(swInterval);
+        swInterval = setInterval(() => {
+            swSeconds = (Date.now() - startTime) / 1000;
+            updateStopwatch();
+        }, 100);
+    });
+
+    document.getElementById('stopwatchPauseBtn').addEventListener('click', function() {
+        if (swInterval) {
+            clearInterval(swInterval);
+            swInterval = null;
+            swRunning = false;
+            document.getElementById('stopwatchStartBtn').textContent = 'Resume';
+        }
+    });
+
+    document.getElementById('stopwatchResetBtn').addEventListener('click', function() {
+        if (swInterval) { clearInterval(swInterval); swInterval = null; }
+        swRunning = false;
+        swSeconds = 0;
+        updateStopwatch();
+        document.getElementById('stopwatchStartBtn').textContent = 'Start';
+    });
+
+    // --- Alarm ---
+    let alarmTimeout = null;
+    let alarmSet = false;
+
+    document.getElementById('alarmSetBtn').addEventListener('click', function() {
+        const h = parseInt(document.getElementById('alarmHour').value) || 0;
+        const m = parseInt(document.getElementById('alarmMinute').value) || 0;
+        if (h < 0 || h > 23 || m < 0 || m > 59) { showToast('Invalid time'); return; }
+        const now = new Date();
+        const alarm = new Date(now);
+        alarm.setHours(h, m, 0, 0);
+        if (alarm <= now) alarm.setDate(alarm.getDate() + 1);
+        const diff = alarm - now;
+        if (alarmTimeout) clearTimeout(alarmTimeout);
+        alarmTimeout = setTimeout(() => {
+            playSound();
+            showToast('🔔 Alarm! Time to wake up!');
+            document.getElementById('alarmStatus').textContent = 'Alarm rang!';
+            alarmSet = false;
+        }, diff);
+        alarmSet = true;
+        document.getElementById('alarmStatus').innerHTML = `Alarm set for ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')} <span class="alarm-set">ACTIVE</span>`;
+        showToast(`Alarm set for ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`);
+    });
+
+    // --- Habit Tracker (original code) ---
+    const ACCENTS = [{a:'#D9A441',d:'#B9860F'},{a:'#3F6B63',d:'#2C4E48'},{a:'#7A5980',d:'#5C4062'},{a:'#B14B4B',d:'#8E3838'},{a:'#4B6FB1',d:'#38548E'}];
+    const ROW_COLORS = [{bg:'#FBEFD0',mark:'#B9860F'},{bg:'#DCEFE0',mark:'#3F7A56'},{bg:'#DCE6F5',mark:'#3E5FA0'},{bg:'#E7E0F2',mark:'#6B4F92'},{bg:'#F5DEDE',mark:'#A24E4E'}];
+    let habits = [], notes = [], currentTab = 'track', gridMonthOffset = 0, hourlyDayOffset = 0, insightsHabitId = null, addingNote = false, saveTimer = null;
+    const pad = n => String(n).padStart(2,'0'), dstr = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`, todayStr = () => dstr(new Date()), uid = () => Math.random().toString(36).slice(2,10);
+    const escapeHTML = s => s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1800); }
+    function scheduleSave(){
+
+    clearTimeout(saveTimer);
+saveTimer = setTimeout(async ()=>{
+
+    localStorage.setItem("habits", JSON.stringify(habits));
+    localStorage.setItem("notes", JSON.stringify(notes));
+
+    await syncToGoogleSheets(false);
+
+},500);
+}
+
+function loadData(){ 
+        try{ const h=localStorage.getItem('habits'); habits=h?JSON.parse(h):[]; }catch(e){ habits=[]; } 
+        habits.forEach(h=>{ if(h.goal===undefined) h.goal=null; if(!h.daily) h.daily={}; if(!h.hourly) h.hourly={}; if(!h.checklist) h.checklist=[]; }); 
+        try{ const n=localStorage.getItem('notes'); notes=n?JSON.parse(n):[]; }catch(e){ notes=[]; } 
+        render(); 
+    }
+    function clearAllData(){
+        if(confirm('Delete ALL trackers, notes, and reset every entry? This cannot be undone.')){
+            habits = []; notes = []; gridMonthOffset = 0; hourlyDayOffset = 0; insightsHabitId = null;
+            localStorage.removeItem('habits'); localStorage.removeItem('notes');
+            render(); showToast('All data cleared');
+        }
+    }
+    function accentFor(h){ const idx=habits.findIndex(x=>x.id===h.id)%ACCENTS.length; return ACCENTS[(idx+ACCENTS.length)%ACCENTS.length]; }
+    function rowColorFor(dailyHabits, h){ const idx=dailyHabits.findIndex(x=>x.id===h.id)%ROW_COLORS.length; return ROW_COLORS[(idx+ROW_COLORS.length)%ROW_COLORS.length]; }
+    function render(){ renderTrack(); if(currentTab==='insights') renderInsights(); }
+
+    function renderTrack(){
+        const el=document.getElementById('trackView');
+        if(habits.length===0){ el.innerHTML=`<div class="empty"><div class="stamp">◻ EMPTY LEDGER</div>No trackers yet. Click "New tracker" to start.</div>`; return; }
+        const daily=habits.filter(h=>h.cadence==='daily'), hourly=habits.filter(h=>h.cadence==='hourly'), checklist=habits.filter(h=>h.cadence==='checklist');
+        let html=sheetHTML(daily);
+        if(hourly.length) html+=hourlySectionHTML(hourly);
+        if(checklist.length) html+=`<div class="section-label">Manual lists</div>`+checklist.map(h=>cardHTML(h)).join('');
+        html+=notesHTML();
+        el.innerHTML=html;
+        attachSheetEvents(daily); attachNotesEvents(); 
+        attachHourlyEvents();
+        checklist.forEach(h=>attachCardEvents(h));
+    }
+
+    function sheetHTML(dailyHabits){
+        const ref=new Date(); ref.setDate(1); ref.setMonth(ref.getMonth()-gridMonthOffset);
+        const year=ref.getFullYear(), month=ref.getMonth(), monthLabel=ref.toLocaleString('default',{month:'long',year:'numeric'}), daysInMonth=new Date(year,month+1,0).getDate(), today=todayStr(), dowLetters=['M','T','W','T','F','S','S'];
+        let head=`<th class="habits-h">Habits</th>`;
+        for(let d=1; d<=daysInMonth; d++){ const ds=`${year}-${pad(month+1)}-${pad(d)}`; const dow=(new Date(year,month,d).getDay()+6)%7; const isToday=ds===today; head+=`<th class="day-h ${isToday?'today':''}" ${isToday?'style="background:var(--ink);border-radius:6px 6px 0 0;"':''}><span class="dow">${dowLetters[dow]}</span><span class="num">${d}</span></th>`; }
+        head+=`<th class="side-h">Done</th>`;
+        let rows='';
+        if(dailyHabits.length===0) rows=`<tr><td class="habit-name" colspan="${daysInMonth+2}" style="color:var(--ink-soft);font-weight:400;">No daily habits — add one below.</td></tr>`;
+        else rows=dailyHabits.map(h=>{
+            const rc=rowColorFor(dailyHabits,h); let cells=`<td class="habit-name" data-id="${h.id}">${escapeHTML(h.name)}<button class="del" data-act="delHabit" data-id="${h.id}">✕</button></td>`;
+            for(let d=1; d<=daysInMonth; d++){ const ds=`${year}-${pad(month+1)}-${pad(d)}`; const checked=!!h.daily[ds], future=ds>today, isToday=ds===today; cells+=`<td class="day-cell ${future?'future':''} ${checked?'checked':''} ${isToday?'today':''}" data-id="${h.id}" data-date="${ds}"><div class="cellbox" style="${checked?`background:${rc.bg};`:''}"><svg viewBox="0 0 24 24" fill="none" stroke="${rc.mark}" stroke-width="3.2"><path d="M4 12l6 6L20 6"/></svg></div></td>`; }
+            const {checkedCount}=monthStats(h,ref);
+            cells+=`<td class="achieved-cell"><span class="achieved-badge">${checkedCount}</span></td>`;
+            return `<tr>${cells}</tr>`;
+        }).join('');
+        return `<div class="sheet-card"><div class="sheet-nav"><button class="btn small ghost" data-act="prevGridMonth">‹</button><span class="m-label">${monthLabel}</span><button class="btn small ghost" data-act="nextGridMonth" ${gridMonthOffset===0?'disabled style="opacity:.3;"':''}>›</button></div><div class="sheet-wrap"><table class="sheet"><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table></div><div class="sheet-newrow"><button class="link-btn" id="newHabitLink">+ New Habit</button></div></div>`;
+    }
+
+    function monthStats(h,ref){ const year=ref.getFullYear(), month=ref.getMonth(), days=new Date(year,month+1,0).getDate(); let checkedCount=0; for(let d=1; d<=days; d++){ const ds=`${year}-${pad(month+1)}-${pad(d)}`; if(h.daily[ds]) checkedCount++; } return {checkedCount,total:days}; }
+    function dailyStreak(h){ let streak=0,d=new Date(); while(true){ const ds=dstr(d); if(h.daily[ds]){streak++; d.setDate(d.getDate()-1);} else break; } return streak; }
+    function hourlyStreak(h){ let streak=0,d=new Date(); while(true){ const ds=dstr(d); const arr=h.hourly[ds]; if(arr && arr.some(Boolean)){streak++; d.setDate(d.getDate()-1);} else break; } return streak; }
+
+    function hourlySectionHTML(hourlyHabits){
+        const ref=new Date();
+        ref.setDate(ref.getDate() - hourlyDayOffset);
+        const dateLabel = ref.toLocaleDateString('default', { weekday:'short', month:'short', day:'numeric', year:'numeric' });
+        const isToday = hourlyDayOffset === 0;
+        const ds = dstr(ref);
+        
+        let html = `<div class="sheet-card"><div class="hourly-nav"><button class="btn small ghost" data-act="prevHourlyDay">‹</button><span class="date-label">${dateLabel} ${isToday?'· Today':''}</span><button class="btn small ghost" data-act="nextHourlyDay" ${hourlyDayOffset===0?'disabled style="opacity:.3;"':''}>›</button></div><div class="section-label">HOURLY WORK</div><div class="sheet-wrap"><table class="hourly-table"><thead><tr><th class="habits-h">Habits</th>`;
+        
+        for(let hr=0; hr<24; hr++){
+            const label = hr===0?'12a':hr<12?hr+'a':hr===12?'12p':(hr-12)+'p';
+            html += `<th class="hour-label">${label}</th>`;
+        }
+        html += `<th>Done</th></tr></thead><tbody>`;
+        
+        if(hourlyHabits.length===0){
+            html += `<tr><td class="habit-name" colspan="26" style="color:var(--ink-soft);font-weight:400;">No hourly habits — add one below.</td></tr>`;
+        } else {
+            hourlyHabits.forEach(h=>{
+                const arr = h.hourly[ds] || Array(24).fill(false);
+                const count = arr.filter(Boolean).length;
+                const future = ds > todayStr();
+                html += `<tr><td class="habit-name" data-id="${h.id}">${escapeHTML(h.name)}<button class="del" data-act="delHourlyHabit" data-id="${h.id}">✕</button></td>`;
+                for(let hr=0; hr<24; hr++){
+                    const checked = arr[hr] || false;
+                    html += `<td class="hour-cell ${future?'future':''} ${checked?'checked':''}" data-id="${h.id}" data-date="${ds}" data-hour="${hr}"><div class="cellbox"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.2"><path d="M4 12l6 6L20 6"/></svg></div></td>`;
+                }
+                html += `<td class="day-total">${count}/24</td></tr>`;
+            });
+        }
+        
+        html += `</tbody></table></div><div class="sheet-newrow"><button class="link-btn" data-act="addHourlyHabit">+ New Hourly Tracker</button></div></div>`;
+        return html;
+    }
+
+    function notesHTML(){
+        const sorted=[...notes].sort((a,b)=>b.date.localeCompare(a.date) || b.ts.localeCompare(a.ts));
+        return `<div class="notes-card"><div class="notes-head"><h4>Notes</h4><div><button class="link-btn" id="newNoteBtn">+ New Note</button></div></div>
+            <div id="newNoteSlot">${addingNote?`<div class="new-note"><textarea id="noteText" placeholder="Write a note…" autofocus></textarea><div class="new-note-actions"><button class="btn small ghost" id="cancelNote">Cancel</button><button class="btn small primary" id="saveNote">Save</button></div></div>`:''}</div>
+            ${sorted.length===0?'<div style="color:var(--ink-soft);font-size:13px;padding:10px 2px;">No notes yet.</div>':sorted.map(n=>`<div class="note"><button class="del" data-act="delNote" data-id="${n.id}">✕</button><div class="meta"><span>${formatNiceDate(n.date)}</span><span class="timestamp">${n.ts||''}</span></div><div class="text">${escapeHTML(n.text)}</div></div>`).join('')}</div>`;
+    }
+    function formatNiceDate(ds){ const [y,m,d]=ds.split('-').map(Number); return new Date(y,m-1,d).toLocaleDateString('default',{day:'numeric',month:'long',year:'numeric'}); }
+
+    function attachNotesEvents(){
+        document.getElementById('newNoteBtn')?.addEventListener('click', ()=>{ addingNote=true; renderTrack(); document.getElementById('noteText')?.focus(); });
+        document.getElementById('cancelNote')?.addEventListener('click', ()=>{ addingNote=false; renderTrack(); });
+        document.getElementById('saveNote')?.addEventListener('click', ()=>{ const txt=document.getElementById('noteText').value.trim(); if(!txt) return; const now=new Date(); const ts=now.toLocaleString('en-IN',{timeZone:'Asia/Kolkata',hour12:false}); const isoDate=dstr(now); notes.push({id:uid(), date:isoDate, ts:ts, text:txt}); addingNote=false; scheduleSave(); renderTrack(); });
+        document.querySelectorAll('[data-act="delNote"]').forEach(b=>b.addEventListener('click', ()=>{ notes=notes.filter(n=>n.id!==b.dataset.id); scheduleSave(); renderTrack(); }));
+    }
+
+    function attachSheetEvents(dailyHabits){
+        document.querySelectorAll('td.day-cell:not(.future)').forEach(td=>td.addEventListener('click', ()=>{ const h=habits.find(x=>x.id===td.dataset.id); h.daily[td.dataset.date]=!h.daily[td.dataset.date]; scheduleSave(); renderTrack(); }));
+        document.querySelectorAll('[data-act="delHabit"]').forEach(b=>b.addEventListener('click', e=>{ e.stopPropagation(); const h=habits.find(x=>x.id===b.dataset.id); if(confirm(`Delete "${h.name}"?`)){ habits=habits.filter(x=>x.id!==h.id); scheduleSave(); render(); } }));
+        document.querySelector('[data-act="prevGridMonth"]')?.addEventListener('click', ()=>{ gridMonthOffset++; renderTrack(); });
+        document.querySelector('[data-act="nextGridMonth"]')?.addEventListener('click', ()=>{ gridMonthOffset=Math.max(0,gridMonthOffset-1); renderTrack(); });
+        document.getElementById('newHabitLink')?.addEventListener('click', ()=>openModal('daily'));
+        document.querySelector('[data-act="addHourlyHabit"]')?.addEventListener('click', ()=>openModal('hourly'));
+    }
+
+    function attachHourlyEvents(){
+        const card = document.querySelector(`.hourly-table`);
+        if(!card) return;
+        card.querySelectorAll('.hour-cell:not(.future)').forEach(cell=>{
+            cell.addEventListener('click', ()=>{
+                const hId = cell.dataset.id;
+                const date = cell.dataset.date;
+                const hour = parseInt(cell.dataset.hour);
+                const habit = habits.find(x=>x.id===hId);
+                if(!habit) return;
+                if(!habit.hourly[date]) habit.hourly[date]=Array(24).fill(false);
+                habit.hourly[date][hour] = !habit.hourly[date][hour];
+                scheduleSave(); renderTrack();
+            });
+        });
+        document.querySelectorAll('[data-act="delHourlyHabit"]').forEach(b=>{
+            b.addEventListener('click', e=>{
+                e.stopPropagation();
+                const h=habits.find(x=>x.id===b.dataset.id);
+                if(confirm(`Delete "${h.name}"?`)){ habits=habits.filter(x=>x.id!==h.id); scheduleSave(); render(); }
+            });
+        });
+        document.querySelector('[data-act="prevHourlyDay"]')?.addEventListener('click', ()=>{ hourlyDayOffset++; renderTrack(); });
+        document.querySelector('[data-act="nextHourlyDay"]')?.addEventListener('click', ()=>{ hourlyDayOffset=Math.max(0,hourlyDayOffset-1); renderTrack(); });
+    }
+
+    function cardHTML(h){
+        const acc=accentFor(h); let controls='', body='', statHTML='', clearBtn='';
+        const done=h.checklist.filter(i=>i.checked).length;
+        statHTML=`<span class="stat"><b>${done}</b>/${h.checklist.length} checked</span>`;
+        body=checklistHTML(h);
+        clearBtn=`<button class="btn small clear-btn" data-act="clearChecklist">Uncheck all</button>`;
+        return `<div class="card" data-id="${h.id}" style="--accent:${acc.a};--accent-deep:${acc.d};"><div class="card-head"><div class="card-title"><h3>${escapeHTML(h.name)}</h3><span class="badge">${h.cadence}</span>${statHTML}</div>${controls}</div><div class="grid-body">${body}</div><div class="card-foot">${clearBtn}<button class="btn small ghost" data-act="delete">Delete tracker</button></div></div>`;
+    }
+
+    function checklistHTML(h){
+        const items=h.checklist.map(it=>`<div class="checklist-item" data-item="${it.id}"><div class="box ${it.checked?'checked':''}" data-act="toggleItem"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M4 12l6 6L20 6"/></svg></div><span class="item-label ${it.checked?'done':''}">${escapeHTML(it.label)}</span><button class="btn small ghost" data-act="removeItem" style="padding:3px 7px;">✕</button></div>`).join('');
+        return `${items||'<div style="color:var(--ink-soft);font-size:13px;padding:6px 0;">No items yet — add one below.</div>'}<div class="add-item-row"><input type="text" placeholder="Add a checkbox…" data-role="newItem" maxlength="80"><button class="btn small primary" data-act="addItem">Add</button></div>`;
+    }
+
+    function attachCardEvents(h){
+        const card=document.querySelector(`.card[data-id="${h.id}"]`); if(!card) return;
+        card.querySelectorAll('[data-act="toggleItem"]').forEach(b=>b.addEventListener('click', ()=>{ const id=b.closest('.checklist-item').dataset.item; const item=h.checklist.find(i=>i.id===id); item.checked=!item.checked; scheduleSave(); renderTrack(); }));
+        card.querySelectorAll('[data-act="removeItem"]').forEach(b=>b.addEventListener('click', ()=>{ const id=b.closest('.checklist-item').dataset.item; h.checklist=h.checklist.filter(i=>i.id!==id); scheduleSave(); renderTrack(); }));
+        const addBtn=card.querySelector('[data-act="addItem"]'); if(addBtn){ const input=card.querySelector('[data-role="newItem"]'); const doAdd=()=>{ const v=input.value.trim(); if(!v) return; h.checklist.push({id:uid(), label:v, checked:false}); scheduleSave(); renderTrack(); }; addBtn.addEventListener('click', doAdd); input.addEventListener('keydown', e=>{ if(e.key==='Enter') doAdd(); }); }
+        card.querySelector('[data-act="delete"]')?.addEventListener('click', ()=>{ if(confirm(`Delete "${h.name}"?`)){ habits=habits.filter(x=>x.id!==h.id); scheduleSave(); render(); } });
+        card.querySelector('[data-act="clearChecklist"]')?.addEventListener('click', ()=>{ h.checklist.forEach(i=>i.checked=false); scheduleSave(); renderTrack(); });
+    }
+
+    function renderInsights(){
+        const el=document.getElementById('insightsView');
+        if(habits.length===0){ el.innerHTML=`<div class="empty"><div class="stamp">◻ NOTHING TO SHOW</div>Add a tracker first.</div>`; return; }
+        if(!insightsHabitId||!habits.find(h=>h.id===insightsHabitId)) insightsHabitId=habits[0].id;
+        const h=habits.find(x=>x.id===insightsHabitId); const acc=accentFor(h);
+        const pills=habits.map(x=>`<button class="pill ${x.id===insightsHabitId?'sel':''}" data-id="${x.id}">${escapeHTML(x.name)}</button>`).join('');
+        let kpiHTML='', heatHTML='', barHTML='', detailHTML='';
+        if(h.cadence==='checklist'){
+            const done=h.checklist.filter(i=>i.checked).length, total=h.checklist.length||1;
+            kpiHTML=kpis([[done,'checked'],[total-done,'remaining'],[Math.round(done/total*100)+'%','complete']]);
+            barHTML=`<div class="panel"><h4>Checklist completion</h4><div style="height:16px;border-radius:8px;background:#E7E9E0;overflow:hidden;"><div style="height:100%;width:${Math.round(done/total*100)}%;background:${acc.a};transition:width .3s ease;"></div></div></div>`;
+            el.innerHTML=`<div class="insight-picker">${pills}</div>${kpiHTML}${barHTML}`;
+        } else {
+            const days=84, today=new Date(), values=[]; for(let i=days-1;i>=0;i--){ const d=new Date(today); d.setDate(d.getDate()-i); const ds=dstr(d); let v=0; if(h.cadence==='daily') v=h.daily[ds]?1:0; else { const arr=h.hourly[ds]; v=arr?arr.filter(Boolean).length/24:0; } values.push({ds,v,dow:(d.getDay()+6)%7}); }
+            const padded=Array(values[0].dow).fill(null).concat(values); const cols=[]; for(let i=0;i<padded.length;i+=7) cols.push(padded.slice(i,i+7));
+            heatHTML=`<div class="panel"><h4>Last 12 weeks</h4><div class="heatmap">${cols.map(col=>`<div class="heat-col">${col.map(c=>{ if(!c) return `<div class="heat-cell" style="background:transparent;"></div>`; const op=c.v===0?0.12:0.25+c.v*0.75; return `<div class="heat-cell" title="${c.ds}: ${Math.round(c.v*100)}%" style="background:${acc.a};opacity:${op};"></div>`; }).join('')}</div>`).join('')}</div><div class="heat-legend">less <div class="heat-cell" style="background:${acc.a};opacity:.12;"></div><div class="heat-cell" style="background:${acc.a};opacity:.4;"></div><div class="heat-cell" style="background:${acc.a};opacity:.7;"></div><div class="heat-cell" style="background:${acc.a};opacity:1;"></div> more</div></div>`;
+            const weeks=[]; for(let w=7; w>=0; w--){ const start=new Date(today); start.setDate(start.getDate()-(w*7+6)); let sum=0,n=0; for(let i=0;i<7;i++){ const d=new Date(start); d.setDate(d.getDate()+i); if(d>today) continue; const ds=dstr(d); n++; sum+=h.cadence==='daily'?(h.daily[ds]?1:0):(h.hourly[ds]?h.hourly[ds].filter(Boolean).length/24:0); } weeks.push({label:`${start.getMonth()+1}/${start.getDate()}`, pct:n?Math.round(sum/n*100):0}); }
+            barHTML=`<div class="panel"><h4>Weekly completion rate</h4><div class="bars">${weeks.map(w=>`<div class="bar-col"><div class="bar" style="height:${Math.max(w.pct,2)}%;--accent:${acc.a};"></div><span class="bar-lbl">${w.pct}%</span><span class="bar-lbl">${w.label}</span></div>`).join('')}</div></div>`;
+            const streak=h.cadence==='daily'?dailyStreak(h):hourlyStreak(h);
+            const totalChecked=h.cadence==='daily'?Object.values(h.daily).filter(Boolean).length:Object.values(h.hourly).reduce((s,a)=>s+a.filter(Boolean).length,0);
+            kpiHTML=kpis([[streak,'day streak'],[totalChecked,h.cadence==='daily'?'days logged':'hours logged'],[weeks[weeks.length-1].pct+'%','this week']]);
+            
+            const ref=new Date(); const year=ref.getFullYear(), month=ref.getMonth(), daysInMonth=new Date(year,month+1,0).getDate(); let checkedMonth=0; for(let d=1; d<=daysInMonth; d++){ const ds=`${year}-${pad(month+1)}-${pad(d)}`; if(h.cadence==='daily'){ if(h.daily[ds]) checkedMonth++; } else { const arr=h.hourly[ds]; if(arr && arr.some(Boolean)) checkedMonth++; } }
+            const monthLabel=ref.toLocaleString('default',{month:'long'});
+            detailHTML=`<div class="panel"><h4>This month (${monthLabel})</h4><div class="kpis"><div class="kpi"><div class="num">${checkedMonth}/${daysInMonth}</div><div class="lbl">days with activity</div></div><div class="kpi"><div class="num">${Math.round(checkedMonth/daysInMonth*100)}%</div><div class="lbl">rate</div></div></div></div>`;
+            
+            el.innerHTML=`<div class="insight-picker">${pills}</div>${kpiHTML}${heatHTML}${barHTML}${detailHTML}`;
+        }
+        el.querySelectorAll('.pill').forEach(p=>p.addEventListener('click', ()=>{ insightsHabitId=p.dataset.id; renderInsights(); }));
+    }
+    function kpis(list){ return `<div class="kpis">${list.map(([num,lbl])=>`<div class="kpi"><div class="num">${num}</div><div class="lbl">${lbl}</div></div>`).join('')}</div>`; }
+
+    document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click', ()=>{ currentTab=t.dataset.tab; document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active')); t.classList.add('active'); document.getElementById('trackView').style.display=currentTab==='track'?'':'none'; document.getElementById('insightsView').style.display=currentTab==='insights'?'':'none'; if(currentTab==='insights') renderInsights(); }));
+
+    let selectedCadence='daily'; const overlay=document.getElementById('overlay');
+    function openModal(presetCad){ document.getElementById('nameInput').value=''; selectedCadence=presetCad||'daily'; document.querySelectorAll('.cad-btn').forEach(b=>b.classList.toggle('sel', b.dataset.cad===selectedCadence)); overlay.classList.add('show'); document.getElementById('nameInput').focus(); }
+    document.getElementById('addBtn').addEventListener('click', ()=>openModal('daily'));
+    document.getElementById('cancelBtn').addEventListener('click', ()=>overlay.classList.remove('show'));
+    overlay.addEventListener('click', e=>{ if(e.target===overlay) overlay.classList.remove('show'); });
+    document.querySelectorAll('.cad-btn').forEach(b=>b.addEventListener('click', ()=>{ selectedCadence=b.dataset.cad; document.querySelectorAll('.cad-btn').forEach(x=>x.classList.toggle('sel', x===b)); }));
+    document.getElementById('createBtn').addEventListener('click', ()=>{ const name=document.getElementById('nameInput').value.trim(); if(!name){ showToast('Give it a name'); return; } habits.push({id:uid(), name, cadence:selectedCadence, createdAt:todayStr(), daily:{}, hourly:{}, checklist:[], goal:null}); overlay.classList.remove('show'); scheduleSave(); render(); showToast('Tracker created'); });
+    document.getElementById('nameInput').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('createBtn').click(); });
+
+    document.getElementById('exportBtn').addEventListener('click', ()=>{
+        if(habits.length===0){ showToast('Nothing to export'); return; }
+        const wb=XLSX.utils.book_new();
+        const summary=habits.map(h=>{ let rate=0; if(h.cadence==='daily'){ const vals=Object.values(h.daily); rate=vals.length?Math.round(vals.filter(Boolean).length/vals.length*100):0; } else if(h.cadence==='hourly'){ const days=Object.values(h.hourly); const totalHrs=days.reduce((s,a)=>s+a.length,0); const checkedHrs=days.reduce((s,a)=>s+a.filter(Boolean).length,0); rate=totalHrs?Math.round(checkedHrs/totalHrs*100):0; } else { rate=h.checklist.length?Math.round(h.checklist.filter(i=>i.checked).length/h.checklist.length*100):0; } return {Name:h.name, Cadence:h.cadence, Created:h.createdAt, 'Completion %':rate}; });
+        XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(summary), 'Summary');
+        habits.forEach(h=>{ const safeName=h.name.replace(/[\\\/\?\*\[\]:]/g,'').slice(0,28)||'Tracker'; let rows=[]; if(h.cadence==='daily') rows=Object.entries(h.daily).sort().map(([date,val])=>({Date:date, Completed:val?'Yes':'No'})); else if(h.cadence==='hourly') rows=Object.entries(h.hourly).sort().map(([date,arr])=>({Date:date, 'Hours Completed':arr.map((v,i)=>v?i:null).filter(v=>v!==null).join(', '), Count:arr.filter(Boolean).length, Percent:Math.round(arr.filter(Boolean).length/24*100)+'%'})); else rows=h.checklist.map(i=>({Item:i.label, Checked:i.checked?'Yes':'No'})); if(rows.length===0) rows=[{Note:'No entries yet'}]; XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows), safeName); });
+        if(notes.length){ XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(notes.map(n=>({Date:n.date, Time:n.ts||'', Note:n.text}))), 'Notes'); }
+        XLSX.writeFile(wb, `habit-tracker-export-${todayStr()}.xlsx`);
+        showToast('Exported to Excel');
+    });
+
+    document.getElementById('clearAllBtn').addEventListener('click', clearAllData);
+
+    loadData();
+
+   const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyFDJHkFLZhJVnvI_u7JMuWDkTWaOmATDcd3HWhZ9DJa_5H7efW96qaETPzKcq_tzGa4A/exec";
+
+async function syncToGoogleSheets(showMessage = true) {
+
+    const payload = {
+        habits: habits,
+        notes: notes,
+        syncedAt: new Date().toISOString()
+    };
+
+    try {
+
+        const response = await fetch(WEB_APP_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "text/plain"
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+
+        if(result.success){
+            if (showMessage) {
+    showToast("☁ Synced to Google Sheets");
+}
+        }else{
+            showToast("Sync failed");
+        }
+
+    } catch(err){
+
+        console.error(err);
+        showToast("Network error");
+
+    }
+
+}
+
+
+async function fetchFromGoogleSheets() {
+
+    try {
+
+        const response = await fetch(WEB_APP_URL);
+
+        const data = await response.json();
+
+        if (!data.habits) {
+            showToast("No backup found");
+            return;
+        }
+
+        if (!confirm("Replace current tracker with the latest Google Sheets backup?")) {
+            return;
+        }
+
+        habits = data.habits || [];
+        notes = data.notes || [];
+
+habits.forEach(h => {
+
+    if (h.goal === undefined) h.goal = null;
+
+    if (!h.daily) h.daily = {};
+
+    if (!h.hourly) h.hourly = {};
+
+    // Convert every hourly entry into a real 24-element array
+    Object.keys(h.hourly).forEach(date => {
+
+        if (!Array.isArray(h.hourly[date])) {
+
+            const converted = Array(24).fill(false);
+
+            for (let i = 0; i < 24; i++) {
+                converted[i] = !!h.hourly[date][i];
+            }
+
+            h.hourly[date] = converted;
+        }
+
+        while (h.hourly[date].length < 24) {
+            h.hourly[date].push(false);
+        }
+    });
+
+    if (!h.checklist) h.checklist = [];
+
+});
+
+        localStorage.setItem("habits", JSON.stringify(habits));
+        localStorage.setItem("notes", JSON.stringify(notes));
+
+        render();
+
+        showToast("☁ Data restored");
+
+    } catch (err) {
+
+        console.error(err);
+        showToast("Fetch failed");
+
+    }
+
+}
+
+
+// ← ADD IT HERE
+document.getElementById("syncBtn").addEventListener("click", syncToGoogleSheets);
+
+document.getElementById("fetchBtn").addEventListener("click", fetchFromGoogleSheets);
+
+
+
+})();
+</script>
+</body>
+</html>
