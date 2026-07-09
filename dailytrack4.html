@@ -316,6 +316,89 @@
             min-height: 48px;
         }
 
+        /* Image side */
+        .habits-with-image {
+            display: flex;
+            gap: 20px;
+            align-items: stretch;
+        }
+        .habits-table-wrap {
+            flex: 1;
+            min-width: 0;
+        }
+        .image-side {
+            width: 206px;
+            height: 206px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: stretch;
+        }
+        .image-side .image-container {
+            width: 100%;
+            background: var(--card);
+            border-radius: 2px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px;
+            background: var(--paper);
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .image-side .image-container:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            z-index: 10;
+        }
+        .image-side .image-container img {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+        .image-side .image-container #imageLoading {
+            text-align: center;
+            color: var(--ink-soft);
+            font-size: 13px;
+        }
+
+        /* Popup zoom on hover */
+        .image-side .image-container.zoomed {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(1);
+            width: 80vw;
+            max-width: 800px;
+            height: 80vh;
+            max-height: 800px;
+            z-index: 1000;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            border-radius: 16px;
+            padding: 20px;
+            cursor: zoom-out;
+        }
+        .image-side .image-container.zoomed img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        .image-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            display: none;
+        }
+        .image-overlay.show {
+            display: block;
+        }
+
         /* Main Content */
         .main-content {
             min-width: 0;
@@ -843,6 +926,16 @@
             color: var(--ink-soft);
             margin-left: 4px;
         }
+        .image-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            display: none;
+        }
+        .image-overlay.show {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -1027,6 +1120,7 @@
     </div>
 </div>
 
+<!-- Overlays -->
 <div class="overlay" id="overlay">
     <div class="modal">
         <h2>New tracker</h2>
@@ -1101,7 +1195,11 @@
     </div>
 </div>
 
+<!-- Image Overlay for Zoom -->
+<div class="image-overlay" id="imageOverlay"></div>
+
 <div class="toast" id="toast"></div>
+
 <script>
 (function(){
     // --- Clock with "NOW" and "MON" ---
@@ -1130,6 +1228,98 @@
         }
     }
     createClockLabels();
+
+    // --- Image handling ---
+    function getDailyImage() {
+        const imageContainer = document.querySelector('.image-side .image-container');
+        if (!imageContainer) return;
+        
+        const randomImage = imageContainer.querySelector('#randomImage');
+        const imageLoading = imageContainer.querySelector('#imageLoading');
+        
+        if (!randomImage || !imageLoading) return;
+        
+        // List your images here — all images from d1.jpg to d10.jpg
+        const imageFiles = [
+            'd1.jpg',
+            'd2.jpg',
+            'd3.jpg',
+            'd4.jpg',
+            'd5.jpg',
+            'd6.jpg',
+            'd7.jpg',
+            'd8.jpg',
+            'd9.jpg',
+            'd10.jpg'
+        ];
+        
+        const today = new Date();
+        // Get day of the year (1-365/366)
+        const startOfYear = new Date(today.getFullYear(), 0, 0);
+        const diff = today - startOfYear;
+        const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
+        
+        // Use a seed based on the year and day to shuffle the order
+        // This ensures the sequence changes each year
+        const yearSeed = today.getFullYear();
+        
+        // Create a shuffled copy of the array based on the year seed
+        // Using a simple but effective shuffle with the year as seed
+        const shuffled = [...imageFiles];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            // Use both year and day for better distribution
+            const j = Math.floor(((yearSeed * 31 + i * 7 + dayOfYear * 13) % (i + 1)));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        
+        // Select image based on day of year, cycling through all images
+        const totalImages = shuffled.length;
+        const selectedIndex = dayOfYear % totalImages;
+        const selectedImage = shuffled[selectedIndex];
+        
+        const imageUrl = `images/${selectedImage}`;
+        
+        randomImage.style.display = 'none';
+        imageLoading.style.display = 'block';
+        imageLoading.textContent = 'Loading image...';
+        
+        randomImage.src = imageUrl;
+        
+        randomImage.onload = function() {
+            imageLoading.style.display = 'none';
+            randomImage.style.display = 'block';
+        };
+        
+        randomImage.onerror = function() {
+            imageLoading.textContent = '⚠️ Image not found. Make sure the images folder exists.';
+            imageLoading.style.display = 'block';
+            randomImage.style.display = 'none';
+        };
+    }
+
+    function setupImageZoom() {
+        const container = document.querySelector('.image-side .image-container');
+        const overlay = document.getElementById('imageOverlay');
+        if (!container || !overlay) return;
+        
+        container.addEventListener('click', function(e) {
+            e.stopPropagation();
+            this.classList.toggle('zoomed');
+            overlay.classList.toggle('show');
+        });
+        
+        overlay.addEventListener('click', function() {
+            container.classList.remove('zoomed');
+            this.classList.remove('show');
+        });
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                container.classList.remove('zoomed');
+                overlay.classList.remove('show');
+            }
+        });
+    }
 
     // --- Collapsible sections ---
     document.querySelectorAll('.tool-header').forEach(header => {
@@ -1806,6 +1996,10 @@
         loadReminders();
         loadPaperData();
         render(); 
+        setTimeout(() => {
+            getDailyImage();
+            setupImageZoom();
+        }, 200);
     }
     
     // Clear All Data with custom popup
@@ -1917,6 +2111,10 @@
         attachHourlyEvents();
         checklist.forEach(h=>attachCardEvents(h));
         attachPaperEvents();
+        setTimeout(() => {
+            getDailyImage();
+            setupImageZoom();
+        }, 100);
     }
 
     function paperSectionHTML() {
@@ -2058,7 +2256,22 @@
         
         rows += noteRowHTML(ref);
         
-        return `<div class="sheet-card"><div class="sheet-nav"><button class="btn small ghost" data-act="prevGridMonth">‹</button><span class="m-label">${monthLabel}</span><button class="btn small ghost" data-act="nextGridMonth" ${gridMonthOffset===0?'disabled style="opacity:.3;"':''}>›</button></div><div class="sheet-wrap"><table class="sheet"><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table></div><div class="sheet-newrow"><button class="link-btn" id="newHabitLink">+ New Habit</button></div></div>`;
+        // Image side
+        return `<div class="sheet-card">
+            <div class="habits-with-image">
+                <div class="habits-table-wrap">
+                    <div class="sheet-nav"><button class="btn small ghost" data-act="prevGridMonth">‹</button><span class="m-label">${monthLabel}</span><button class="btn small ghost" data-act="nextGridMonth" ${gridMonthOffset===0?'disabled style="opacity:.3;"':''}>›</button></div>
+                    <div class="sheet-wrap"><table class="sheet"><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table></div>
+                    <div class="sheet-newrow"><button class="link-btn" id="newHabitLink">+ New Habit</button></div>
+                </div>
+                <div class="image-side">
+                    <div class="image-container">
+                        <img id="randomImage" src="" alt="Daily image" style="width:100%;height:auto;display:block;">
+                        <div id="imageLoading" style="display:none;text-align:center;padding:40px 0;color:var(--ink-soft);">Loading image...</div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
     }
 
     function monthStats(h,ref){ const year=ref.getFullYear(), month=ref.getMonth(), days=new Date(year,month+1,0).getDate(); let checkedCount=0; for(let d=1; d<=days; d++){ const ds=`${year}-${pad(month+1)}-${pad(d)}`; if(h.daily[ds]) checkedCount++; } return {checkedCount,total:days}; }
@@ -2245,7 +2458,7 @@
 
     function cardHTML(h){
         const acc=accentFor(h); 
-        let body='', statHTML='', clearBtn='';
+        let body='', statHTML='';
         const totalItems = h.checklist.length;
         const doneItems = h.checklist.filter(i => i.checked).length;
         const completedItems = h.checklist.filter(i => i.checked);
@@ -2253,7 +2466,6 @@
         
         statHTML=`<span class="stat"><b>${doneItems}</b>/${totalItems} checked</span>`;
         body=checklistHTML(h, activeItems, completedItems);
-        // clearBtn=`<button class="btn small clear-btn" data-act="clearChecklist">Uncheck all</button>`;
         return `<div class="card" data-id="${h.id}" style="--accent:${acc.a};--accent-deep:${acc.d};">
             <div class="card-head">
                 <div class="card-title">
@@ -2267,7 +2479,6 @@
                 </div>
             </div>
             <div class="grid-body">${body}</div>
-
         </div>`;
     }
 
@@ -2288,7 +2499,7 @@
             </div>
         `).join('');
         
-        // Completed section (collapsible, like Reminders)
+        // Completed section (collapsible)
         let completedHTML = '';
         if (completedItems.length > 0) {
             completedHTML = `
@@ -2317,7 +2528,6 @@
     function attachCardEvents(h){
         const card=document.querySelector(`.card[data-id="${h.id}"]`); if(!card) return;
         
-        // Toggle item (checkbox)
         card.querySelectorAll('[data-act="toggleItem"]').forEach(b=>b.addEventListener('click', ()=>{ 
             const id=b.closest('.checklist-item').dataset.item; 
             const item=h.checklist.find(i=>i.id===id); 
@@ -2337,7 +2547,6 @@
             }
         }));
         
-        // Remove item (both active and completed)
         card.querySelectorAll('[data-act="removeItem"]').forEach(b=>b.addEventListener('click', ()=>{ 
             const id=b.closest('[data-item]').dataset.item; 
             h.checklist=h.checklist.filter(i=>i.id!==id); 
@@ -2345,7 +2554,6 @@
             renderTrack(); 
         }));
         
-        // Edit item
         card.querySelectorAll('[data-act="editItem"]').forEach(b=>b.addEventListener('click', ()=>{
             const id=b.closest('.checklist-item').dataset.item;
             const item=h.checklist.find(i=>i.id===id);
@@ -2358,7 +2566,6 @@
             }
         }));
         
-        // Add item
         const addBtn=card.querySelector('[data-act="addItem"]'); 
         if(addBtn){ 
             const input=card.querySelector('[data-role="newItem"]'); 
@@ -2378,7 +2585,6 @@
             input.addEventListener('keydown', e=>{ if(e.key==='Enter') doAdd(); }); 
         }
         
-        // Delete tracker
         card.querySelector('[data-act="delete"]')?.addEventListener('click', ()=>{ 
             if(confirm(`Delete "${h.name}"?`)){ 
                 habits=habits.filter(x=>x.id!==h.id); 
@@ -2387,14 +2593,12 @@
             } 
         });
         
-        // Clear all checked
         card.querySelector('[data-act="clearChecklist"]')?.addEventListener('click', ()=>{ 
             h.checklist.forEach(i=>i.checked=false); 
             scheduleSave(); 
             renderTrack(); 
         });
 
-        // Move up/down
         card.querySelectorAll('[data-act="moveUpChecklist"]').forEach(b=>b.addEventListener('click', function(e){
             e.stopPropagation();
             const id = this.dataset.id;
@@ -2407,7 +2611,6 @@
             moveHabitDown(id);
         }));
         
-        // Double-click to rename
         card.querySelectorAll('.habit-name-text').forEach(el=>{
             el.addEventListener('dblclick', function(e){
                 e.stopPropagation();
@@ -2423,7 +2626,6 @@
             });
         });
 
-        // Drag and drop for active items only
         const items = card.querySelectorAll('.checklist-item');
         let dragItem = null;
 
@@ -2586,6 +2788,13 @@
             if(editModal.classList.contains("show")) {
                 editModal.classList.remove("show");
                 editItemData = null;
+            }
+            // Close image zoom on Escape
+            const imgContainer = document.querySelector('.image-side .image-container');
+            const overlayImg = document.getElementById('imageOverlay');
+            if (imgContainer && imgContainer.classList.contains('zoomed')) {
+                imgContainer.classList.remove('zoomed');
+                overlayImg.classList.remove('show');
             }
         }
     });
