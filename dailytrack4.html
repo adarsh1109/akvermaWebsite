@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ledger · Habit Tracker</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📒</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -36,15 +37,23 @@
             padding: 20px 16px 40px;
         }
         .wrap { 
-            max-width: 1400px; 
-            margin: 0 auto; 
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 24px;
-        }
-        @media (max-width: 1000px) {
-            .wrap { grid-template-columns: 1fr; }
-        }
+    max-width: 1400px; 
+    margin: 0 auto; 
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 24px;
+}
+@media (max-width: 1000px) {
+    .wrap { 
+        grid-template-columns: 1fr;
+    }
+    .left-panel {
+        order: 2; /* Moves left panel to bottom */
+    }
+    .main-content {
+        order: 1; /* Moves main content to top */
+    }
+}
         /* Left Panel */
         .left-panel {
             position: sticky;
@@ -97,17 +106,17 @@
             border-radius: 2px;
         }
         .analog-clock .hour-hand {
-            width: 4px;
-            height: 45px;
+            width: 3px;
+            height: 38px;
             background: var(--ink);
-            margin-left: -2px;
+            margin-left: -1.5px;
             z-index: 5;
         }
         .analog-clock .minute-hand {
-            width: 3px;
-            height: 60px;
+            width: 2.5px;
+            height: 50px;
             background: var(--ink);
-            margin-left: -1.5px;
+            margin-left: -1.25px;
             z-index: 6;
         }
         .analog-clock .second-hand {
@@ -116,6 +125,21 @@
             background: var(--brick);
             margin-left: -0.75px;
             z-index: 7;
+        }
+        /* Clock numbers - rotated */
+        .clock-number {
+            position: absolute;
+            font-family: 'IBM Plex Mono';
+            font-size: 9px;
+            font-weight: 600;
+            color: var(--ink-soft);
+            width: 30px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform-origin: center;
+            text-align: center;
         }
         .digital-time {
             font-family: 'IBM Plex Mono';
@@ -228,6 +252,73 @@
         .alarm-set { background: var(--gold); color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
         .btn.success { border-color: var(--teal); color: var(--teal); }
         .btn.success:hover { background: var(--teal); color: white; }
+
+        /* Reminder section with green outline */
+        .reminder-card {
+            border: 4px solid #2E7D32;
+            border-radius: 12px;
+            background: var(--card);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        /* Calculator styles */
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            margin-top: 8px;
+        }
+        .calculator-grid .calc-btn {
+            padding: 10px;
+            border: 1px solid #C7CDBF;
+            border-radius: 4px;
+            background: var(--card);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+            transition: background 0.15s;
+        }
+        .calculator-grid .calc-btn:hover {
+            background: #ECEEE7;
+        }
+        .calculator-grid .calc-btn.operator {
+            background: var(--gold);
+            color: white;
+            border-color: var(--gold-deep);
+        }
+        .calculator-grid .calc-btn.operator:hover {
+            background: var(--gold-deep);
+        }
+        .calculator-grid .calc-btn.equals {
+            background: var(--ink);
+            color: white;
+            border-color: var(--ink);
+        }
+        .calculator-grid .calc-btn.equals:hover {
+            background: #3a4a44;
+        }
+        .calculator-grid .calc-btn.clear {
+            background: var(--brick);
+            color: white;
+            border-color: var(--brick);
+        }
+        .calculator-grid .calc-btn.clear:hover {
+            background: #8e3838;
+        }
+        .calc-display {
+            width: 100%;
+            padding: 10px;
+            font-family: 'IBM Plex Mono';
+            font-size: 20px;
+            text-align: right;
+            border: 1.5px solid #C7CDBF;
+            border-radius: 4px;
+            background: var(--paper);
+            margin-bottom: 8px;
+            min-height: 48px;
+        }
 
         /* Main Content */
         .main-content {
@@ -371,6 +462,336 @@
         .hourly-nav { display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 14px; }
         .hourly-nav .date-label { font-family: 'IBM Plex Mono'; font-size: 14px; font-weight: 600; min-width: 150px; text-align: center; }
         @media (max-width:640px) { .hour-cell { width: 26px; height: 26px; } .hour-cell .cellbox { width: 26px; height: 26px; } .hourly-table th { font-size: 8px; } }
+        .note-cell {
+            text-align: center !important;
+            vertical-align: middle !important;
+        }
+        .note-cell .cellbox {
+            width: 12px !important;
+            height: 12px !important;
+            margin: auto !important;
+            border-radius: 2px !important;
+            cursor: pointer;
+            transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease;
+        }
+        .note-cell:hover .cellbox {
+            transform: scale(1.08);
+        }
+
+        /* Note Modal Styles */
+        #noteModal .modal {
+            max-width: 700px;
+            background: var(--card);
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,.25);
+            padding: 22px;
+            width: 100%;
+            transition: height 0.2s ease;
+            overflow: hidden;
+        }
+        #noteModal .modal h2 {
+            font-family: 'IBM Plex Mono';
+            font-size: 16px;
+            margin: 0;
+        }
+        #noteModal .modal .btn.ghost {
+            font-size: 16px;
+            padding: 4px 8px;
+        }
+        #noteEditor {
+            width: 100%;
+            height: 350px;
+            resize: vertical;
+            font-size: 15px;
+            margin-top: 10px;
+            font-family: 'IBM Plex Sans', sans-serif;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1.5px solid #C7CDBF;
+            background: #fff;
+            color: var(--ink);
+            line-height: 1.6;
+        }
+        #noteEditor:focus {
+            outline: 2px solid var(--gold);
+            outline-offset: 1px;
+        }
+
+        /* Reminder Styles */
+        .reminder-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 8px 0;
+            border-bottom: 1px solid #ECEEE7;
+        }
+        .reminder-item:last-child { border-bottom: none; }
+        .reminder-item .reminder-check {
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+        .reminder-item .reminder-content {
+            flex: 1;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+        .reminder-item .reminder-content .reminder-date {
+            font-family: 'IBM Plex Mono';
+            font-size: 11px;
+            color: var(--ink-soft);
+        }
+        .reminder-item .reminder-content .reminder-text {
+            margin-top: 2px;
+        }
+        .reminder-item .reminder-delete {
+            background: none;
+            border: none;
+            color: var(--brick);
+            cursor: pointer;
+            font-size: 12px;
+            opacity: 0.5;
+            padding: 2px 4px;
+        }
+        .reminder-item .reminder-delete:hover { opacity: 1; }
+        .reminder-item.done .reminder-content .reminder-text {
+            text-decoration: line-through;
+            color: var(--ink-soft);
+        }
+        .completed-reminder-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 6px 0;
+            border-bottom: 1px solid #F0F0EA;
+            font-size: 12px;
+            color: var(--ink-soft);
+        }
+        .completed-reminder-item:last-child { border-bottom: none; }
+        .completed-reminder-item .reminder-content .reminder-text {
+            text-decoration: line-through;
+        }
+
+        /* Paper a Day Styles */
+        .paper-section {
+            background: var(--card);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 18px 20px 14px;
+            margin-bottom: 22px;
+        }
+        .paper-section .paper-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .paper-section h4 {
+            font-family: 'IBM Plex Mono';
+            font-size: 13px;
+            color: var(--gold-deep);
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            margin: 0;
+        }
+        .paper-nav {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .paper-nav .date-label {
+            font-family: 'IBM Plex Mono';
+            font-size: 13px;
+            font-weight: 600;
+            min-width: 120px;
+            text-align: center;
+        }
+        .paper-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .paper-btn {
+            padding: 6px 14px;
+            border: 1.5px solid var(--gold-deep);
+            background: transparent;
+            color: var(--gold-deep);
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .paper-btn:hover {
+            background: var(--gold-deep);
+            color: white;
+        }
+        .paper-btn.has-content {
+            background: var(--gold-deep) !important;
+            color: white !important;
+            border-color: var(--gold-deep) !important;
+        }
+
+        /* Paper Modal Styles */
+        #paperModal .modal {
+            max-width: 700px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+        }
+        #paperModal .modal h2 {
+            font-family: 'IBM Plex Mono';
+            font-size: 16px;
+            margin: 0;
+        }
+        #paperEditor {
+            width: 100%;
+            min-height: 400px;
+            resize: vertical;
+            font-size: 15px;
+            margin-top: 10px;
+            font-family: 'IBM Plex Sans', sans-serif;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1.5px solid #C7CDBF;
+            background: #fff;
+            color: var(--ink);
+            line-height: 1.6;
+            flex: 1;
+        }
+        #paperEditor:focus {
+            outline: 2px solid var(--gold);
+            outline-offset: 1px;
+        }
+        .paper-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .paper-section-indicator {
+            font-size: 12px;
+            color: var(--ink-soft);
+            font-family: 'IBM Plex Mono';
+        }
+
+        /* Reminder Modal */
+        #reminderModal .modal {
+            max-width: 400px;
+        }
+        #reminderModal .modal .field {
+            margin-bottom: 12px;
+        }
+        #reminderModal .modal textarea {
+            width: 100%;
+            min-height: 80px;
+            resize: vertical;
+            font-family: 'IBM Plex Sans', sans-serif;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1.5px solid #C7CDBF;
+            font-size: 13px;
+        }
+        #reminderModal .modal textarea:focus {
+            outline: 2px solid var(--gold);
+            outline-offset: 1px;
+        }
+
+        /* Checklist Item with Timestamp */
+        .checklist-item .item-timestamp {
+            font-family: 'IBM Plex Mono';
+            font-size: 10px;
+            color: var(--ink-soft);
+            margin-left: auto;
+            opacity: 0.6;
+            white-space: nowrap;
+        }
+        .checklist-item .item-timestamp .date-part {
+            color: var(--gold-deep);
+        }
+        .checklist-item .item-edit {
+            background: none;
+            border: none;
+            color: var(--ink-soft);
+            cursor: pointer;
+            font-size: 12px;
+            padding: 2px 4px;
+            opacity: 0.4;
+            transition: opacity 0.2s;
+        }
+        .checklist-item .item-edit:hover {
+            opacity: 1;
+        }
+        .checklist-item .item-actions {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+        .checklist-item .item-drag {
+            cursor: grab;
+            color: var(--ink-soft);
+            opacity: 0.3;
+            font-size: 14px;
+            user-select: none;
+        }
+        .checklist-item .item-drag:hover {
+            opacity: 0.8;
+        }
+        .checklist-item.dragging {
+            opacity: 0.5;
+        }
+        .checklist-item.drag-over {
+            border-bottom: 2px solid var(--gold);
+        }
+
+        /* Habit Controls - Ultra Compact */
+        .habit-controls {
+            display: inline-flex;
+            align-items: center;
+            gap: 0px;
+            flex-wrap: nowrap;
+            font-size: inherit;
+        }
+        .habit-controls .btn.small {
+            padding: 0px 1px;
+            font-size: 7px;
+            line-height: 1;
+            min-width: 10px;
+            height: 12px;
+            border-radius: 2px;
+        }
+        .habit-controls .habit-name-text {
+            cursor: pointer;
+            padding: 0 2px;
+            border-radius: 2px;
+            transition: background 0.2s;
+            font-size: inherit;
+        }
+        .habit-controls .habit-name-text:hover {
+            background: rgba(0,0,0,0.05);
+        }
+        .habit-controls .del {
+            font-size: 7px;
+            padding: 0px 1px;
+            background: none;
+            border: none;
+            color: var(--brick);
+            cursor: pointer;
+            opacity: 0.4;
+            line-height: 1;
+            height: 12px;
+        }
+        .habit-controls .del:hover {
+            opacity: 1;
+        }
+
+        td.habit-name .habit-controls {
+            font-size: 13px;
+        }
+        .hourly-table td.habit-name .habit-controls {
+            font-size: 12px;
+        }
+        .card-title .habit-controls {
+            font-size: 15px;
+        }
     </style>
 </head>
 <body>
@@ -390,17 +811,39 @@
             <div class="digital-date" id="digitalDate">---</div>
             <div style="margin-top:8px;display:flex;gap:4px;justify-content:center;flex-wrap:wrap;">
                 <select id="defaultTimezoneSelect" style="font-size:11px;padding:4px 6px;border-radius:4px;border:1.5px solid #C7CDBF;background:#fff;width:100%;">
-                    <option value="Asia/Kolkata">IST (India)</option>
-                    <option value="Europe/Amsterdam">Amsterdam</option>
-                    <option value="Europe/London">London</option>
-                    <option value="America/New_York">New York</option>
-                    <option value="Asia/Tokyo">Tokyo</option>
-                    <option value="Australia/Sydney">Sydney</option>
-                    <option value="Asia/Dubai">Dubai</option>
-                    <option value="America/Los_Angeles">Los Angeles</option>
-                    <option value="Europe/Paris">Paris</option>
-                    <option value="Asia/Singapore">Singapore</option>
+    <option value="Asia/Kolkata">IST - India</option>
+    <option value="Europe/Amsterdam">CET - Amsterdam</option>
+    <option value="Europe/London">GMT - London</option>
+    <option value="America/New_York">EST - New York</option>
+    <option value="Asia/Tokyo">JST - Tokyo</option>
+    <option value="Australia/Sydney">AEST - Sydney</option>
+    <option value="Asia/Dubai">GST - Dubai</option>
+    <option value="America/Los_Angeles">PST - Los Angeles</option>
+    <option value="Europe/Paris">CET - Paris</option>
+    <option value="Asia/Singapore">SGT - Singapore</option>
+
                 </select>
+            </div>
+        </div>
+
+        <!-- Reminders with green outline -->
+        <div class="reminder-card">
+            <div class="tool-header" data-target="reminderBody">
+                <h4>📝 Reminders</h4>
+                <span class="toggle-icon open">▼</span>
+            </div>
+            <div class="tool-body open" id="reminderBody">
+                <button class="btn small primary" id="newReminderBtn" style="width:100%;margin-bottom:10px;">+ New Reminder</button>
+                <div id="activeReminderList">
+                    <div style="text-align:center;color:var(--ink-soft);font-size:12px;padding:18px 0;">No reminders yet</div>
+                </div>
+                <hr style="margin:12px 0;border:none;border-top:1px solid #E5E5E5;">
+                <details id="completedReminderSection">
+                    <summary style="cursor:pointer;font-family:'IBM Plex Mono';font-size:12px;color:var(--gold-deep);">
+                        Completed (<span id="completedCount">0</span>)
+                    </summary>
+                    <div id="completedReminderList" style="margin-top:8px;"></div>
+                </details>
             </div>
         </div>
 
@@ -477,18 +920,55 @@
                 </div>
             </div>
         </div>
+
+        <!-- Calculator -->
+        <div class="tool-card">
+            <div class="tool-header" data-target="calculatorBody">
+                <h4>🧮 Calculator</h4>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="tool-body" id="calculatorBody">
+                <input type="text" class="calc-display" id="calcDisplay" readonly value="0">
+                <div class="calculator-grid">
+                    <div class="calc-btn clear" data-calc="clear">C</div>
+                    <div class="calc-btn" data-calc="(">(</div>
+                    <div class="calc-btn" data-calc=")">)</div>
+                    <div class="calc-btn operator" data-calc="/">÷</div>
+                    
+                    <div class="calc-btn" data-calc="7">7</div>
+                    <div class="calc-btn" data-calc="8">8</div>
+                    <div class="calc-btn" data-calc="9">9</div>
+                    <div class="calc-btn operator" data-calc="*">×</div>
+                    
+                    <div class="calc-btn" data-calc="4">4</div>
+                    <div class="calc-btn" data-calc="5">5</div>
+                    <div class="calc-btn" data-calc="6">6</div>
+                    <div class="calc-btn operator" data-calc="-">−</div>
+                    
+                    <div class="calc-btn" data-calc="1">1</div>
+                    <div class="calc-btn" data-calc="2">2</div>
+                    <div class="calc-btn" data-calc="3">3</div>
+                    <div class="calc-btn operator" data-calc="+">+</div>
+                    
+                    <div class="calc-btn" data-calc="0">0</div>
+                    <div class="calc-btn" data-calc=".">.</div>
+                    <div class="calc-btn equals" data-calc="=">=</div>
+                    <div class="calc-btn operator" data-calc="%">%</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- MAIN CONTENT -->
     <div class="main-content">
         <header>
-            <div class="brand"><span class="mark">LEDGER</span><div><h1>Habit &amp; Work Tracker</h1><div class="sub">Check daily, by the hour, or make your own list — your marks, kept.</div></div></div>
+            <div class="brand"><span class="mark">LEDGER</span><div><h1>Habit &amp; Work Tracker</h1><div class="sub">Check daily, by the hour.</div></div></div>
             <div class="headerActions">
-<button class="btn danger" id="clearAllBtn">✕ Clear all data</button>
-<button class="btn gold" id="exportBtn">⤓ Export Excel</button>
-<button class="btn success" id="fetchBtn">☁ Fetch</button>
-<button class="btn success" id="syncBtn">☁ Sync</button>
-<button class="btn primary" id="addBtn">+ New tracker</button>
+                <button class="btn danger" id="clearAllBtn">✕ Clear all data</button>
+                <button class="btn gold" id="exportBtn">⤓ Export Excel</button>
+                <button class="btn success" id="fetchBtn">☁ Fetch</button>
+                <button class="btn success" id="syncBtn">☁ Sync</button>
+                <button class="btn primary" id="addBtn">+ New tracker</button>
             </div>
         </header>
         <div class="tabs"><button class="tab active" data-tab="track">Track</button><button class="tab" data-tab="insights">Insights</button></div>
@@ -496,6 +976,7 @@
         <div id="insightsView" style="display:none;"></div>
     </div>
 </div>
+
 <div class="overlay" id="overlay">
     <div class="modal">
         <h2>New tracker</h2>
@@ -508,9 +989,110 @@
         <div class="modal-actions"><button class="btn ghost" id="cancelBtn">Cancel</button><button class="btn primary" id="createBtn">Create</button></div>
     </div>
 </div>
+
+<!-- Note Modal -->
+<div id="noteModal" class="overlay">
+    <div class="modal" style="max-width:700px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h2 id="noteTitle">Daily Note</h2>
+            <button class="btn ghost" id="noteCloseBtn">✕</button>
+        </div>
+        <textarea id="noteEditor" placeholder="Write your note here…"></textarea>
+    </div>
+</div>
+
+<!-- Reminder Modal -->
+<div id="reminderModal" class="overlay">
+    <div class="modal" style="max-width:400px;">
+        <h2>New Reminder</h2>
+        <div class="field">
+            <label>Date</label>
+            <input type="date" id="reminderDateInput">
+        </div>
+        <div class="field">
+            <label>Time (optional)</label>
+            <input type="time" id="reminderTimeInput">
+        </div>
+        <div class="field">
+            <label>Reminder</label>
+            <textarea id="reminderTextInput" placeholder="What do you need to remember?" rows="3"></textarea>
+        </div>
+        <div class="modal-actions">
+            <button class="btn ghost" id="reminderCancelBtn">Cancel</button>
+            <button class="btn primary" id="reminderSaveBtn">Save</button>
+        </div>
+    </div>
+</div>
+
+<!-- Paper Modal -->
+<div id="paperModal" class="overlay">
+    <div class="modal" style="max-width:700px;max-height:90vh;">
+        <div class="paper-modal-header">
+            <h2 id="paperTitle">Paper Section</h2>
+            <button class="btn ghost" id="paperCloseBtn">✕</button>
+        </div>
+        <div class="paper-section-indicator" id="paperSectionIndicator" style="margin-top:4px;"></div>
+        <textarea id="paperEditor" placeholder="Write your notes here…"></textarea>
+    </div>
+</div>
+
+<!-- Edit Checklist Item Modal -->
+<div id="editItemModal" class="overlay">
+    <div class="modal" style="max-width:400px;">
+        <h2>Edit Item</h2>
+        <div class="field">
+            <label>Item text</label>
+            <input type="text" id="editItemInput" placeholder="Edit item text…" maxlength="80">
+        </div>
+        <div class="modal-actions">
+            <button class="btn ghost" id="editItemCancelBtn">Cancel</button>
+            <button class="btn primary" id="editItemSaveBtn">Save</button>
+        </div>
+    </div>
+</div>
+
 <div class="toast" id="toast"></div>
 <script>
 (function(){
+    // --- Clock with "NOW" and "MON" ---
+    function createClockLabels() {
+        const clock = document.getElementById('analogClock');
+        const labels = [];
+        // 0=12, 1=1, 2=2, 3=3, 4=4, 5=5, 6=6, 7=7, 8=8, 9=9, 10=10, 11=11
+        // 7-11 (positions 7,8,9,10,11) should show "MON"
+        for (let i = 0; i < 12; i++) {
+            if (i >= 7 && i <= 11) {
+                labels.push('MON');
+            } else {
+                labels.push('NOW');
+            }
+        }
+        
+        const radius = 62;
+        const centerX = 80;
+        const centerY = 80;
+        
+        labels.forEach((label, i) => {
+            const angle = (i / 12) * 360 - 90;
+            const rad = angle * Math.PI / 180;
+            const x = centerX + radius * Math.cos(rad);
+            const y = centerY + radius * Math.sin(rad);
+            
+            const el = document.createElement('div');
+            el.className = 'clock-number';
+            el.dataset.hour = i;
+            el.style.left = (x - 15) + 'px';
+            el.style.top = (y - 10) + 'px';
+            el.style.transform = `rotate(${angle}deg)`;
+            el.textContent = label;
+            el.style.width = '30px';
+            el.style.height = '20px';
+            clock.appendChild(el);
+        });
+    }
+    
+    createClockLabels();
+
     // --- Collapsible sections ---
     document.querySelectorAll('.tool-header').forEach(header => {
         header.addEventListener('click', function() {
@@ -522,19 +1104,65 @@
                 if (icon) icon.classList.toggle('open');
             }
         });
-        // Open first section by default
-        // const firstBody = document.getElementById(header.dataset.target);
-        // if (firstBody && header.closest('.tool-card') === document.querySelector('.tool-card')) {
-        //     // Only open timer by default
-        //     if (header.querySelector('h4').textContent.includes('Timer')) {
-        //         firstBody.classList.add('open');
-        //         header.querySelector('.toggle-icon').classList.add('open');
-        //     }
-        // }
     });
-    // Open timer by default
-    // document.querySelector('#timerBody')?.classList.add('open');
-    // document.querySelector('.tool-header[data-target="timerBody"] .toggle-icon')?.classList.add('open');
+
+    // --- Calculator ---
+    const calcDisplay = document.getElementById('calcDisplay');
+    let calcExpression = '';
+    let calcResult = '0';
+
+    function updateCalcDisplay() {
+        calcDisplay.value = calcResult || '0';
+    }
+
+    document.querySelectorAll('[data-calc]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const value = this.dataset.calc;
+            
+            if (value === 'clear') {
+                calcExpression = '';
+                calcResult = '0';
+                updateCalcDisplay();
+                return;
+            }
+            
+            if (value === '=') {
+                try {
+                    let expr = calcExpression
+                        .replace(/×/g, '*')
+                        .replace(/÷/g, '/')
+                        .replace(/−/g, '-');
+                    const result = Function('"use strict"; return (' + expr + ')')();
+                    calcResult = String(result);
+                    calcExpression = String(result);
+                    updateCalcDisplay();
+                } catch(e) {
+                    calcResult = 'Error';
+                    updateCalcDisplay();
+                    calcExpression = '';
+                }
+                return;
+            }
+            
+            if (value === '%') {
+                try {
+                    const num = parseFloat(calcExpression) || 0;
+                    calcResult = String(num / 100);
+                    calcExpression = calcResult;
+                    updateCalcDisplay();
+                } catch(e) {
+                    calcResult = 'Error';
+                    updateCalcDisplay();
+                    calcExpression = '';
+                }
+                return;
+            }
+            
+            calcExpression += value;
+            calcResult = calcExpression;
+            updateCalcDisplay();
+        });
+    });
 
     // --- Sound system ---
     function playSound() {
@@ -568,7 +1196,7 @@
                 osc3.start();
                 setTimeout(() => { osc3.stop(); }, 500);
             }, 1200);
-        } catch(e) { /* fallback - use console beep */ }
+        } catch(e) { /* fallback */ }
     }
 
     // --- Clock & Timezone ---
@@ -585,28 +1213,60 @@
         return new Date().toLocaleString('en-US', { timeZone: tz });
     }
 
-    function updateClock() {
-        const now = new Date();
-        const tzNow = new Date(getTimeInTimezone(defaultTimezone));
-        const h = tzNow.getHours() % 12;
-        const m = tzNow.getMinutes();
-        const s = tzNow.getSeconds();
-        const ms = tzNow.getMilliseconds();
+function updateClockLabels(currentHour, currentMinute) {
+    const labels = document.querySelectorAll('.clock-number');
+    // If 30 minutes or more have passed, show the NEXT hour as green
+    const activeHour = (currentMinute >= 30) ? (currentHour + 1) % 12 : currentHour;
+    
+    labels.forEach((el, index) => {
+        const isCurrent = (index === activeHour);
+        const isMON = (index >= 7 && index <= 11);
+        
+        // Check if this position is the active (green) one first - this overrides everything
+        if (isCurrent) {
+            // Green color regardless of whether it's NOW or MON
+            el.textContent = isMON ? 'MON' : 'NOW';
+            el.style.color = '#2E7D32'; // Green
+            el.style.fontWeight = '700';
+            el.style.fontSize = '9px';
+        } else if (isMON) {
+            // 7-11 (positions 7,8,9,10,11) show "MON" in red
+            el.textContent = 'MON';
+            el.style.color = '#B71C1C'; // Red
+            el.style.fontWeight = '600';
+            el.style.fontSize = '9px';
+        } else {
+            // All other positions show "NOW" in red
+            el.textContent = 'NOW';
+            el.style.color = '#B71C1C'; // Red
+            el.style.fontWeight = '600';
+            el.style.fontSize = '9px';
+        }
+    });
+}
 
-        const secDeg = (s + ms/1000) * 6;
-        const minDeg = (m + s/60) * 6;
-        const hourDeg = (h + m/60) * 30;
+function updateClock() {
+    const now = new Date();
+    const tzNow = new Date(getTimeInTimezone(defaultTimezone));
+    const h = tzNow.getHours() % 12;
+    const m = tzNow.getMinutes();
+    const s = tzNow.getSeconds();
+    const ms = tzNow.getMilliseconds();
 
-        secondHand.style.transform = `rotate(${secDeg}deg)`;
-        minuteHand.style.transform = `rotate(${minDeg}deg)`;
-        hourHand.style.transform = `rotate(${hourDeg}deg)`;
+    const secDeg = (s + ms/1000) * 6;
+    const minDeg = (m + s/60) * 6;
+    const hourDeg = (h + m/60) * 30;
 
-        digitalTime.textContent = tzNow.toLocaleTimeString('en-US', { hour12: false });
-        digitalDate.textContent = tzNow.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+    secondHand.style.transform = `rotate(${secDeg}deg)`;
+    minuteHand.style.transform = `rotate(${minDeg}deg)`;
+    hourHand.style.transform = `rotate(${hourDeg}deg)`;
 
-        // Update timezones
-        updateTimezones(now);
-    }
+    digitalTime.textContent = tzNow.toLocaleTimeString('en-US', { hour12: false });
+    digitalDate.textContent = tzNow.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+
+    updateTimezones(now);
+    updateClockLabels(h, m);  // Pass minutes as well
+}
 
     function updateTimezones(now) {
         const tzs = {
@@ -628,7 +1288,6 @@
                 el.textContent = time;
             }
         }
-        // Update default label
         const tzNames = {
             'Asia/Kolkata': 'IST',
             'Europe/Amsterdam': 'Amsterdam',
@@ -647,12 +1306,11 @@
 
     setInterval(updateClock, 100);
     updateClock();
+    
 
-    // Default timezone selector
     document.getElementById('defaultTimezoneSelect').addEventListener('change', function() {
         defaultTimezone = this.value;
         updateClock();
-        // Update default star in timezone list
         document.querySelectorAll('.tz-item').forEach(item => {
             const star = item.querySelector('.tz-default');
             if (star) star.remove();
@@ -669,7 +1327,6 @@
         showToast(`Default timezone changed to ${this.options[this.selectedIndex].text}`);
     });
 
-    // Click on timezone item to set as default
     document.querySelectorAll('.tz-item').forEach(item => {
         item.addEventListener('click', function() {
             const tz = this.dataset.tz;
@@ -807,39 +1464,406 @@
         showToast(`Alarm set for ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`);
     });
 
-    // --- Habit Tracker (original code) ---
+    // --- Reminders System ---
+    let reminders = [];
+    let reminderSaveTimer = null;
+
+    function loadReminders() {
+        try {
+            const data = localStorage.getItem('reminders');
+            reminders = data ? JSON.parse(data) : [];
+        } catch(e) {
+            reminders = [];
+        }
+        renderReminders();
+    }
+
+    function saveReminders() {
+        clearTimeout(reminderSaveTimer);
+        reminderSaveTimer = setTimeout(() => {
+            localStorage.setItem('reminders', JSON.stringify(reminders));
+        }, 500);
+    }
+
+    function renderReminders() {
+        const activeList = document.getElementById('activeReminderList');
+        const completedList = document.getElementById('completedReminderList');
+        const completedCount = document.getElementById('completedCount');
+
+        const active = reminders.filter(r => !r.completed);
+        const completed = reminders.filter(r => r.completed);
+
+        if (active.length === 0) {
+            activeList.innerHTML = `<div style="text-align:center;color:var(--ink-soft);font-size:12px;padding:18px 0;">No active reminders</div>`;
+        } else {
+            activeList.innerHTML = active.map(r => `
+                <div class="reminder-item" data-id="${r.id}">
+                    <input type="checkbox" class="reminder-check" data-id="${r.id}" ${r.completed ? 'checked' : ''}>
+                    <div class="reminder-content">
+                        <div class="reminder-date">${r.date} ${r.time || ''}</div>
+                        <div class="reminder-text">${escapeHTML(r.text)}</div>
+                    </div>
+                    <button class="reminder-delete" data-id="${r.id}">✕</button>
+                </div>
+            `).join('');
+        }
+
+        if (completed.length === 0) {
+            completedList.innerHTML = `<div style="text-align:center;color:var(--ink-soft);font-size:12px;padding:12px 0;">No completed reminders</div>`;
+        } else {
+            completedList.innerHTML = completed.map(r => `
+                <div class="completed-reminder-item" data-id="${r.id}">
+                    <div class="reminder-content">
+                        <div class="reminder-date">${r.date} ${r.time || ''}</div>
+                        <div class="reminder-text">${escapeHTML(r.text)}</div>
+                    </div>
+                    <button class="reminder-delete" data-id="${r.id}" style="background:none;border:none;color:var(--brick);cursor:pointer;font-size:12px;opacity:0.5;padding:2px 4px;">✕</button>
+                </div>
+            `).join('');
+        }
+
+        completedCount.textContent = completed.length;
+
+        document.querySelectorAll('.reminder-check').forEach(cb => {
+            cb.addEventListener('change', function() {
+                const id = this.dataset.id;
+                const reminder = reminders.find(r => r.id === id);
+                if (reminder) {
+                    reminder.completed = this.checked;
+                    saveReminders();
+                    renderReminders();
+                }
+            });
+        });
+
+        document.querySelectorAll('.reminder-delete').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const id = this.dataset.id;
+                reminders = reminders.filter(r => r.id !== id);
+                saveReminders();
+                renderReminders();
+            });
+        });
+    }
+
+    // Reminder Modal
+    document.getElementById('newReminderBtn').addEventListener('click', function() {
+        document.getElementById('reminderDateInput').value = new Date().toISOString().split('T')[0];
+        document.getElementById('reminderTimeInput').value = '';
+        document.getElementById('reminderTextInput').value = '';
+        document.getElementById('reminderModal').classList.add('show');
+        document.getElementById('reminderTextInput').focus();
+    });
+
+    document.getElementById('reminderCancelBtn').addEventListener('click', function() {
+        document.getElementById('reminderModal').classList.remove('show');
+    });
+
+    document.getElementById('reminderModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            this.classList.remove('show');
+        }
+    });
+
+    document.getElementById('reminderSaveBtn').addEventListener('click', function() {
+        const date = document.getElementById('reminderDateInput').value;
+        const time = document.getElementById('reminderTimeInput').value;
+        const text = document.getElementById('reminderTextInput').value.trim();
+        
+        if (!date) { showToast('Please select a date'); return; }
+        if (!text) { showToast('Please enter reminder text'); return; }
+        
+        reminders.push({
+            id: uid(),
+            date: date,
+            time: time || '',
+            text: text,
+            completed: false,
+            createdAt: new Date().toISOString()
+        });
+        
+        saveReminders();
+        renderReminders();
+        document.getElementById('reminderModal').classList.remove('show');
+        showToast('Reminder added!');
+    });
+
+    // --- Paper a Day System ---
+    let paperData = {};
+    let activePaperSection = null;
+    let paperSaveTimer = null;
+    let paperDateOffset = 0;
+
+    function loadPaperData() {
+        try {
+            const data = localStorage.getItem('paperData');
+            paperData = data ? JSON.parse(data) : {};
+        } catch(e) {
+            paperData = {};
+        }
+        const currentDate = getPaperDate();
+        updatePaperDataForDate(currentDate);
+        updatePaperButtons(currentDate);
+        renderPaperDate();
+    }
+
+    function getPaperDate() {
+        const d = new Date();
+        d.setDate(d.getDate() - paperDateOffset);
+        return dstr(d);
+    }
+
+    function getPaperDateLabel() {
+        const d = new Date();
+        d.setDate(d.getDate() - paperDateOffset);
+        return d.toLocaleDateString('default', { weekday:'short', month:'short', day:'numeric', year:'numeric' });
+    }
+
+    function updatePaperDataForDate(date) {
+        if (!paperData[date]) {
+            paperData[date] = {
+                title: '',
+                background: '',
+                method: '',
+                results: '',
+                conclusion: ''
+            };
+        }
+        const sections = ['title', 'background', 'method', 'results', 'conclusion'];
+        sections.forEach(s => {
+            if (!paperData[date][s]) paperData[date][s] = '';
+        });
+    }
+
+    function savePaperData() {
+        clearTimeout(paperSaveTimer);
+        paperSaveTimer = setTimeout(() => {
+            localStorage.setItem('paperData', JSON.stringify(paperData));
+        }, 500);
+    }
+
+    function updatePaperButtons(date) {
+        const data = paperData[date] || {};
+        document.querySelectorAll('.paper-btn').forEach(btn => {
+            const section = btn.dataset.section;
+            if (data[section] && data[section].trim() !== '') {
+                btn.classList.add('has-content');
+            } else {
+                btn.classList.remove('has-content');
+            }
+        });
+    }
+
+    function renderPaperDate() {
+        const label = document.getElementById('paperDateLabel');
+        if (label) {
+            const date = getPaperDate();
+            const isToday = paperDateOffset === 0;
+            label.textContent = `${getPaperDateLabel()} ${isToday ? '· Today' : ''}`;
+        }
+        const date = getPaperDate();
+        updatePaperButtons(date);
+    }
+
+    document.querySelectorAll('.paper-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const section = this.dataset.section;
+            const date = getPaperDate();
+            const data = paperData[date] || {};
+            
+            const sectionNames = {
+                'title': 'Title & Authors',
+                'background': 'Background',
+                'method': 'Method',
+                'results': 'Results',
+                'conclusion': 'Conclusion'
+            };
+            
+            activePaperSection = section;
+            document.getElementById('paperTitle').textContent = `📄 ${sectionNames[section]} (${getPaperDateLabel()})`;
+            document.getElementById('paperSectionIndicator').textContent = `Section: ${sectionNames[section]}`;
+            document.getElementById('paperEditor').value = data[section] || '';
+            document.getElementById('paperModal').classList.add('show');
+            document.getElementById('paperEditor').focus();
+        });
+    });
+
+    document.getElementById('paperEditor').addEventListener('input', function() {
+        if (!activePaperSection) return;
+        const date = getPaperDate();
+        if (!paperData[date]) {
+            paperData[date] = { title: '', background: '', method: '', results: '', conclusion: '' };
+        }
+        paperData[date][activePaperSection] = this.value;
+        savePaperData();
+        const currentDate = getPaperDate();
+        updatePaperButtons(currentDate);
+    });
+
+    document.getElementById('paperCloseBtn').onclick = function() {
+        document.getElementById('paperModal').classList.remove('show');
+        activePaperSection = null;
+    };
+
+    document.getElementById('paperModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            this.classList.remove('show');
+            activePaperSection = null;
+        }
+    });
+
+    document.getElementById('paperPrevDay')?.addEventListener('click', function() {
+        paperDateOffset++;
+        const date = getPaperDate();
+        updatePaperDataForDate(date);
+        renderPaperDate();
+        const currentDate = getPaperDate();
+        updatePaperButtons(currentDate);
+    });
+
+    document.getElementById('paperNextDay')?.addEventListener('click', function() {
+        if (paperDateOffset > 0) {
+            paperDateOffset--;
+            const date = getPaperDate();
+            updatePaperDataForDate(date);
+            renderPaperDate();
+            const currentDate = getPaperDate();
+            updatePaperButtons(currentDate);
+        }
+    });
+
+    // --- Habit Tracker ---
     const ACCENTS = [{a:'#D9A441',d:'#B9860F'},{a:'#3F6B63',d:'#2C4E48'},{a:'#7A5980',d:'#5C4062'},{a:'#B14B4B',d:'#8E3838'},{a:'#4B6FB1',d:'#38548E'}];
     const ROW_COLORS = [{bg:'#FBEFD0',mark:'#B9860F'},{bg:'#DCEFE0',mark:'#3F7A56'},{bg:'#DCE6F5',mark:'#3E5FA0'},{bg:'#E7E0F2',mark:'#6B4F92'},{bg:'#F5DEDE',mark:'#A24E4E'}];
-    let habits = [], notes = [], currentTab = 'track', gridMonthOffset = 0, hourlyDayOffset = 0, insightsHabitId = null, addingNote = false, saveTimer = null;
-    const pad = n => String(n).padStart(2,'0'), dstr = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`, todayStr = () => dstr(new Date()), uid = () => Math.random().toString(36).slice(2,10);
+    
+    let habits = [],
+        notes = [],
+        dailyNotes = {},
+        currentTab = 'track',
+        gridMonthOffset = 0,
+        hourlyDayOffset = 0,
+        insightsHabitId = null,
+        addingNote = false,
+        saveTimer = null;
+
+    const pad = n => String(n).padStart(2,'0'), 
+          dstr = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`, 
+          todayStr = () => dstr(new Date()), 
+          uid = () => Math.random().toString(36).slice(2,10);
     const escapeHTML = s => s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    
     function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1800); }
+    
     function scheduleSave(){
+        clearTimeout(saveTimer);
+        saveTimer = setTimeout(async ()=>{
+            localStorage.setItem("habits", JSON.stringify(habits));
+            localStorage.setItem("notes", JSON.stringify(notes));
+            localStorage.setItem("dailyNotes", JSON.stringify(dailyNotes));
+            await syncToGoogleSheets(false);  // Add this line
+        }, 500);
+    }
 
-    clearTimeout(saveTimer);
-saveTimer = setTimeout(async ()=>{
-
-    localStorage.setItem("habits", JSON.stringify(habits));
-    localStorage.setItem("notes", JSON.stringify(notes));
-
-    await syncToGoogleSheets(false);
-
-},500);
-}
-
-function loadData(){ 
+    function loadData(){ 
         try{ const h=localStorage.getItem('habits'); habits=h?JSON.parse(h):[]; }catch(e){ habits=[]; } 
         habits.forEach(h=>{ if(h.goal===undefined) h.goal=null; if(!h.daily) h.daily={}; if(!h.hourly) h.hourly={}; if(!h.checklist) h.checklist=[]; }); 
         try{ const n=localStorage.getItem('notes'); notes=n?JSON.parse(n):[]; }catch(e){ notes=[]; } 
+        try{ const dn=localStorage.getItem('dailyNotes'); dailyNotes=dn?JSON.parse(dn):{}; }catch(e){ dailyNotes={}; }
+        loadReminders();
+        loadPaperData();
         render(); 
     }
-    function clearAllData(){
-        if(confirm('Delete ALL trackers, notes, and reset every entry? This cannot be undone.')){
-            habits = []; notes = []; gridMonthOffset = 0; hourlyDayOffset = 0; insightsHabitId = null;
-            localStorage.removeItem('habits'); localStorage.removeItem('notes');
-            render(); showToast('All data cleared');
+    
+    // Clear All Data with custom popup
+    document.getElementById('clearAllBtn').addEventListener('click', function() {
+        const overlay = document.createElement('div');
+        overlay.style.cssText = `
+            position: fixed;
+            inset: 0;
+            background: rgba(32,42,38,.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            padding: 20px;
+        `;
+        
+        const modal = document.createElement('div');
+        modal.style.cssText = `
+            background: var(--card);
+            border-radius: 12px;
+            padding: 28px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,.3);
+        `;
+        
+modal.innerHTML = `
+    <h2 style="font-family:'IBM Plex Mono';font-size:16px;margin:0 0 8px;color:var(--brick);">⚠️ Clear All Data</h2>
+    <p style="font-size:14px;color:var(--ink-soft);margin-bottom:20px;line-height:1.5;">
+        After clearing data, if you <strong style="color:var(--brick);">SYNC</strong> without fetching <strong style="color:#2E7D32;">(FETCH)</strong> from the cloud first, 
+        <strong style="color:var(--brick);">all your history will be lost.</strong>
+    </p>
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+        <button class="btn ghost" id="clearCancelBtn">Cancel</button>
+        <button class="btn danger" id="clearConfirmBtn">✕ Clear Everything</button>
+    </div>
+`;
+        
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+        
+        document.getElementById('clearCancelBtn').addEventListener('click', function() {
+            overlay.remove();
+        });
+        
+        overlay.addEventListener('click', function(e) {
+            if (e.target === overlay) overlay.remove();
+        });
+        
+        document.getElementById('clearConfirmBtn').addEventListener('click', function() {
+            habits = []; notes = []; dailyNotes = {}; reminders = []; paperData = {};
+            gridMonthOffset = 0; hourlyDayOffset = 0; insightsHabitId = null;
+            localStorage.removeItem('habits'); localStorage.removeItem('notes'); localStorage.removeItem('dailyNotes');
+            localStorage.removeItem('reminders'); localStorage.removeItem('paperData');
+            overlay.remove();
+            render(); 
+            renderReminders();
+            const date = getPaperDate();
+            updatePaperButtons(date);
+            showToast('All data cleared');
+        });
+    });
+    
+    // --- Edit & Reorder Functions ---
+    function renameHabit(habitId, newName) {
+        const habit = habits.find(h => h.id === habitId);
+        if (habit) {
+            habit.name = newName.trim();
+            scheduleSave();
+            render();
+            showToast('Habit renamed');
         }
     }
+
+    function moveHabitUp(habitId) {
+        const index = habits.findIndex(h => h.id === habitId);
+        if (index > 0) {
+            [habits[index], habits[index - 1]] = [habits[index - 1], habits[index]];
+            scheduleSave();
+            render();
+        }
+    }
+
+    function moveHabitDown(habitId) {
+        const index = habits.findIndex(h => h.id === habitId);
+        if (index < habits.length - 1) {
+            [habits[index], habits[index + 1]] = [habits[index + 1], habits[index]];
+            scheduleSave();
+            render();
+        }
+    }
+
     function accentFor(h){ const idx=habits.findIndex(x=>x.id===h.id)%ACCENTS.length; return ACCENTS[(idx+ACCENTS.length)%ACCENTS.length]; }
     function rowColorFor(dailyHabits, h){ const idx=dailyHabits.findIndex(x=>x.id===h.id)%ROW_COLORS.length; return ROW_COLORS[(idx+ROW_COLORS.length)%ROW_COLORS.length]; }
     function render(){ renderTrack(); if(currentTab==='insights') renderInsights(); }
@@ -850,12 +1874,127 @@ function loadData(){
         const daily=habits.filter(h=>h.cadence==='daily'), hourly=habits.filter(h=>h.cadence==='hourly'), checklist=habits.filter(h=>h.cadence==='checklist');
         let html=sheetHTML(daily);
         if(hourly.length) html+=hourlySectionHTML(hourly);
+        html += paperSectionHTML();
         if(checklist.length) html+=`<div class="section-label">Manual lists</div>`+checklist.map(h=>cardHTML(h)).join('');
         html+=notesHTML();
         el.innerHTML=html;
         attachSheetEvents(daily); attachNotesEvents(); 
         attachHourlyEvents();
         checklist.forEach(h=>attachCardEvents(h));
+        attachPaperEvents();
+    }
+
+    function paperSectionHTML() {
+        const date = getPaperDate();
+        const isToday = paperDateOffset === 0;
+        const data = paperData[date] || {};
+        const hasContent = Object.values(data).some(v => v && v.trim() !== '');
+        
+        return `
+            <div class="paper-section">
+                <div class="paper-header">
+                    <h4>📄 Paper a Day</h4>
+                    <div class="paper-nav">
+                        <button class="btn small ghost" id="paperPrevDay">‹</button>
+                        <span class="date-label" id="paperDateLabel">${getPaperDateLabel()} ${isToday ? '· Today' : ''}</span>
+                        <button class="btn small ghost" id="paperNextDay" ${paperDateOffset === 0 ? 'disabled style="opacity:.3;"' : ''}>›</button>
+                    </div>
+                </div>
+                <div class="paper-buttons">
+                    <button class="paper-btn" data-section="title">Title &amp; Authors</button>
+                    <button class="paper-btn" data-section="background">Background</button>
+                    <button class="paper-btn" data-section="method">Method</button>
+                    <button class="paper-btn" data-section="results">Results</button>
+                    <button class="paper-btn" data-section="conclusion">Conclusion</button>
+                </div>
+                ${hasContent ? '<div style="font-size:11px;color:var(--ink-soft);margin-top:8px;">📌 Has content saved</div>' : ''}
+            </div>
+        `;
+    }
+
+    function attachPaperEvents() {
+        document.getElementById('paperPrevDay')?.addEventListener('click', function() {
+            paperDateOffset++;
+            const date = getPaperDate();
+            updatePaperDataForDate(date);
+            renderPaperDate();
+            const currentDate = getPaperDate();
+            updatePaperButtons(currentDate);
+            renderTrack();
+        });
+
+        document.getElementById('paperNextDay')?.addEventListener('click', function() {
+            if (paperDateOffset > 0) {
+                paperDateOffset--;
+                const date = getPaperDate();
+                updatePaperDataForDate(date);
+                renderPaperDate();
+                const currentDate = getPaperDate();
+                updatePaperButtons(currentDate);
+                renderTrack();
+            }
+        });
+
+        document.querySelectorAll('.paper-btn').forEach(btn => {
+            btn.removeEventListener('click', paperBtnClick);
+            btn.addEventListener('click', paperBtnClick);
+        });
+    }
+
+    function paperBtnClick() {
+        const section = this.dataset.section;
+        const date = getPaperDate();
+        const data = paperData[date] || {};
+        
+        const sectionNames = {
+            'title': 'Title & Authors',
+            'background': 'Background',
+            'method': 'Method',
+            'results': 'Results',
+            'conclusion': 'Conclusion'
+        };
+        
+        activePaperSection = section;
+        document.getElementById('paperTitle').textContent = `📄 ${sectionNames[section]} (${getPaperDateLabel()})`;
+        document.getElementById('paperSectionIndicator').textContent = `Section: ${sectionNames[section]}`;
+        document.getElementById('paperEditor').value = data[section] || '';
+        document.getElementById('paperModal').classList.add('show');
+        document.getElementById('paperEditor').focus();
+    }
+
+    function noteRowHTML(ref){
+        const year=ref.getFullYear();
+        const month=ref.getMonth();
+        const days=new Date(year,month+1,0).getDate();
+        const today = todayStr();
+
+        let row='<tr>';
+        row+='<td class="habit-name"><b>📝 Notes</b></td>';
+
+        for(let d=1; d<=days; d++){
+            const ds=`${year}-${pad(month+1)}-${pad(d)}`;
+            const filled=dailyNotes[ds] && dailyNotes[ds].trim()!='';
+            const isFuture = ds > today;
+
+            row+=`
+            <td class="day-cell note-cell"
+                data-note="${ds}">
+                <div class="cellbox"
+                     style="
+                     width:20px;
+                     height:20px;
+                     margin:auto;
+                     background:${isFuture ? '#FFFFFF' : (filled ? '#D9A441' : '#C7CDBF')};
+                     border:${isFuture ? '2px solid #E4E7DD' : (filled ? '2px solid #B9860F' : '2px solid #C7CDBF')};
+                     border-radius:2px;
+                     ">
+                </div>
+            </td>`;
+        }
+
+        row+='<td></td>';
+        row+='</tr>';
+        return row;
     }
 
     function sheetHTML(dailyHabits){
@@ -866,13 +2005,24 @@ function loadData(){
         head+=`<th class="side-h">Done</th>`;
         let rows='';
         if(dailyHabits.length===0) rows=`<tr><td class="habit-name" colspan="${daysInMonth+2}" style="color:var(--ink-soft);font-weight:400;">No daily habits — add one below.</td></tr>`;
-        else rows=dailyHabits.map(h=>{
-            const rc=rowColorFor(dailyHabits,h); let cells=`<td class="habit-name" data-id="${h.id}">${escapeHTML(h.name)}<button class="del" data-act="delHabit" data-id="${h.id}">✕</button></td>`;
+        else rows=dailyHabits.map((h, index)=>{
+            const rc=rowColorFor(dailyHabits,h); 
+            let cells=`<td class="habit-name" data-id="${h.id}">
+                <span class="habit-controls">
+                    <button class="btn small ghost" data-act="moveUp" data-id="${h.id}" ${index === 0 ? 'disabled style="opacity:0.3;"' : ''} title="Move up">▲</button>
+                    <button class="btn small ghost" data-act="moveDown" data-id="${h.id}" ${index === dailyHabits.length - 1 ? 'disabled style="opacity:0.3;"' : ''} title="Move down">▼</button>
+                    <span class="habit-name-text" data-id="${h.id}" title="Double-click to rename">${escapeHTML(h.name)}</span>
+                    <button class="del" data-act="delHabit" data-id="${h.id}" title="Delete">✕</button>
+                </span>
+            </td>`;
             for(let d=1; d<=daysInMonth; d++){ const ds=`${year}-${pad(month+1)}-${pad(d)}`; const checked=!!h.daily[ds], future=ds>today, isToday=ds===today; cells+=`<td class="day-cell ${future?'future':''} ${checked?'checked':''} ${isToday?'today':''}" data-id="${h.id}" data-date="${ds}"><div class="cellbox" style="${checked?`background:${rc.bg};`:''}"><svg viewBox="0 0 24 24" fill="none" stroke="${rc.mark}" stroke-width="3.2"><path d="M4 12l6 6L20 6"/></svg></div></td>`; }
             const {checkedCount}=monthStats(h,ref);
             cells+=`<td class="achieved-cell"><span class="achieved-badge">${checkedCount}</span></td>`;
             return `<tr>${cells}</tr>`;
         }).join('');
+        
+        rows += noteRowHTML(ref);
+        
         return `<div class="sheet-card"><div class="sheet-nav"><button class="btn small ghost" data-act="prevGridMonth">‹</button><span class="m-label">${monthLabel}</span><button class="btn small ghost" data-act="nextGridMonth" ${gridMonthOffset===0?'disabled style="opacity:.3;"':''}>›</button></div><div class="sheet-wrap"><table class="sheet"><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table></div><div class="sheet-newrow"><button class="link-btn" id="newHabitLink">+ New Habit</button></div></div>`;
     }
 
@@ -887,7 +2037,7 @@ function loadData(){
         const isToday = hourlyDayOffset === 0;
         const ds = dstr(ref);
         
-        let html = `<div class="sheet-card"><div class="hourly-nav"><button class="btn small ghost" data-act="prevHourlyDay">‹</button><span class="date-label">${dateLabel} ${isToday?'· Today':''}</span><button class="btn small ghost" data-act="nextHourlyDay" ${hourlyDayOffset===0?'disabled style="opacity:.3;"':''}>›</button></div><div class="section-label">HOURLY WORK</div><div class="sheet-wrap"><table class="hourly-table"><thead><tr><th class="habits-h">Habits</th>`;
+        let html = `<div class="sheet-card"><div class="hourly-nav"><button class="btn small ghost" data-act="prevHourlyDay">‹</button><span class="date-label">${dateLabel} ${isToday?'· Today':''}</span><button class="btn small ghost" data-act="nextHourlyDay" ${hourlyDayOffset===0?'disabled style="opacity:.3;"':''}>›</button></div><div class="section-label">HOURLY WORK</div><div class="sheet-wrap"><table class="hourly-table"><thead><tr><th class="habits-h"></th>`;
         
         for(let hr=0; hr<24; hr++){
             const label = hr===0?'12a':hr<12?hr+'a':hr===12?'12p':(hr-12)+'p';
@@ -898,11 +2048,18 @@ function loadData(){
         if(hourlyHabits.length===0){
             html += `<tr><td class="habit-name" colspan="26" style="color:var(--ink-soft);font-weight:400;">No hourly habits — add one below.</td></tr>`;
         } else {
-            hourlyHabits.forEach(h=>{
+            hourlyHabits.forEach((h, index)=>{
                 const arr = h.hourly[ds] || Array(24).fill(false);
                 const count = arr.filter(Boolean).length;
                 const future = ds > todayStr();
-                html += `<tr><td class="habit-name" data-id="${h.id}">${escapeHTML(h.name)}<button class="del" data-act="delHourlyHabit" data-id="${h.id}">✕</button></td>`;
+                html += `<tr><td class="habit-name" data-id="${h.id}">
+                    <span class="habit-controls">
+                        <button class="btn small ghost" data-act="moveUpHourly" data-id="${h.id}" ${index === 0 ? 'disabled style="opacity:0.3;"' : ''} title="Move up">▲</button>
+                        <button class="btn small ghost" data-act="moveDownHourly" data-id="${h.id}" ${index === hourlyHabits.length - 1 ? 'disabled style="opacity:0.3;"' : ''} title="Move down">▼</button>
+                        <span class="habit-name-text" data-id="${h.id}" title="Double-click to rename">${escapeHTML(h.name)}</span>
+                        <button class="del" data-act="delHourlyHabit" data-id="${h.id}" title="Delete">✕</button>
+                    </span>
+                </td>`;
                 for(let hr=0; hr<24; hr++){
                     const checked = arr[hr] || false;
                     html += `<td class="hour-cell ${future?'future':''} ${checked?'checked':''}" data-id="${h.id}" data-date="${ds}" data-hour="${hr}"><div class="cellbox"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.2"><path d="M4 12l6 6L20 6"/></svg></div></td>`;
@@ -915,12 +2072,12 @@ function loadData(){
         return html;
     }
 
-    function notesHTML(){
-        const sorted=[...notes].sort((a,b)=>b.date.localeCompare(a.date) || b.ts.localeCompare(a.ts));
-        return `<div class="notes-card"><div class="notes-head"><h4>Notes</h4><div><button class="link-btn" id="newNoteBtn">+ New Note</button></div></div>
-            <div id="newNoteSlot">${addingNote?`<div class="new-note"><textarea id="noteText" placeholder="Write a note…" autofocus></textarea><div class="new-note-actions"><button class="btn small ghost" id="cancelNote">Cancel</button><button class="btn small primary" id="saveNote">Save</button></div></div>`:''}</div>
-            ${sorted.length===0?'<div style="color:var(--ink-soft);font-size:13px;padding:10px 2px;">No notes yet.</div>':sorted.map(n=>`<div class="note"><button class="del" data-act="delNote" data-id="${n.id}">✕</button><div class="meta"><span>${formatNiceDate(n.date)}</span><span class="timestamp">${n.ts||''}</span></div><div class="text">${escapeHTML(n.text)}</div></div>`).join('')}</div>`;
-    }
+function notesHTML(){
+    const sorted=[...notes].sort((a,b)=>b.date.localeCompare(a.date) || b.ts.localeCompare(a.ts));
+    return `<div class="notes-card"><div class="notes-head"><h4>Notes</h4><div><button class="link-btn" id="newNoteBtn">+ New Note</button></div></div>
+        <div id="newNoteSlot">${addingNote?`<div class="new-note"><textarea id="noteText" placeholder="Write a note…" autofocus></textarea><div class="new-note-actions"><button class="btn small ghost" id="cancelNote">Cancel</button><button class="btn small primary" id="saveNote">Save</button></div></div>`:''}</div>
+        ${sorted.length===0?'<div style="color:var(--ink-soft);font-size:13px;padding:10px 2px;">No notes yet.</div>':sorted.map(n=>`<div class="note"><button class="del" data-act="delNote" data-id="${n.id}">✕</button><div class="meta"><span class="timestamp">${n.ts||''}</span></div><div class="text">${escapeHTML(n.text)}</div></div>`).join('')}</div>`;
+}
     function formatNiceDate(ds){ const [y,m,d]=ds.split('-').map(Number); return new Date(y,m-1,d).toLocaleDateString('default',{day:'numeric',month:'long',year:'numeric'}); }
 
     function attachNotesEvents(){
@@ -931,12 +2088,43 @@ function loadData(){
     }
 
     function attachSheetEvents(dailyHabits){
-        document.querySelectorAll('td.day-cell:not(.future)').forEach(td=>td.addEventListener('click', ()=>{ const h=habits.find(x=>x.id===td.dataset.id); h.daily[td.dataset.date]=!h.daily[td.dataset.date]; scheduleSave(); renderTrack(); }));
+        document.querySelectorAll('td.day-cell:not(.future)').forEach(td=>td.addEventListener('click', ()=>{ 
+            if(td.classList.contains('note-cell')) return;
+            const h=habits.find(x=>x.id===td.dataset.id); 
+            if(h) { h.daily[td.dataset.date]=!h.daily[td.dataset.date]; scheduleSave(); renderTrack(); }
+        }));
         document.querySelectorAll('[data-act="delHabit"]').forEach(b=>b.addEventListener('click', e=>{ e.stopPropagation(); const h=habits.find(x=>x.id===b.dataset.id); if(confirm(`Delete "${h.name}"?`)){ habits=habits.filter(x=>x.id!==h.id); scheduleSave(); render(); } }));
         document.querySelector('[data-act="prevGridMonth"]')?.addEventListener('click', ()=>{ gridMonthOffset++; renderTrack(); });
         document.querySelector('[data-act="nextGridMonth"]')?.addEventListener('click', ()=>{ gridMonthOffset=Math.max(0,gridMonthOffset-1); renderTrack(); });
         document.getElementById('newHabitLink')?.addEventListener('click', ()=>openModal('daily'));
         document.querySelector('[data-act="addHourlyHabit"]')?.addEventListener('click', ()=>openModal('hourly'));
+        
+        document.querySelectorAll('[data-act="moveUp"]').forEach(b=>b.addEventListener('click', function(e){
+            e.stopPropagation();
+            const id = this.dataset.id;
+            moveHabitUp(id);
+        }));
+        
+        document.querySelectorAll('[data-act="moveDown"]').forEach(b=>b.addEventListener('click', function(e){
+            e.stopPropagation();
+            const id = this.dataset.id;
+            moveHabitDown(id);
+        }));
+        
+        document.querySelectorAll('.habit-name-text').forEach(el=>{
+            el.addEventListener('dblclick', function(e){
+                e.stopPropagation();
+                const id = this.dataset.id;
+                const habit = habits.find(h => h.id === id);
+                if (!habit) return;
+                
+                const currentName = habit.name;
+                const newName = prompt('Rename habit:', currentName);
+                if (newName !== null && newName.trim() !== '' && newName.trim() !== currentName) {
+                    renameHabit(id, newName.trim());
+                }
+            });
+        });
     }
 
     function attachHourlyEvents(){
@@ -963,7 +2151,61 @@ function loadData(){
         });
         document.querySelector('[data-act="prevHourlyDay"]')?.addEventListener('click', ()=>{ hourlyDayOffset++; renderTrack(); });
         document.querySelector('[data-act="nextHourlyDay"]')?.addEventListener('click', ()=>{ hourlyDayOffset=Math.max(0,hourlyDayOffset-1); renderTrack(); });
+        
+        document.querySelectorAll('[data-act="moveUpHourly"]').forEach(b=>b.addEventListener('click', function(e){
+            e.stopPropagation();
+            const id = this.dataset.id;
+            moveHabitUp(id);
+        }));
+        
+        document.querySelectorAll('[data-act="moveDownHourly"]').forEach(b=>b.addEventListener('click', function(e){
+            e.stopPropagation();
+            const id = this.dataset.id;
+            moveHabitDown(id);
+        }));
+        
+        document.querySelectorAll('.habit-name-text').forEach(el=>{
+            el.addEventListener('dblclick', function(e){
+                e.stopPropagation();
+                const id = this.dataset.id;
+                const habit = habits.find(h => h.id === id);
+                if (!habit) return;
+                
+                const currentName = habit.name;
+                const newName = prompt('Rename habit:', currentName);
+                if (newName !== null && newName.trim() !== '' && newName.trim() !== currentName) {
+                    renameHabit(id, newName.trim());
+                }
+            });
+        });
     }
+
+    // Edit item modal
+    let editItemData = null;
+
+    document.getElementById('editItemCancelBtn').addEventListener('click', function() {
+        document.getElementById('editItemModal').classList.remove('show');
+        editItemData = null;
+    });
+
+    document.getElementById('editItemModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            this.classList.remove('show');
+            editItemData = null;
+        }
+    });
+
+    document.getElementById('editItemSaveBtn').addEventListener('click', function() {
+        if (!editItemData) return;
+        const newText = document.getElementById('editItemInput').value.trim();
+        if (!newText) { showToast('Item cannot be empty'); return; }
+        editItemData.item.label = newText;
+        document.getElementById('editItemModal').classList.remove('show');
+        scheduleSave();
+        renderTrack();
+        editItemData = null;
+        showToast('Item updated');
+    });
 
     function cardHTML(h){
         const acc=accentFor(h); let controls='', body='', statHTML='', clearBtn='';
@@ -971,21 +2213,181 @@ function loadData(){
         statHTML=`<span class="stat"><b>${done}</b>/${h.checklist.length} checked</span>`;
         body=checklistHTML(h);
         clearBtn=`<button class="btn small clear-btn" data-act="clearChecklist">Uncheck all</button>`;
-        return `<div class="card" data-id="${h.id}" style="--accent:${acc.a};--accent-deep:${acc.d};"><div class="card-head"><div class="card-title"><h3>${escapeHTML(h.name)}</h3><span class="badge">${h.cadence}</span>${statHTML}</div>${controls}</div><div class="grid-body">${body}</div><div class="card-foot">${clearBtn}<button class="btn small ghost" data-act="delete">Delete tracker</button></div></div>`;
+        return `<div class="card" data-id="${h.id}" style="--accent:${acc.a};--accent-deep:${acc.d};">
+            <div class="card-head">
+                <div class="card-title">
+                    <span class="habit-controls">
+                        <button class="btn small ghost" data-act="moveUpChecklist" data-id="${h.id}" title="Move up">▲</button>
+                        <button class="btn small ghost" data-act="moveDownChecklist" data-id="${h.id}" title="Move down">▼</button>
+                        <span class="habit-name-text" data-id="${h.id}" style="cursor:pointer;" title="Double-click to rename">${escapeHTML(h.name)}</span>
+                        <span class="badge">${h.cadence}</span>
+                    </span>
+                    ${statHTML}
+                </div>
+                ${controls}
+            </div>
+            <div class="grid-body">${body}</div>
+            <div class="card-foot">${clearBtn}<button class="btn small ghost" data-act="delete">Delete tracker</button></div>
+        </div>`;
     }
 
     function checklistHTML(h){
-        const items=h.checklist.map(it=>`<div class="checklist-item" data-item="${it.id}"><div class="box ${it.checked?'checked':''}" data-act="toggleItem"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M4 12l6 6L20 6"/></svg></div><span class="item-label ${it.checked?'done':''}">${escapeHTML(it.label)}</span><button class="btn small ghost" data-act="removeItem" style="padding:3px 7px;">✕</button></div>`).join('');
+        const items = h.checklist.map((it, index) => `
+            <div class="checklist-item" data-item="${it.id}" data-index="${index}" draggable="true">
+                <span class="item-drag" title="Drag to reorder">⠿</span>
+                <div class="box ${it.checked?'checked':''}" data-act="toggleItem">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M4 12l6 6L20 6"/></svg>
+                </div>
+                <span class="item-label ${it.checked?'done':''}">${escapeHTML(it.label)}</span>
+                ${it.timestamp ? `<span class="item-timestamp"><span class="date-part">${it.timestamp.date}</span> ${it.timestamp.time || ''}</span>` : ''}
+                <div class="item-actions">
+                    <button class="item-edit" data-act="editItem" title="Edit">✎</button>
+                    <button class="btn small ghost" data-act="removeItem" style="padding:3px 7px;">✕</button>
+                </div>
+            </div>
+        `).join('');
+        
         return `${items||'<div style="color:var(--ink-soft);font-size:13px;padding:6px 0;">No items yet — add one below.</div>'}<div class="add-item-row"><input type="text" placeholder="Add a checkbox…" data-role="newItem" maxlength="80"><button class="btn small primary" data-act="addItem">Add</button></div>`;
     }
 
     function attachCardEvents(h){
         const card=document.querySelector(`.card[data-id="${h.id}"]`); if(!card) return;
-        card.querySelectorAll('[data-act="toggleItem"]').forEach(b=>b.addEventListener('click', ()=>{ const id=b.closest('.checklist-item').dataset.item; const item=h.checklist.find(i=>i.id===id); item.checked=!item.checked; scheduleSave(); renderTrack(); }));
-        card.querySelectorAll('[data-act="removeItem"]').forEach(b=>b.addEventListener('click', ()=>{ const id=b.closest('.checklist-item').dataset.item; h.checklist=h.checklist.filter(i=>i.id!==id); scheduleSave(); renderTrack(); }));
-        const addBtn=card.querySelector('[data-act="addItem"]'); if(addBtn){ const input=card.querySelector('[data-role="newItem"]'); const doAdd=()=>{ const v=input.value.trim(); if(!v) return; h.checklist.push({id:uid(), label:v, checked:false}); scheduleSave(); renderTrack(); }; addBtn.addEventListener('click', doAdd); input.addEventListener('keydown', e=>{ if(e.key==='Enter') doAdd(); }); }
-        card.querySelector('[data-act="delete"]')?.addEventListener('click', ()=>{ if(confirm(`Delete "${h.name}"?`)){ habits=habits.filter(x=>x.id!==h.id); scheduleSave(); render(); } });
-        card.querySelector('[data-act="clearChecklist"]')?.addEventListener('click', ()=>{ h.checklist.forEach(i=>i.checked=false); scheduleSave(); renderTrack(); });
+        
+        card.querySelectorAll('[data-act="toggleItem"]').forEach(b=>b.addEventListener('click', ()=>{ 
+            const id=b.closest('.checklist-item').dataset.item; 
+            const item=h.checklist.find(i=>i.id===id); 
+            item.checked=!item.checked; 
+            scheduleSave(); 
+            renderTrack(); 
+        }));
+        
+        card.querySelectorAll('[data-act="removeItem"]').forEach(b=>b.addEventListener('click', ()=>{ 
+            const id=b.closest('.checklist-item').dataset.item; 
+            h.checklist=h.checklist.filter(i=>i.id!==id); 
+            scheduleSave(); 
+            renderTrack(); 
+        }));
+        
+        card.querySelectorAll('[data-act="editItem"]').forEach(b=>b.addEventListener('click', ()=>{
+            const id=b.closest('.checklist-item').dataset.item;
+            const item=h.checklist.find(i=>i.id===id);
+            if (item) {
+                editItemData = { item: item, habitId: h.id };
+                document.getElementById('editItemInput').value = item.label;
+                document.getElementById('editItemModal').classList.add('show');
+                document.getElementById('editItemInput').focus();
+                document.getElementById('editItemInput').select();
+            }
+        }));
+        
+        const addBtn=card.querySelector('[data-act="addItem"]'); 
+        if(addBtn){ 
+            const input=card.querySelector('[data-role="newItem"]'); 
+            const doAdd=()=>{ 
+                const v=input.value.trim(); 
+                if(!v) return; 
+                const now = new Date();
+                const dateStr = dstr(now);
+                const timeStr = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
+                h.checklist.push({
+                    id:uid(), 
+                    label:v, 
+                    checked:false,
+                    timestamp: {
+                        date: dateStr,
+                        time: timeStr
+                    }
+                }); 
+                scheduleSave(); 
+                renderTrack(); 
+            }; 
+            addBtn.addEventListener('click', doAdd); 
+            input.addEventListener('keydown', e=>{ if(e.key==='Enter') doAdd(); }); 
+        }
+        
+        card.querySelector('[data-act="delete"]')?.addEventListener('click', ()=>{ 
+            if(confirm(`Delete "${h.name}"?`)){ 
+                habits=habits.filter(x=>x.id!==h.id); 
+                scheduleSave(); 
+                render(); 
+            } 
+        });
+        
+        card.querySelector('[data-act="clearChecklist"]')?.addEventListener('click', ()=>{ 
+            h.checklist.forEach(i=>i.checked=false); 
+            scheduleSave(); 
+            renderTrack(); 
+        });
+
+        card.querySelectorAll('[data-act="moveUpChecklist"]').forEach(b=>b.addEventListener('click', function(e){
+            e.stopPropagation();
+            const id = this.dataset.id;
+            moveHabitUp(id);
+        }));
+        
+        card.querySelectorAll('[data-act="moveDownChecklist"]').forEach(b=>b.addEventListener('click', function(e){
+            e.stopPropagation();
+            const id = this.dataset.id;
+            moveHabitDown(id);
+        }));
+        
+        card.querySelectorAll('.habit-name-text').forEach(el=>{
+            el.addEventListener('dblclick', function(e){
+                e.stopPropagation();
+                const id = this.dataset.id;
+                const habit = habits.find(h => h.id === id);
+                if (!habit) return;
+                
+                const currentName = habit.name;
+                const newName = prompt('Rename habit:', currentName);
+                if (newName !== null && newName.trim() !== '' && newName.trim() !== currentName) {
+                    renameHabit(id, newName.trim());
+                }
+            });
+        });
+
+        const items = card.querySelectorAll('.checklist-item');
+        let dragItem = null;
+
+        items.forEach(item => {
+            item.addEventListener('dragstart', function(e) {
+                dragItem = this;
+                this.classList.add('dragging');
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', this.dataset.index);
+            });
+
+            item.addEventListener('dragend', function(e) {
+                this.classList.remove('dragging');
+                document.querySelectorAll('.checklist-item').forEach(el => el.classList.remove('drag-over'));
+            });
+
+            item.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+                document.querySelectorAll('.checklist-item').forEach(el => el.classList.remove('drag-over'));
+                this.classList.add('drag-over');
+            });
+
+            item.addEventListener('dragleave', function(e) {
+                this.classList.remove('drag-over');
+            });
+
+            item.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('drag-over');
+                
+                const fromIndex = parseInt(e.dataTransfer.getData('text/plain'));
+                const toIndex = parseInt(this.dataset.index);
+                
+                if (fromIndex !== toIndex) {
+                    const item = h.checklist.splice(fromIndex, 1)[0];
+                    h.checklist.splice(toIndex, 0, item);
+                    scheduleSave();
+                    renderTrack();
+                }
+            });
+        });
     }
 
     function renderInsights(){
@@ -1042,124 +2444,177 @@ function loadData(){
         showToast('Exported to Excel');
     });
 
-    document.getElementById('clearAllBtn').addEventListener('click', clearAllData);
+    // --- Note Modal Events ---
+    let activeNoteDate = null;
 
-    loadData();
+    document.body.addEventListener("click", function(e){
+        const cell = e.target.closest(".note-cell");
+        if(!cell) return;
+        e.stopPropagation();
+        
+        activeNoteDate = cell.dataset.note;
+        document.getElementById("noteTitle").textContent = activeNoteDate;
+        document.getElementById("noteEditor").value = dailyNotes[activeNoteDate] || "";
+        document.getElementById("noteModal").classList.add("show");
+        document.getElementById("noteEditor").focus();
+    });
 
-   const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyFDJHkFLZhJVnvI_u7JMuWDkTWaOmATDcd3HWhZ9DJa_5H7efW96qaETPzKcq_tzGa4A/exec";
+    document.getElementById("noteEditor").addEventListener("input", function(){
+        if(!activeNoteDate) return;
+        dailyNotes[activeNoteDate] = this.value;
+        scheduleSave();
+        const cells = document.querySelectorAll(`.note-cell[data-note="${activeNoteDate}"]`);
+        const today = todayStr();
+        cells.forEach(cell => {
+            const box = cell.querySelector('.cellbox');
+            if(box) {
+                const filled = dailyNotes[activeNoteDate] && dailyNotes[activeNoteDate].trim() !== '';
+                const isFuture = activeNoteDate > today;
+                box.style.background = isFuture ? '#FFFFFF' : (filled ? '#D9A441' : '#C7CDBF');
+                box.style.border = isFuture ? '2px solid #E4E7DD' : (filled ? '2px solid #B9860F' : '2px solid #C7CDBF');
+            }
+        });
+    });
 
-async function syncToGoogleSheets(showMessage = true) {
-
-    const payload = {
-        habits: habits,
-        notes: notes,
-        syncedAt: new Date().toISOString()
+    document.getElementById("noteCloseBtn").onclick = function(){
+        document.getElementById("noteModal").classList.remove("show");
+        renderTrack();
     };
 
-    try {
-
-        const response = await fetch(WEB_APP_URL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "text/plain"
-            },
-            body: JSON.stringify(payload)
-        });
-
-        const result = await response.json();
-
-        if(result.success){
-            if (showMessage) {
-    showToast("☁ Synced to Google Sheets");
-}
-        }else{
-            showToast("Sync failed");
-        }
-
-    } catch(err){
-
-        console.error(err);
-        showToast("Network error");
-
-    }
-
-}
-
-
-async function fetchFromGoogleSheets() {
-
-    try {
-
-        const response = await fetch(WEB_APP_URL);
-
-        const data = await response.json();
-
-        if (!data.habits) {
-            showToast("No backup found");
-            return;
-        }
-
-        if (!confirm("Replace current tracker with the latest Google Sheets backup?")) {
-            return;
-        }
-
-        habits = data.habits || [];
-        notes = data.notes || [];
-
-habits.forEach(h => {
-
-    if (h.goal === undefined) h.goal = null;
-
-    if (!h.daily) h.daily = {};
-
-    if (!h.hourly) h.hourly = {};
-
-    // Convert every hourly entry into a real 24-element array
-    Object.keys(h.hourly).forEach(date => {
-
-        if (!Array.isArray(h.hourly[date])) {
-
-            const converted = Array(24).fill(false);
-
-            for (let i = 0; i < 24; i++) {
-                converted[i] = !!h.hourly[date][i];
-            }
-
-            h.hourly[date] = converted;
-        }
-
-        while (h.hourly[date].length < 24) {
-            h.hourly[date].push(false);
+    document.getElementById("noteModal").addEventListener("click", function(e){
+        if(e.target === this) {
+            this.classList.remove("show");
+            renderTrack();
         }
     });
 
-    if (!h.checklist) h.checklist = [];
+    document.addEventListener("keydown", function(e){
+        if(e.key === "Escape") {
+            const modal = document.getElementById("noteModal");
+            if(modal.classList.contains("show")) {
+                modal.classList.remove("show");
+                renderTrack();
+            }
+            const paperModal = document.getElementById("paperModal");
+            if(paperModal.classList.contains("show")) {
+                paperModal.classList.remove("show");
+                activePaperSection = null;
+            }
+            const reminderModal = document.getElementById("reminderModal");
+            if(reminderModal.classList.contains("show")) {
+                reminderModal.classList.remove("show");
+            }
+            const editModal = document.getElementById("editItemModal");
+            if(editModal.classList.contains("show")) {
+                editModal.classList.remove("show");
+                editItemData = null;
+            }
+        }
+    });
 
-});
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyFDJHkFLZhJVnvI_u7JMuWDkTWaOmATDcd3HWhZ9DJa_5H7efW96qaETPzKcq_tzGa4A/exec";
 
-        localStorage.setItem("habits", JSON.stringify(habits));
-        localStorage.setItem("notes", JSON.stringify(notes));
+    async function syncToGoogleSheets(showMessage = true) {
+        const payload = {
+            habits: habits,
+            notes: notes,
+            dailyNotes: dailyNotes,
+            reminders: reminders,
+            paperData: paperData,
+            syncedAt: new Date().toISOString()
+        };
 
-        render();
+        try {
+            const response = await fetch(WEB_APP_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "text/plain"
+                },
+                body: JSON.stringify(payload)
+            });
 
-        showToast("☁ Data restored");
+            const result = await response.json();
 
-    } catch (err) {
+            if(result.success){
+                if (showMessage) {
+                    showToast("☁ Synced to Cloud");
+                }
+            }else{
+                showToast("Sync failed");
+            }
 
-        console.error(err);
-        showToast("Fetch failed");
-
+        } catch(err){
+            console.error(err);
+            showToast("Network error");
+        }
     }
 
-}
+    async function fetchFromGoogleSheets() {
+        try {
+            const response = await fetch(WEB_APP_URL);
+            const data = await response.json();
 
+            if (!data.habits) {
+                showToast("No backup found");
+                return;
+            }
 
-// ← ADD IT HERE
-document.getElementById("syncBtn").addEventListener("click", syncToGoogleSheets);
+            if (!confirm("Replace current tracker with the latest Google Sheets backup?")) {
+                return;
+            }
 
-document.getElementById("fetchBtn").addEventListener("click", fetchFromGoogleSheets);
+            habits = data.habits || [];
+            notes = data.notes || [];
+            dailyNotes = data.dailyNotes || {};
+            reminders = data.reminders || [];
+            paperData = data.paperData || {};
 
+            habits.forEach(h => {
+                if (h.goal === undefined) h.goal = null;
+                if (!h.daily) h.daily = {};
+                if (!h.hourly) h.hourly = {};
+                Object.keys(h.hourly).forEach(date => {
+                    if (!Array.isArray(h.hourly[date])) {
+                        const converted = Array(24).fill(false);
+                        for (let i = 0; i < 24; i++) {
+                            converted[i] = !!h.hourly[date][i];
+                        }
+                        h.hourly[date] = converted;
+                    }
+                    while (h.hourly[date].length < 24) {
+                        h.hourly[date].push(false);
+                    }
+                });
+                if (!h.checklist) h.checklist = [];
+                h.checklist.forEach(item => {
+                    if (!item.timestamp) {
+                        item.timestamp = { date: 'Unknown', time: '' };
+                    }
+                });
+            });
 
+            localStorage.setItem("habits", JSON.stringify(habits));
+            localStorage.setItem("notes", JSON.stringify(notes));
+            localStorage.setItem("dailyNotes", JSON.stringify(dailyNotes));
+            localStorage.setItem("reminders", JSON.stringify(reminders));
+            localStorage.setItem("paperData", JSON.stringify(paperData));
+
+            render();
+            renderReminders();
+            const date = getPaperDate();
+            updatePaperButtons(date);
+            showToast("☁ Data restored");
+
+        } catch (err) {
+            console.error(err);
+            showToast("Fetch failed");
+        }
+    }
+
+    document.getElementById("syncBtn").addEventListener("click", () => syncToGoogleSheets(true));
+    document.getElementById("fetchBtn").addEventListener("click", fetchFromGoogleSheets);
+
+    loadData();
 
 })();
 </script>
