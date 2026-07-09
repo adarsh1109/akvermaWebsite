@@ -37,23 +37,23 @@
             padding: 20px 16px 40px;
         }
         .wrap { 
-            max-width: 1400px; 
-            margin: 0 auto; 
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 24px;
-        }
-        @media (max-width: 1000px) {
-            .wrap { 
-                grid-template-columns: 1fr;
-            }
-            .left-panel {
-                order: 2;
-            }
-            .main-content {
-                order: 1;
-            }
-        }
+    max-width: 1400px; 
+    margin: 0 auto; 
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 24px;
+}
+@media (max-width: 1000px) {
+    .wrap { 
+        grid-template-columns: 1fr;
+    }
+    .left-panel {
+        order: 2; /* Moves left panel to bottom */
+    }
+    .main-content {
+        order: 1; /* Moves main content to top */
+    }
+}
         /* Left Panel */
         .left-panel {
             position: sticky;
@@ -126,6 +126,7 @@
             margin-left: -0.75px;
             z-index: 7;
         }
+        /* Clock numbers - rotated */
         .clock-number {
             position: absolute;
             font-family: 'IBM Plex Mono';
@@ -252,6 +253,7 @@
         .btn.success { border-color: var(--teal); color: var(--teal); }
         .btn.success:hover { background: var(--teal); color: white; }
 
+        /* Reminder section with green outline */
         .reminder-card {
             border: 4px solid #2E7D32;
             border-radius: 12px;
@@ -260,6 +262,7 @@
             overflow: hidden;
         }
 
+        /* Calculator styles */
         .calculator-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -315,89 +318,6 @@
             background: var(--paper);
             margin-bottom: 8px;
             min-height: 48px;
-        }
-
-        /* Image inside habits section */
-        .habits-with-image {
-            display: flex;
-            gap: 20px;
-            align-items: stretch;
-        }
-        .habits-table-wrap {
-            flex: 1;
-            min-width: 0;
-        }
-        .image-side {
-            width: 206px;
-            height: 206px;
-            flex-shrink: 0;
-            display: flex;
-            align-items: stretch;
-        }
-        .image-side .image-container {
-            width: 100%;
-            background: var(--card);
-            border-radius: 2px;
-            box-shadow: var(--shadow);
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 6px;
-            background: var(--paper);
-            position: relative;
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .image-side .image-container:hover {
-            transform: scale(1.1);
-            box-shadow: 0 2px 3px rgba(0,0,0,0.15);
-            z-index: 10;
-        }
-        .image-side .image-container img {
-            max-width: 100%;
-            max-height: 100%;
-            width: auto;
-            height: auto;
-            object-fit: contain;
-            border-radius: 4px;
-        }
-        .image-side .image-container #imageLoading {
-            text-align: center;
-            color: var(--ink-soft);
-            font-size: 13px;
-        }
-
-        /* Popup zoom on hover */
-        .image-side .image-container.zoomed {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(1);
-            width: 80vw;
-            max-width: 800px;
-            height: 80vh;
-            max-height: 800px;
-            z-index: 1000;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            border-radius: 16px;
-            padding: 20px;
-            cursor: zoom-out;
-        }
-        .image-side .image-container.zoomed img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-        }
-        .image-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 999;
-            display: none;
-        }
-        .image-overlay.show {
-            display: block;
         }
 
         /* Main Content */
@@ -558,6 +478,7 @@
             transform: scale(1.08);
         }
 
+        /* Note Modal Styles */
         #noteModal .modal {
             max-width: 700px;
             background: var(--card);
@@ -596,6 +517,7 @@
             outline-offset: 1px;
         }
 
+        /* Reminder Styles */
         .reminder-item {
             display: flex;
             align-items: flex-start;
@@ -649,6 +571,7 @@
             text-decoration: line-through;
         }
 
+        /* Paper a Day Styles */
         .paper-section {
             background: var(--card);
             border-radius: 12px;
@@ -708,6 +631,7 @@
             border-color: var(--gold-deep) !important;
         }
 
+        /* Paper Modal Styles */
         #paperModal .modal {
             max-width: 700px;
             max-height: 90vh;
@@ -749,6 +673,7 @@
             font-family: 'IBM Plex Mono';
         }
 
+        /* Reminder Modal */
         #reminderModal .modal {
             max-width: 400px;
         }
@@ -770,6 +695,7 @@
             outline-offset: 1px;
         }
 
+        /* Checklist Item with Timestamp */
         .checklist-item .item-timestamp {
             font-family: 'IBM Plex Mono';
             font-size: 10px;
@@ -816,6 +742,7 @@
             border-bottom: 2px solid var(--gold);
         }
 
+        /* Habit Controls - Ultra Compact */
         .habit-controls {
             display: inline-flex;
             align-items: center;
@@ -866,32 +793,8 @@
             font-size: 15px;
         }
     </style>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
-
-    <div id="loginSection" style="text-align:right;padding:10px;">
-    <div id="g_id_onload"
-         data-client_id="158818308553-nnunpdekbp27ebgc0vnc1hjej4d3ck1t.apps.googleusercontent.com"
-         data-callback="handleCredentialResponse"
-         data-auto_prompt="false">
-    </div>
-
-    <div class="g_id_signin"
-         data-type="standard"
-         data-size="large"
-         data-theme="outline"
-         data-text="signin_with"
-         data-shape="rectangular">
-    </div>
-
-    <div id="userInfo" style="display:none">
-        <img id="userPic" width="32" style="border-radius:50%;vertical-align:middle;">
-        <span id="userName"></span>
-    </div>
-</div>
-
-
 <div class="wrap">
     <!-- LEFT PANEL -->
     <div class="left-panel">
@@ -908,16 +811,17 @@
             <div class="digital-date" id="digitalDate">---</div>
             <div style="margin-top:8px;display:flex;gap:4px;justify-content:center;flex-wrap:wrap;">
                 <select id="defaultTimezoneSelect" style="font-size:11px;padding:4px 6px;border-radius:4px;border:1.5px solid #C7CDBF;background:#fff;width:100%;">
-                    <option value="Asia/Kolkata">IST - India</option>
-                    <option value="Europe/Amsterdam">CET - Amsterdam</option>
-                    <option value="Europe/London">GMT - London</option>
-                    <option value="America/New_York">EST - New York</option>
-                    <option value="Asia/Tokyo">JST - Tokyo</option>
-                    <option value="Australia/Sydney">AEST - Sydney</option>
-                    <option value="Asia/Dubai">GST - Dubai</option>
-                    <option value="America/Los_Angeles">PST - Los Angeles</option>
-                    <option value="Europe/Paris">CET - Paris</option>
-                    <option value="Asia/Singapore">SGT - Singapore</option>
+    <option value="Asia/Kolkata">IST - India</option>
+    <option value="Europe/Amsterdam">CET - Amsterdam</option>
+    <option value="Europe/London">GMT - London</option>
+    <option value="America/New_York">EST - New York</option>
+    <option value="Asia/Tokyo">JST - Tokyo</option>
+    <option value="Australia/Sydney">AEST - Sydney</option>
+    <option value="Asia/Dubai">GST - Dubai</option>
+    <option value="America/Los_Angeles">PST - Los Angeles</option>
+    <option value="Europe/Paris">CET - Paris</option>
+    <option value="Asia/Singapore">SGT - Singapore</option>
+
                 </select>
             </div>
         </div>
@@ -1147,9 +1051,6 @@
     </div>
 </div>
 
-<!-- Image Popup Overlay -->
-<div class="image-overlay" id="imageOverlay"></div>
-
 <div class="toast" id="toast"></div>
 <script>
 (function(){
@@ -1157,6 +1058,8 @@
     function createClockLabels() {
         const clock = document.getElementById('analogClock');
         const labels = [];
+        // 0=12, 1=1, 2=2, 3=3, 4=4, 5=5, 6=6, 7=7, 8=8, 9=9, 10=10, 11=11
+        // 7-11 (positions 7,8,9,10,11) should show "MON"
         for (let i = 0; i < 12; i++) {
             if (i >= 7 && i <= 11) {
                 labels.push('MON');
@@ -1189,74 +1092,6 @@
     }
     
     createClockLabels();
-
-    // --- Random Image Section - changes daily ---
-    let imageContainer = null;
-    let randomImage = null;
-    let imageLoading = null;
-
-function getDailyImage() {
-    const imageContainer = document.querySelector('.image-side .image-container');
-    if (!imageContainer) return;
-    
-    const randomImage = imageContainer.querySelector('#randomImage');
-    const imageLoading = imageContainer.querySelector('#imageLoading');
-    
-    if (!randomImage || !imageLoading) return;
-    
-    // List your images here
-    const imageFiles = [
-        '9705fd62cebabcc55cb603094c33dfb3.jpg'
-    ];
-    
-    const today = new Date();
-    const dateSeed = today.getFullYear() + today.getMonth() + today.getDate();
-    const randomIndex = dateSeed % imageFiles.length;
-    
-    const imageUrl = `images/${imageFiles[randomIndex]}`;
-    
-    randomImage.style.display = 'none';
-    imageLoading.style.display = 'block';
-    imageLoading.textContent = 'Loading image...';
-    
-    randomImage.src = imageUrl;
-    
-    randomImage.onload = function() {
-        imageLoading.style.display = 'none';
-        randomImage.style.display = 'block';
-    };
-    
-    randomImage.onerror = function() {
-        imageLoading.textContent = '⚠️ Image not found. Make sure the images folder exists.';
-        imageLoading.style.display = 'block';
-        randomImage.style.display = 'none';
-    };
-}
-
-    // --- Image hover zoom popup ---
-    function setupImageZoom() {
-        const container = document.querySelector('.image-side .image-container');
-        const overlay = document.getElementById('imageOverlay');
-        if (!container || !overlay) return;
-        
-        container.addEventListener('click', function(e) {
-            e.stopPropagation();
-            this.classList.toggle('zoomed');
-            overlay.classList.toggle('show');
-        });
-        
-        overlay.addEventListener('click', function() {
-            container.classList.remove('zoomed');
-            this.classList.remove('show');
-        });
-        
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                container.classList.remove('zoomed');
-                overlay.classList.remove('show');
-            }
-        });
-    }
 
     // --- Collapsible sections ---
     document.querySelectorAll('.tool-header').forEach(header => {
@@ -1380,25 +1215,30 @@ function getDailyImage() {
 
 function updateClockLabels(currentHour, currentMinute) {
     const labels = document.querySelectorAll('.clock-number');
+    // If 30 minutes or more have passed, show the NEXT hour as green
     const activeHour = (currentMinute >= 30) ? (currentHour + 1) % 12 : currentHour;
     
     labels.forEach((el, index) => {
         const isCurrent = (index === activeHour);
         const isMON = (index >= 7 && index <= 11);
         
+        // Check if this position is the active (green) one first - this overrides everything
         if (isCurrent) {
+            // Green color regardless of whether it's NOW or MON
             el.textContent = isMON ? 'MON' : 'NOW';
-            el.style.color = '#2E7D32';
+            el.style.color = '#2E7D32'; // Green
             el.style.fontWeight = '700';
             el.style.fontSize = '9px';
         } else if (isMON) {
+            // 7-11 (positions 7,8,9,10,11) show "MON" in red
             el.textContent = 'MON';
-            el.style.color = '#B71C1C';
+            el.style.color = '#B71C1C'; // Red
             el.style.fontWeight = '600';
             el.style.fontSize = '9px';
         } else {
+            // All other positions show "NOW" in red
             el.textContent = 'NOW';
-            el.style.color = '#B71C1C';
+            el.style.color = '#B71C1C'; // Red
             el.style.fontWeight = '600';
             el.style.fontSize = '9px';
         }
@@ -1425,7 +1265,7 @@ function updateClock() {
     digitalDate.textContent = tzNow.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
 
     updateTimezones(now);
-    updateClockLabels(h, m);
+    updateClockLabels(h, m);  // Pass minutes as well
 }
 
     function updateTimezones(now) {
@@ -1920,7 +1760,7 @@ function updateClock() {
             localStorage.setItem("habits", JSON.stringify(habits));
             localStorage.setItem("notes", JSON.stringify(notes));
             localStorage.setItem("dailyNotes", JSON.stringify(dailyNotes));
-            await syncToGoogleSheets(false);
+            await syncToGoogleSheets(false);  // Add this line
         }, 500);
     }
 
@@ -1932,11 +1772,6 @@ function updateClock() {
         loadReminders();
         loadPaperData();
         render(); 
-        // Load daily image after render
-        setTimeout(() => {
-            getDailyImage();
-            setupImageZoom();
-        }, 300);
     }
     
     // Clear All Data with custom popup
@@ -2047,12 +1882,6 @@ modal.innerHTML = `
         attachHourlyEvents();
         checklist.forEach(h=>attachCardEvents(h));
         attachPaperEvents();
-        
-        // Load image after habits render
-        setTimeout(() => {
-            getDailyImage();
-            setupImageZoom();
-        }, 200);
     }
 
     function paperSectionHTML() {
@@ -2194,22 +2023,7 @@ modal.innerHTML = `
         
         rows += noteRowHTML(ref);
         
-        // Wrap table with image side by side
-        return `<div class="sheet-card">
-            <div class="habits-with-image">
-                <div class="habits-table-wrap">
-                    <div class="sheet-nav"><button class="btn small ghost" data-act="prevGridMonth">‹</button><span class="m-label">${monthLabel}</span><button class="btn small ghost" data-act="nextGridMonth" ${gridMonthOffset===0?'disabled style="opacity:.3;"':''}>›</button></div>
-                    <div class="sheet-wrap"><table class="sheet"><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table></div>
-                    <div class="sheet-newrow"><button class="link-btn" id="newHabitLink">+ New Habit</button></div>
-                </div>
-                <div class="image-side">
-                    <div class="image-container">
-                        <img id="randomImage" src="" alt="Daily image" style="width:100%;height:auto;display:block;">
-                        <div id="imageLoading" style="display:none;text-align:center;padding:40px 0;color:var(--ink-soft);">Loading image...</div>
-                    </div>
-                </div>
-            </div>
-        </div>`;
+        return `<div class="sheet-card"><div class="sheet-nav"><button class="btn small ghost" data-act="prevGridMonth">‹</button><span class="m-label">${monthLabel}</span><button class="btn small ghost" data-act="nextGridMonth" ${gridMonthOffset===0?'disabled style="opacity:.3;"':''}>›</button></div><div class="sheet-wrap"><table class="sheet"><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table></div><div class="sheet-newrow"><button class="link-btn" id="newHabitLink">+ New Habit</button></div></div>`;
     }
 
     function monthStats(h,ref){ const year=ref.getFullYear(), month=ref.getMonth(), days=new Date(year,month+1,0).getDate(); let checkedCount=0; for(let d=1; d<=days; d++){ const ds=`${year}-${pad(month+1)}-${pad(d)}`; if(h.daily[ds]) checkedCount++; } return {checkedCount,total:days}; }
@@ -2695,43 +2509,19 @@ function notesHTML(){
                 editModal.classList.remove("show");
                 editItemData = null;
             }
-            // Close image zoom on Escape
-            const imgContainer = document.querySelector('.image-side .image-container');
-            const overlay = document.getElementById('imageOverlay');
-            if (imgContainer && imgContainer.classList.contains('zoomed')) {
-                imgContainer.classList.remove('zoomed');
-                overlay.classList.remove('show');
-            }
         }
     });
 
-    window.googleToken = null;
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxTkxXtZUNzFDtn2aQHAhuY80UaBAPg2E6g16nA6hYyA69gb-n-QPYL4fNq1AmGq6c_/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyFDJHkFLZhJVnvI_u7JMuWDkTWaOmATDcd3HWhZ9DJa_5H7efW96qaETPzKcq_tzGa4A/exec";
 
     async function syncToGoogleSheets(showMessage = true) {
-        
-            if(!window.googleToken){
-        showToast("Please sign in first.");
-        return;
-    }
-
-    const payload = {
-
-        token: window.googleToken,
-
-        data: {
-
+        const payload = {
             habits: habits,
             notes: notes,
             dailyNotes: dailyNotes,
             reminders: reminders,
             paperData: paperData,
             syncedAt: new Date().toISOString()
-
-        }
-
-    };
-
         };
 
         try {
@@ -2761,22 +2551,7 @@ function notesHTML(){
 
     async function fetchFromGoogleSheets() {
         try {
-            if(!window.googleToken){
-    showToast("Please sign in first.");
-    return;
-}
-
-const response = await fetch(
-
-    WEB_APP_URL +
-
-    "?token=" +
-
-    encodeURIComponent(window.googleToken) +
-
-    "&slot=Current"
-
-);
+            const response = await fetch(WEB_APP_URL);
             const data = await response.json();
 
             if (!data.habits) {
@@ -2784,7 +2559,7 @@ const response = await fetch(
                 return;
             }
 
-            if (!confirm("Fetch data from the Cloud? It will overwrite your current data.")) {
+            if (!confirm("Replace current tracker with the latest Google Sheets backup?")) {
                 return;
             }
 
@@ -2843,33 +2618,5 @@ const response = await fetch(
 
 })();
 </script>
-
-<script>
-
-window.handleCredentialResponse = async function(response){
-
-    window.googleToken = response.credential;
-
-    const payload =
-        JSON.parse(
-            atob(response.credential.split(".")[1])
-        );
-
-    document.querySelector(".g_id_signin").style.display="none";
-
-    document.getElementById("userInfo").style.display="block";
-
-    document.getElementById("userPic").src =
-        payload.picture;
-
-    document.getElementById("userName").textContent =
-        payload.name;
-
-    showToast("Signed in as " + payload.email);
-
-};
-
-</script>
-
 </body>
 </html>
