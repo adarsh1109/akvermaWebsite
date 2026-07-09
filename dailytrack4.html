@@ -2705,16 +2705,33 @@ function notesHTML(){
         }
     });
 
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyFDJHkFLZhJVnvI_u7JMuWDkTWaOmATDcd3HWhZ9DJa_5H7efW96qaETPzKcq_tzGa4A/exec";
+    window.googleToken = null;
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxTkxXtZUNzFDtn2aQHAhuY80UaBAPg2E6g16nA6hYyA69gb-n-QPYL4fNq1AmGq6c_/exec";
 
     async function syncToGoogleSheets(showMessage = true) {
-        const payload = {
+        
+            if(!window.googleToken){
+        showToast("Please sign in first.");
+        return;
+    }
+
+    const payload = {
+
+        token: window.googleToken,
+
+        data: {
+
             habits: habits,
             notes: notes,
             dailyNotes: dailyNotes,
             reminders: reminders,
             paperData: paperData,
             syncedAt: new Date().toISOString()
+
+        }
+
+    };
+
         };
 
         try {
@@ -2744,7 +2761,22 @@ function notesHTML(){
 
     async function fetchFromGoogleSheets() {
         try {
-            const response = await fetch(WEB_APP_URL);
+            if(!window.googleToken){
+    showToast("Please sign in first.");
+    return;
+}
+
+const response = await fetch(
+
+    WEB_APP_URL +
+
+    "?token=" +
+
+    encodeURIComponent(window.googleToken) +
+
+    "&slot=Current"
+
+);
             const data = await response.json();
 
             if (!data.habits) {
@@ -2814,11 +2846,26 @@ function notesHTML(){
 
 <script>
 
-window.handleCredentialResponse = function(response){
+window.handleCredentialResponse = async function(response){
 
-    alert("SUCCESS");
+    window.googleToken = response.credential;
 
-    console.log(response);
+    const payload =
+        JSON.parse(
+            atob(response.credential.split(".")[1])
+        );
+
+    document.querySelector(".g_id_signin").style.display="none";
+
+    document.getElementById("userInfo").style.display="block";
+
+    document.getElementById("userPic").src =
+        payload.picture;
+
+    document.getElementById("userName").textContent =
+        payload.name;
+
+    showToast("Signed in as " + payload.email);
 
 };
 
