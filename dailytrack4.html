@@ -37,23 +37,23 @@
             padding: 20px 16px 40px;
         }
         .wrap { 
-    max-width: 1400px; 
-    margin: 0 auto; 
-    display: grid;
-    grid-template-columns: 280px 1fr;
-    gap: 24px;
-}
-@media (max-width: 1000px) {
-    .wrap { 
-        grid-template-columns: 1fr;
-    }
-    .left-panel {
-        order: 2; /* Moves left panel to bottom */
-    }
-    .main-content {
-        order: 1; /* Moves main content to top */
-    }
-}
+            max-width: 1400px; 
+            margin: 0 auto; 
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 24px;
+        }
+        @media (max-width: 1000px) {
+            .wrap { 
+                grid-template-columns: 1fr;
+            }
+            .left-panel {
+                order: 2;
+            }
+            .main-content {
+                order: 1;
+            }
+        }
         /* Left Panel */
         .left-panel {
             position: sticky;
@@ -126,7 +126,6 @@
             margin-left: -0.75px;
             z-index: 7;
         }
-        /* Clock numbers - rotated */
         .clock-number {
             position: absolute;
             font-family: 'IBM Plex Mono';
@@ -154,7 +153,6 @@
             color: var(--ink-soft);
             margin-top: 2px;
         }
-
         .tool-card {
             background: var(--card);
             border-radius: 12px;
@@ -253,7 +251,6 @@
         .btn.success { border-color: var(--teal); color: var(--teal); }
         .btn.success:hover { background: var(--teal); color: white; }
 
-        /* Reminder section with green outline */
         .reminder-card {
             border: 4px solid #2E7D32;
             border-radius: 12px;
@@ -262,7 +259,6 @@
             overflow: hidden;
         }
 
-        /* Calculator styles */
         .calculator-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -792,6 +788,61 @@
         .card-title .habit-controls {
             font-size: 15px;
         }
+
+        /* Completed section inside checklist */
+        .completed-checklist-section {
+            margin-top: 12px;
+            border-top: 1px solid #ECEEE7;
+            padding-top: 10px;
+        }
+        .completed-checklist-section summary {
+            cursor: pointer;
+            font-family: 'IBM Plex Mono';
+            font-size: 11px;
+            color: var(--gold-deep);
+            padding: 4px 0;
+        }
+        .completed-checklist-section summary:hover {
+            opacity: 0.8;
+        }
+        .completed-checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 4px 0 4px 26px;
+            font-size: 12.5px;
+            color: var(--ink-soft);
+        }
+        .completed-checklist-item .item-label {
+            text-decoration: line-through;
+        }
+        .completed-checklist-item .item-delete {
+            background: none;
+            border: none;
+            color: var(--brick);
+            cursor: pointer;
+            font-size: 12px;
+            opacity: 0.3;
+            padding: 0 4px;
+        }
+        .completed-checklist-item .item-delete:hover { opacity: 1; }
+        .completed-checklist-item .item-timestamp {
+            font-family: 'IBM Plex Mono';
+            font-size: 10px;
+            color: var(--ink-soft);
+            opacity: 0.5;
+            margin-left: auto;
+            white-space: nowrap;
+        }
+        .completed-checklist-item .item-timestamp .date-part {
+            color: var(--gold-deep);
+        }
+        .completed-count-badge {
+            font-family: 'IBM Plex Mono';
+            font-size: 10px;
+            color: var(--ink-soft);
+            margin-left: 4px;
+        }
     </style>
 </head>
 <body>
@@ -811,17 +862,16 @@
             <div class="digital-date" id="digitalDate">---</div>
             <div style="margin-top:8px;display:flex;gap:4px;justify-content:center;flex-wrap:wrap;">
                 <select id="defaultTimezoneSelect" style="font-size:11px;padding:4px 6px;border-radius:4px;border:1.5px solid #C7CDBF;background:#fff;width:100%;">
-    <option value="Asia/Kolkata">IST - India</option>
-    <option value="Europe/Amsterdam">CET - Amsterdam</option>
-    <option value="Europe/London">GMT - London</option>
-    <option value="America/New_York">EST - New York</option>
-    <option value="Asia/Tokyo">JST - Tokyo</option>
-    <option value="Australia/Sydney">AEST - Sydney</option>
-    <option value="Asia/Dubai">GST - Dubai</option>
-    <option value="America/Los_Angeles">PST - Los Angeles</option>
-    <option value="Europe/Paris">CET - Paris</option>
-    <option value="Asia/Singapore">SGT - Singapore</option>
-
+                    <option value="Asia/Kolkata">IST - India</option>
+                    <option value="Europe/Amsterdam">CET - Amsterdam</option>
+                    <option value="Europe/London">GMT - London</option>
+                    <option value="America/New_York">EST - New York</option>
+                    <option value="Asia/Tokyo">JST - Tokyo</option>
+                    <option value="Australia/Sydney">AEST - Sydney</option>
+                    <option value="Asia/Dubai">GST - Dubai</option>
+                    <option value="America/Los_Angeles">PST - Los Angeles</option>
+                    <option value="Europe/Paris">CET - Paris</option>
+                    <option value="Asia/Singapore">SGT - Singapore</option>
                 </select>
             </div>
         </div>
@@ -1057,22 +1107,11 @@
     // --- Clock with "NOW" and "MON" ---
     function createClockLabels() {
         const clock = document.getElementById('analogClock');
-        const labels = [];
-        // 0=12, 1=1, 2=2, 3=3, 4=4, 5=5, 6=6, 7=7, 8=8, 9=9, 10=10, 11=11
-        // 7-11 (positions 7,8,9,10,11) should show "MON"
-        for (let i = 0; i < 12; i++) {
-            if (i >= 7 && i <= 11) {
-                labels.push('MON');
-            } else {
-                labels.push('NOW');
-            }
-        }
-        
         const radius = 62;
         const centerX = 80;
         const centerY = 80;
         
-        labels.forEach((label, i) => {
+        for (let i = 0; i < 12; i++) {
             const angle = (i / 12) * 360 - 90;
             const rad = angle * Math.PI / 180;
             const x = centerX + radius * Math.cos(rad);
@@ -1084,13 +1123,12 @@
             el.style.left = (x - 15) + 'px';
             el.style.top = (y - 10) + 'px';
             el.style.transform = `rotate(${angle}deg)`;
-            el.textContent = label;
+            el.textContent = (i >= 7 && i <= 11) ? 'MON' : 'NOW';
             el.style.width = '30px';
             el.style.height = '20px';
             clock.appendChild(el);
-        });
+        }
     }
-    
     createClockLabels();
 
     // --- Collapsible sections ---
@@ -1213,60 +1251,55 @@
         return new Date().toLocaleString('en-US', { timeZone: tz });
     }
 
-function updateClockLabels(currentHour, currentMinute) {
-    const labels = document.querySelectorAll('.clock-number');
-    // If 30 minutes or more have passed, show the NEXT hour as green
-    const activeHour = (currentMinute >= 30) ? (currentHour + 1) % 12 : currentHour;
-    
-    labels.forEach((el, index) => {
-        const isCurrent = (index === activeHour);
-        const isMON = (index >= 7 && index <= 11);
+    function updateClockLabels(currentHour, currentMinute) {
+        const labels = document.querySelectorAll('.clock-number');
+        const activeHour = (currentMinute >= 30) ? (currentHour + 1) % 12 : currentHour;
         
-        // Check if this position is the active (green) one first - this overrides everything
-        if (isCurrent) {
-            // Green color regardless of whether it's NOW or MON
-            el.textContent = isMON ? 'MON' : 'NOW';
-            el.style.color = '#2E7D32'; // Green
-            el.style.fontWeight = '700';
-            el.style.fontSize = '9px';
-        } else if (isMON) {
-            // 7-11 (positions 7,8,9,10,11) show "MON" in red
-            el.textContent = 'MON';
-            el.style.color = '#B71C1C'; // Red
-            el.style.fontWeight = '600';
-            el.style.fontSize = '9px';
-        } else {
-            // All other positions show "NOW" in red
-            el.textContent = 'NOW';
-            el.style.color = '#B71C1C'; // Red
-            el.style.fontWeight = '600';
-            el.style.fontSize = '9px';
-        }
-    });
-}
+        labels.forEach((el, index) => {
+            const isCurrent = (index === activeHour);
+            const isMON = (index >= 7 && index <= 11);
+            
+            if (isCurrent) {
+                el.textContent = isMON ? 'MON' : 'NOW';
+                el.style.color = '#2E7D32';
+                el.style.fontWeight = '700';
+                el.style.fontSize = '9px';
+            } else if (isMON) {
+                el.textContent = 'MON';
+                el.style.color = '#B71C1C';
+                el.style.fontWeight = '600';
+                el.style.fontSize = '9px';
+            } else {
+                el.textContent = 'NOW';
+                el.style.color = '#B71C1C';
+                el.style.fontWeight = '600';
+                el.style.fontSize = '9px';
+            }
+        });
+    }
 
-function updateClock() {
-    const now = new Date();
-    const tzNow = new Date(getTimeInTimezone(defaultTimezone));
-    const h = tzNow.getHours() % 12;
-    const m = tzNow.getMinutes();
-    const s = tzNow.getSeconds();
-    const ms = tzNow.getMilliseconds();
+    function updateClock() {
+        const now = new Date();
+        const tzNow = new Date(getTimeInTimezone(defaultTimezone));
+        const h = tzNow.getHours() % 12;
+        const m = tzNow.getMinutes();
+        const s = tzNow.getSeconds();
+        const ms = tzNow.getMilliseconds();
 
-    const secDeg = (s + ms/1000) * 6;
-    const minDeg = (m + s/60) * 6;
-    const hourDeg = (h + m/60) * 30;
+        const secDeg = (s + ms/1000) * 6;
+        const minDeg = (m + s/60) * 6;
+        const hourDeg = (h + m/60) * 30;
 
-    secondHand.style.transform = `rotate(${secDeg}deg)`;
-    minuteHand.style.transform = `rotate(${minDeg}deg)`;
-    hourHand.style.transform = `rotate(${hourDeg}deg)`;
+        secondHand.style.transform = `rotate(${secDeg}deg)`;
+        minuteHand.style.transform = `rotate(${minDeg}deg)`;
+        hourHand.style.transform = `rotate(${hourDeg}deg)`;
 
-    digitalTime.textContent = tzNow.toLocaleTimeString('en-US', { hour12: false });
-    digitalDate.textContent = tzNow.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+        digitalTime.textContent = tzNow.toLocaleTimeString('en-US', { hour12: false });
+        digitalDate.textContent = tzNow.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
 
-    updateTimezones(now);
-    updateClockLabels(h, m);  // Pass minutes as well
-}
+        updateTimezones(now);
+        updateClockLabels(h, m);
+    }
 
     function updateTimezones(now) {
         const tzs = {
@@ -1307,7 +1340,6 @@ function updateClock() {
     setInterval(updateClock, 100);
     updateClock();
     
-
     document.getElementById('defaultTimezoneSelect').addEventListener('change', function() {
         defaultTimezone = this.value;
         updateClock();
@@ -1719,6 +1751,7 @@ function updateClock() {
         renderPaperDate();
         const currentDate = getPaperDate();
         updatePaperButtons(currentDate);
+        renderTrack();
     });
 
     document.getElementById('paperNextDay')?.addEventListener('click', function() {
@@ -1729,6 +1762,7 @@ function updateClock() {
             renderPaperDate();
             const currentDate = getPaperDate();
             updatePaperButtons(currentDate);
+            renderTrack();
         }
     });
 
@@ -1760,7 +1794,7 @@ function updateClock() {
             localStorage.setItem("habits", JSON.stringify(habits));
             localStorage.setItem("notes", JSON.stringify(notes));
             localStorage.setItem("dailyNotes", JSON.stringify(dailyNotes));
-            await syncToGoogleSheets(false);  // Add this line
+            await syncToGoogleSheets(false);
         }, 500);
     }
 
@@ -1798,17 +1832,17 @@ function updateClock() {
             box-shadow: 0 20px 60px rgba(0,0,0,.3);
         `;
         
-modal.innerHTML = `
-    <h2 style="font-family:'IBM Plex Mono';font-size:16px;margin:0 0 8px;color:var(--brick);">⚠️ Clear All Data</h2>
-    <p style="font-size:14px;color:var(--ink-soft);margin-bottom:20px;line-height:1.5;">
-        After clearing data, if you <strong style="color:var(--brick);">SYNC</strong> without fetching <strong style="color:#2E7D32;">(FETCH)</strong> from the cloud first, 
-        <strong style="color:var(--brick);">all your history will be lost.</strong>
-    </p>
-    <div style="display:flex;gap:10px;justify-content:flex-end;">
-        <button class="btn ghost" id="clearCancelBtn">Cancel</button>
-        <button class="btn danger" id="clearConfirmBtn">✕ Clear Everything</button>
-    </div>
-`;
+        modal.innerHTML = `
+            <h2 style="font-family:'IBM Plex Mono';font-size:16px;margin:0 0 8px;color:var(--brick);">⚠️ Clear All Data</h2>
+            <p style="font-size:14px;color:var(--ink-soft);margin-bottom:20px;line-height:1.5;">
+                After clearing data, if you <strong style="color:var(--brick);">SYNC</strong> without fetching <strong style="color:#2E7D32;">(FETCH)</strong> from the cloud first, 
+                <strong style="color:var(--brick);">all your history will be lost.</strong>
+            </p>
+            <div style="display:flex;gap:10px;justify-content:flex-end;">
+                <button class="btn ghost" id="clearCancelBtn">Cancel</button>
+                <button class="btn danger" id="clearConfirmBtn">✕ Clear Everything</button>
+            </div>
+        `;
         
         overlay.appendChild(modal);
         document.body.appendChild(overlay);
@@ -1878,7 +1912,8 @@ modal.innerHTML = `
         if(checklist.length) html+=`<div class="section-label">Manual lists</div>`+checklist.map(h=>cardHTML(h)).join('');
         html+=notesHTML();
         el.innerHTML=html;
-        attachSheetEvents(daily); attachNotesEvents(); 
+        attachSheetEvents(daily); 
+        attachNotesEvents(); 
         attachHourlyEvents();
         checklist.forEach(h=>attachCardEvents(h));
         attachPaperEvents();
@@ -2072,12 +2107,13 @@ modal.innerHTML = `
         return html;
     }
 
-function notesHTML(){
-    const sorted=[...notes].sort((a,b)=>b.date.localeCompare(a.date) || b.ts.localeCompare(a.ts));
-    return `<div class="notes-card"><div class="notes-head"><h4>Notes</h4><div><button class="link-btn" id="newNoteBtn">+ New Note</button></div></div>
-        <div id="newNoteSlot">${addingNote?`<div class="new-note"><textarea id="noteText" placeholder="Write a note…" autofocus></textarea><div class="new-note-actions"><button class="btn small ghost" id="cancelNote">Cancel</button><button class="btn small primary" id="saveNote">Save</button></div></div>`:''}</div>
-        ${sorted.length===0?'<div style="color:var(--ink-soft);font-size:13px;padding:10px 2px;">No notes yet.</div>':sorted.map(n=>`<div class="note"><button class="del" data-act="delNote" data-id="${n.id}">✕</button><div class="meta"><span class="timestamp">${n.ts||''}</span></div><div class="text">${escapeHTML(n.text)}</div></div>`).join('')}</div>`;
-}
+    function notesHTML(){
+        const sorted=[...notes].sort((a,b)=>b.date.localeCompare(a.date) || b.ts.localeCompare(a.ts));
+        return `<div class="notes-card"><div class="notes-head"><h4>Notes</h4><div><button class="link-btn" id="newNoteBtn">+ New Note</button></div></div>
+            <div id="newNoteSlot">${addingNote?`<div class="new-note"><textarea id="noteText" placeholder="Write a note…" autofocus></textarea><div class="new-note-actions"><button class="btn small ghost" id="cancelNote">Cancel</button><button class="btn small primary" id="saveNote">Save</button></div></div>`:''}</div>
+            ${sorted.length===0?'<div style="color:var(--ink-soft);font-size:13px;padding:10px 2px;">No notes yet.</div>':sorted.map(n=>`<div class="note"><button class="del" data-act="delNote" data-id="${n.id}">✕</button><div class="meta"><span class="timestamp">${n.ts||''}</span></div><div class="text">${escapeHTML(n.text)}</div></div>`).join('')}</div>`;
+    }
+    
     function formatNiceDate(ds){ const [y,m,d]=ds.split('-').map(Number); return new Date(y,m-1,d).toLocaleDateString('default',{day:'numeric',month:'long',year:'numeric'}); }
 
     function attachNotesEvents(){
@@ -2208,11 +2244,16 @@ function notesHTML(){
     });
 
     function cardHTML(h){
-        const acc=accentFor(h); let controls='', body='', statHTML='', clearBtn='';
-        const done=h.checklist.filter(i=>i.checked).length;
-        statHTML=`<span class="stat"><b>${done}</b>/${h.checklist.length} checked</span>`;
-        body=checklistHTML(h);
-        clearBtn=`<button class="btn small clear-btn" data-act="clearChecklist">Uncheck all</button>`;
+        const acc=accentFor(h); 
+        let body='', statHTML='', clearBtn='';
+        const totalItems = h.checklist.length;
+        const doneItems = h.checklist.filter(i => i.checked).length;
+        const completedItems = h.checklist.filter(i => i.checked);
+        const activeItems = h.checklist.filter(i => !i.checked);
+        
+        statHTML=`<span class="stat"><b>${doneItems}</b>/${totalItems} checked</span>`;
+        body=checklistHTML(h, activeItems, completedItems);
+        // clearBtn=`<button class="btn small clear-btn" data-act="clearChecklist">Uncheck all</button>`;
         return `<div class="card" data-id="${h.id}" style="--accent:${acc.a};--accent-deep:${acc.d};">
             <div class="card-head">
                 <div class="card-title">
@@ -2224,15 +2265,15 @@ function notesHTML(){
                     </span>
                     ${statHTML}
                 </div>
-                ${controls}
             </div>
             <div class="grid-body">${body}</div>
-            <div class="card-foot">${clearBtn}<button class="btn small ghost" data-act="delete">Delete tracker</button></div>
+
         </div>`;
     }
 
-    function checklistHTML(h){
-        const items = h.checklist.map((it, index) => `
+    function checklistHTML(h, activeItems, completedItems){
+        // Active items
+        let itemsHTML = activeItems.map((it, index) => `
             <div class="checklist-item" data-item="${it.id}" data-index="${index}" draggable="true">
                 <span class="item-drag" title="Drag to reorder">⠿</span>
                 <div class="box ${it.checked?'checked':''}" data-act="toggleItem">
@@ -2247,27 +2288,64 @@ function notesHTML(){
             </div>
         `).join('');
         
-        return `${items||'<div style="color:var(--ink-soft);font-size:13px;padding:6px 0;">No items yet — add one below.</div>'}<div class="add-item-row"><input type="text" placeholder="Add a checkbox…" data-role="newItem" maxlength="80"><button class="btn small primary" data-act="addItem">Add</button></div>`;
+        // Completed section (collapsible, like Reminders)
+        let completedHTML = '';
+        if (completedItems.length > 0) {
+            completedHTML = `
+                <div class="completed-checklist-section">
+                    <details>
+                        <summary>
+                            Completed <span class="completed-count-badge">(${completedItems.length})</span>
+                        </summary>
+                        ${completedItems.map(it => `
+                            <div class="completed-checklist-item" data-item="${it.id}">
+                                <span class="item-label">${escapeHTML(it.label)}</span>
+                                ${it.timestamp ? `<span class="item-timestamp"><span class="date-part">${it.timestamp.date}</span> ${it.timestamp.time || ''}</span>` : ''}
+                                <button class="item-delete" data-act="removeItem" title="Delete">✕</button>
+                            </div>
+                        `).join('')}
+                    </details>
+                </div>
+            `;
+        }
+        
+        return `${itemsHTML || '<div style="color:var(--ink-soft);font-size:13px;padding:6px 0;">No items yet — add one below.</div>'}
+            <div class="add-item-row"><input type="text" placeholder="Add a checkbox…" data-role="newItem" maxlength="80"><button class="btn small primary" data-act="addItem">Add</button></div>
+            ${completedHTML}`;
     }
 
     function attachCardEvents(h){
         const card=document.querySelector(`.card[data-id="${h.id}"]`); if(!card) return;
         
+        // Toggle item (checkbox)
         card.querySelectorAll('[data-act="toggleItem"]').forEach(b=>b.addEventListener('click', ()=>{ 
             const id=b.closest('.checklist-item').dataset.item; 
             const item=h.checklist.find(i=>i.id===id); 
-            item.checked=!item.checked; 
-            scheduleSave(); 
-            renderTrack(); 
+            if (item) {
+                item.checked=!item.checked; 
+                if (item.checked) {
+                    const now = new Date();
+                    item.timestamp = {
+                        date: dstr(now),
+                        time: now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' })
+                    };
+                } else {
+                    item.timestamp = null;
+                }
+                scheduleSave(); 
+                renderTrack(); 
+            }
         }));
         
+        // Remove item (both active and completed)
         card.querySelectorAll('[data-act="removeItem"]').forEach(b=>b.addEventListener('click', ()=>{ 
-            const id=b.closest('.checklist-item').dataset.item; 
+            const id=b.closest('[data-item]').dataset.item; 
             h.checklist=h.checklist.filter(i=>i.id!==id); 
             scheduleSave(); 
             renderTrack(); 
         }));
         
+        // Edit item
         card.querySelectorAll('[data-act="editItem"]').forEach(b=>b.addEventListener('click', ()=>{
             const id=b.closest('.checklist-item').dataset.item;
             const item=h.checklist.find(i=>i.id===id);
@@ -2280,23 +2358,18 @@ function notesHTML(){
             }
         }));
         
+        // Add item
         const addBtn=card.querySelector('[data-act="addItem"]'); 
         if(addBtn){ 
             const input=card.querySelector('[data-role="newItem"]'); 
             const doAdd=()=>{ 
                 const v=input.value.trim(); 
                 if(!v) return; 
-                const now = new Date();
-                const dateStr = dstr(now);
-                const timeStr = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
                 h.checklist.push({
                     id:uid(), 
                     label:v, 
                     checked:false,
-                    timestamp: {
-                        date: dateStr,
-                        time: timeStr
-                    }
+                    timestamp: null
                 }); 
                 scheduleSave(); 
                 renderTrack(); 
@@ -2305,6 +2378,7 @@ function notesHTML(){
             input.addEventListener('keydown', e=>{ if(e.key==='Enter') doAdd(); }); 
         }
         
+        // Delete tracker
         card.querySelector('[data-act="delete"]')?.addEventListener('click', ()=>{ 
             if(confirm(`Delete "${h.name}"?`)){ 
                 habits=habits.filter(x=>x.id!==h.id); 
@@ -2313,12 +2387,14 @@ function notesHTML(){
             } 
         });
         
+        // Clear all checked
         card.querySelector('[data-act="clearChecklist"]')?.addEventListener('click', ()=>{ 
             h.checklist.forEach(i=>i.checked=false); 
             scheduleSave(); 
             renderTrack(); 
         });
 
+        // Move up/down
         card.querySelectorAll('[data-act="moveUpChecklist"]').forEach(b=>b.addEventListener('click', function(e){
             e.stopPropagation();
             const id = this.dataset.id;
@@ -2331,6 +2407,7 @@ function notesHTML(){
             moveHabitDown(id);
         }));
         
+        // Double-click to rename
         card.querySelectorAll('.habit-name-text').forEach(el=>{
             el.addEventListener('dblclick', function(e){
                 e.stopPropagation();
@@ -2346,6 +2423,7 @@ function notesHTML(){
             });
         });
 
+        // Drag and drop for active items only
         const items = card.querySelectorAll('.checklist-item');
         let dragItem = null;
 
@@ -2438,7 +2516,7 @@ function notesHTML(){
         const wb=XLSX.utils.book_new();
         const summary=habits.map(h=>{ let rate=0; if(h.cadence==='daily'){ const vals=Object.values(h.daily); rate=vals.length?Math.round(vals.filter(Boolean).length/vals.length*100):0; } else if(h.cadence==='hourly'){ const days=Object.values(h.hourly); const totalHrs=days.reduce((s,a)=>s+a.length,0); const checkedHrs=days.reduce((s,a)=>s+a.filter(Boolean).length,0); rate=totalHrs?Math.round(checkedHrs/totalHrs*100):0; } else { rate=h.checklist.length?Math.round(h.checklist.filter(i=>i.checked).length/h.checklist.length*100):0; } return {Name:h.name, Cadence:h.cadence, Created:h.createdAt, 'Completion %':rate}; });
         XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(summary), 'Summary');
-        habits.forEach(h=>{ const safeName=h.name.replace(/[\\\/\?\*\[\]:]/g,'').slice(0,28)||'Tracker'; let rows=[]; if(h.cadence==='daily') rows=Object.entries(h.daily).sort().map(([date,val])=>({Date:date, Completed:val?'Yes':'No'})); else if(h.cadence==='hourly') rows=Object.entries(h.hourly).sort().map(([date,arr])=>({Date:date, 'Hours Completed':arr.map((v,i)=>v?i:null).filter(v=>v!==null).join(', '), Count:arr.filter(Boolean).length, Percent:Math.round(arr.filter(Boolean).length/24*100)+'%'})); else rows=h.checklist.map(i=>({Item:i.label, Checked:i.checked?'Yes':'No'})); if(rows.length===0) rows=[{Note:'No entries yet'}]; XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows), safeName); });
+        habits.forEach(h=>{ const safeName=h.name.replace(/[\\\/\?\*\[\]:]/g,'').slice(0,28)||'Tracker'; let rows=[]; if(h.cadence==='daily') rows=Object.entries(h.daily).sort().map(([date,val])=>({Date:date, Completed:val?'Yes':'No'})); else if(h.cadence==='hourly') rows=Object.entries(h.hourly).sort().map(([date,arr])=>({Date:date, 'Hours Completed':arr.map((v,i)=>v?i:null).filter(v=>v!==null).join(', '), Count:arr.filter(Boolean).length, Percent:Math.round(arr.filter(Boolean).length/24*100)+'%'})); else rows=h.checklist.map(i=>({Item:i.label, Checked:i.checked?'Yes':'No', CompletedOn: i.timestamp ? `${i.timestamp.date} ${i.timestamp.time}` : ''})); if(rows.length===0) rows=[{Note:'No entries yet'}]; XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows), safeName); });
         if(notes.length){ XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(notes.map(n=>({Date:n.date, Time:n.ts||'', Note:n.text}))), 'Notes'); }
         XLSX.writeFile(wb, `habit-tracker-export-${todayStr()}.xlsx`);
         showToast('Exported to Excel');
@@ -2588,7 +2666,7 @@ function notesHTML(){
                 if (!h.checklist) h.checklist = [];
                 h.checklist.forEach(item => {
                     if (!item.timestamp) {
-                        item.timestamp = { date: 'Unknown', time: '' };
+                        item.timestamp = null;
                     }
                 });
             });
