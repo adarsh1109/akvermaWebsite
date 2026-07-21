@@ -492,6 +492,11 @@
         input, select, textarea { font-family: inherit; font-size: 13px; padding: 8px 10px; border-radius: 6px; border: 1.5px solid #C7CDBF; background: #fff; color: var(--ink); }
         input:focus, select:focus, textarea:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
         .overlay { position: fixed; inset: 0; background: rgba(32,42,38,.45); display: none; align-items: center; justify-content: center; z-index: 50; padding: 16px; }
+        /* Darker background only for welcome popup */
+#welcomeModal {
+    background: rgba(0, 0, 0, 0.82);
+    z-index: 9999;
+}
         .overlay.show { display: flex; }
         .modal { background: var(--card); border-radius: 10px; padding: 22px; width: 100%; max-width: 380px; box-shadow: 0 10px 40px rgba(0,0,0,.25); }
         .modal h2 { font-family: 'IBM Plex Mono'; font-size: 16px; margin: 0 0 14px; }
@@ -1228,84 +1233,75 @@
         }
     }
     createClockLabels();
+// --- Image handling ---
+function getDailyImage() {
+    const imageContainer = document.querySelector('.image-side .image-container');
+    if (!imageContainer) return;
 
-    // --- Image handling ---
-    function getDailyImage() {
-        const imageContainer = document.querySelector('.image-side .image-container');
-        if (!imageContainer) return;
-        
-        const randomImage = imageContainer.querySelector('#randomImage');
-        const imageLoading = imageContainer.querySelector('#imageLoading');
-        
-        if (!randomImage || !imageLoading) return;
-        
-        // List your images here — all images from d1.jpg to d10.jpg
-        const imageFiles = [
-            'd1.jpg',
-            'd2.jpg',
-            'd3.jpg',
-            'd4.jpg',
-            'd5.jpg',
-            'd6.jpg',
-            'd7.jpg',
-            'd8.jpg',
-            'd9.jpg',
-            'd10.jpg',
-            'd11.jpg',
-            'd12.jpg',
-            'd13.jpg',
-            'd14.jpg',
-            'd15.jpg',
-            'd16.jpg',
-            'd17.jpg',
-            'd18.jpg',
-            'd19.jpg',
-            'd20.jpg'
-        ];
-        
-        const today = new Date();
-        // Get day of the year (1-365/366)
-        const startOfYear = new Date(today.getFullYear(), 0, 0);
-        const diff = today - startOfYear;
-        const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
-        
-        // Use a seed based on the year and day to shuffle the order
-        // This ensures the sequence changes each year
-        const yearSeed = today.getFullYear();
-        
-        // Create a shuffled copy of the array based on the year seed
-        // Using a simple but effective shuffle with the year as seed
-        const shuffled = [...imageFiles];
-        for (let i = shuffled.length - 1; i > 0; i--) {
-            // Use both year and day for better distribution
-            const j = Math.floor(((yearSeed * 31 + i * 7 + dayOfYear * 13) % (i + 1)));
-            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-        }
-        
-        // Select image based on day of year, cycling through all images
-        const totalImages = shuffled.length;
-        const selectedIndex = dayOfYear % totalImages;
-        const selectedImage = shuffled[selectedIndex];
-        
-        const imageUrl = `images/${selectedImage}`;
-        
-        randomImage.style.display = 'none';
+    const randomImage = imageContainer.querySelector('#randomImage');
+    const imageLoading = imageContainer.querySelector('#imageLoading');
+
+    if (!randomImage || !imageLoading) return;
+
+    // List your images in the desired order
+    const imageFiles = [
+        'd1.jpg',
+        'd2.jpg',
+        'd3.jpg',
+        'd4.jpg',
+        'd5.jpg',
+        'd6.jpg',
+        'd7.jpg',
+        'd8.jpg',
+        'd9.jpg',
+        'd10.jpg',
+        'd11.jpg',
+        'd12.jpg',
+        'd13.jpg',
+        'd14.jpg',
+        'd15.jpg',
+        'd16.jpg',
+        'd17.jpg',
+        'd18.jpg',
+        'd19.jpg',
+        'd20.jpg'
+    ];
+
+    // Set the date on which d1.jpg should appear
+    const startDate = new Date(2026, 1, 1); // 21 July 2026
+    startDate.setHours(0, 0, 0, 0);
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const msPerDay = 1000 * 60 * 60 * 24;
+    const daysElapsed = Math.floor((today - startDate) / msPerDay);
+
+    // If today is before the start date, show the first image
+    const selectedIndex = daysElapsed < 0
+        ? 0
+        : daysElapsed % imageFiles.length;
+
+    const selectedImage = imageFiles[selectedIndex];
+    const imageUrl = `images/${selectedImage}`;
+
+    randomImage.style.display = 'none';
+    imageLoading.style.display = 'block';
+    imageLoading.textContent = 'Loading image...';
+
+    randomImage.src = imageUrl;
+
+    randomImage.onload = function () {
+        imageLoading.style.display = 'none';
+        randomImage.style.display = 'block';
+    };
+
+    randomImage.onerror = function () {
+        imageLoading.textContent = '⚠️ Image not found. Make sure the images folder exists.';
         imageLoading.style.display = 'block';
-        imageLoading.textContent = 'Loading image...';
-        
-        randomImage.src = imageUrl;
-        
-        randomImage.onload = function() {
-            imageLoading.style.display = 'none';
-            randomImage.style.display = 'block';
-        };
-        
-        randomImage.onerror = function() {
-            imageLoading.textContent = '⚠️ Image not found. Make sure the images folder exists.';
-            imageLoading.style.display = 'block';
-            randomImage.style.display = 'none';
-        };
-    }
+        randomImage.style.display = 'none';
+    };
+}
 
     function setupImageZoom() {
         const container = document.querySelector('.image-side .image-container');
@@ -2913,7 +2909,46 @@
 
     loadData();
 
+
 })();
 </script>
+
+<!-- Daily Habits Welcome Popup -->
+<div id="welcomeModal" class="overlay show" style="z-index:9999;">
+    <div class="modal" style="max-width:600px;">
+        <h2 style="margin-bottom:16px;">Habit and Work Tracker</h2>
+
+        <p style="margin-top:0;">
+            Daily habits works on two basic principles:
+        </p>
+
+        <ol style="line-height:1.8; padding-left:22px;">
+    <li>
+        Habits should be formed for life, until they become
+        <span style="color:#0072BD;">
+            like brushing teeth.
+        </span>
+    </li>
+
+    <li>
+        Goals should be flexible. Don't chase streaks.
+        Set realistic and achievable goals, and simply aim to meet them.
+        Missing a day is normal—
+        <span style="color:#0072BD;">
+            just continue the next day.
+        </span>
+    </li>
+</ol>
+
+        <div class="modal-actions">
+            <button
+    class="btn primary"
+    onclick="document.getElementById('welcomeModal').classList.remove('show')">
+    I Understand
+</button>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
