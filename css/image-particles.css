@@ -1,0 +1,16 @@
+/* Canvas overlays the existing image box exactly; it never participates in layout. */
+.particle-image-overlay {
+  position: absolute;
+  z-index: 20;
+  pointer-events: none;
+  display: block;
+  max-width: none;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+/* Move the About portrait and its particle canvas down without changing layout flow. */
+.about_img {
+  transform: translateY(25px);
+}
