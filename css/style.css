@@ -523,10 +523,10 @@ button {
 
 .about_img img {
     height: auto;
-    padding-top: 50px;
+    padding-top: 0px;
     float: right;
     width: 100%;
-    max-width: 48.5%;
+    max-width: 49%;
 }
 
 
